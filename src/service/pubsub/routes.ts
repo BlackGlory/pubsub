@@ -1,17 +1,11 @@
 import { FastifyPluginAsync } from 'fastify'
 import { PubSub } from './pubsub'
 import websocket from 'fastify-websocket'
+import urlencodedParser from '@src/urlencoded-parser'
 
 export const routes: FastifyPluginAsync  = async function routes(server, options) {
+  server.register(urlencodedParser, { parseAs: 'string' })
   server.register(websocket)
-
-  server.addContentTypeParser(
-    'application/x-www-form-urlencoded'
-  , { parseAs: 'string' }
-  , (req, body, done) => {
-      done(null, body)
-    }
-  )
 
   const pubsub = new PubSub<string>()
 

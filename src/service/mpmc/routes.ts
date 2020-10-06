@@ -1,15 +1,9 @@
 import { FastifyPluginAsync } from 'fastify'
 import { ChannelManager } from './channel-manager'
+import urlencodedParser from '@src/urlencoded-parser'
 
 export const routes: FastifyPluginAsync  = async function routes(server, options) {
-  server.addContentTypeParser(
-    'application/x-www-form-urlencoded'
-  , { parseAs: 'string' }
-  , (req, body, done) => {
-      done(null, body)
-    }
-  )
-
+  server.register(urlencodedParser, { parseAs: 'string' })
   const manager = new ChannelManager<string>()
 
   server.get<{ Params: { id: string }}>('/mpmc/:id', async (req, reply) => {

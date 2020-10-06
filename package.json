@@ -43,6 +43,7 @@
     "extra-promise": "^0.9.0",
     "fastify": "^3.5.1",
     "fastify-cors": "^4.1.0",
+    "fastify-plugin": "^2.3.4",
     "fastify-websocket": "^2.0.9",
     "rxjs": "^7.0.0-beta.7"
   }
