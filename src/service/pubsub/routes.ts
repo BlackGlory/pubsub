@@ -39,7 +39,6 @@ export const routes: FastifyPluginAsync  = async function routes(server, options
   // @ts-ignore Do not want to waste time to fight the terrible types of fastify.
   , wsHandler(conn, req, params: Params) {
       const id = params.id
-      // conn.setEncoding('utf8')
 
       const observable = pubsub.observe(id)
       const subscription = observable.subscribe(value => conn.socket.send(value))
@@ -51,8 +50,11 @@ export const routes: FastifyPluginAsync  = async function routes(server, options
     }
   })
 
-  server.post<{ Params: { id: string }}>('/pubsub/:id', async (req, reply) => {
-    await pubsub.publish(req.params.id, req.body as string)
+  server.post<{
+    Params: { id: string }
+  , Body: string
+  }>('/pubsub/:id', async (req, reply) => {
+    await pubsub.publish(req.params.id, req.body)
     reply.status(204).send()
   })
 }
