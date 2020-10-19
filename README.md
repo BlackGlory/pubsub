@@ -253,21 +253,26 @@ ws.addEventListener('message', event => {
 
 ## 为publish添加JSON Schema验证
 
-通过设置环境变量`PUBSUB_JSON_SCHEMA_VALIDATION=true`可开启publish的JSON Schema验证功能.
+通过设置环境变量`PUBSUB_JSON_VALIDATION=true`可开启publish的JSON Schema验证功能.
+任何带有`Content-Type: application/json`的请求都会被验证,
+即使没有设置JSON Schema, 也会拒绝不合法的JSON文本.
 
-通过环境变量`PUBSUB_DEFAULT_JSON_SCHEMA`可设置默认的JSON Schema, 该验证仅对带有`Content-Type: application/json`的请求有效.
+在开启验证功能的情况下, 通过环境变量`PUBSUB_DEFAULT_JSON_SCHEMA`可设置默认的JSON Schema,
+该验证仅对带有`Content-Type: application/json`的请求有效.
 
-通过设置环境变量`PUBSUB_JSON_PAYLOAD_ONLY=true`, 可以强制publish只接受带有`Content-Type: application/json`的请求, 此设置在未开启JSON Schema验证的情况下也有效.
+通过设置环境变量`PUBSUB_JSON_PAYLOAD_ONLY=true`,
+可以强制enqueue只接受带有`Content-Type: application/json`的请求.
+此设置在未开启JSON Schema验证的情况下也有效, 但在这种情况下服务器能够接受不合法的JSON.
 
 ### 单独为id设置JSON Schema
 
 可单独为id设置JSON Schema, 被设置的id将仅接受`Content-Type: application/json`请求.
 
-#### 获取所有具有JSON Schema的消息队列id
+#### 获取所有具有JSON Schema的频道id
 
 `GET /api/pubsub-with-json-schema`
 
-获取所有具有token的消息队列id, 返回由JSON表示的字符串数组`string[]`
+获取所有具有JSON Schema的频道id, 返回由JSON表示的字符串数组`string[]`
 
 ##### Example
 
@@ -379,9 +384,9 @@ PUBSUB提供两种访问控制策略, 可以一并使用.
 
 通过设置环境变量`PUBSUB_LIST_BASED_ACCESS_CONTROL`开启基于名单的访问控制:
 - `whitelist`
-  启用基于消息队列白名单的访问控制, 只有在名单内的消息队列允许被访问.
+  启用基于频道白名单的访问控制, 只有在名单内的频道允许被访问.
 - `blacklist`
-  启用基于消息队列黑名单的访问控制, 只有在名单外的消息队列允许被访问.
+  启用基于频道黑名单的访问控制, 只有在名单外的频道允许被访问.
 
 #### 黑名单
 
@@ -389,7 +394,7 @@ PUBSUB提供两种访问控制策略, 可以一并使用.
 
 `GET /api/blacklist`
 
-获取位于黑名单中的所有消息队列id, 返回JSON表示的字符串数组`string[]`.
+获取位于黑名单中的所有频道id, 返回JSON表示的字符串数组`string[]`.
 
 ###### Example
 
@@ -413,7 +418,7 @@ await fetch('http://localhost:8080/api/blacklist', {
 
 `PUT /api/blacklist/<id>`
 
-将特定消息队列加入黑名单.
+将特定频道加入黑名单.
 
 ###### Example
 
@@ -439,7 +444,7 @@ await fetch(`http://localhost:8080/api/blacklist/${id}`, {
 
 `DELETE /api/blacklist/<id>`
 
-将特定消息队列从黑名单中移除.
+将特定频道从黑名单中移除.
 
 ###### Example
 
@@ -467,7 +472,7 @@ await fetch(`http://localhost:8080/api/blacklist/${id}`, {
 
 `GET /api/whitelist`
 
-获取位于黑名单中的所有消息队列id, 返回JSON表示的字符串数组`string[]`.
+获取位于黑名单中的所有频道id, 返回JSON表示的字符串数组`string[]`.
 
 ##### Example
 
@@ -491,7 +496,7 @@ await fetch('http://localhost:8080/api/whitelist', {
 
 `PUT /api/whitelist/<id>`
 
-将特定消息队列加入白名单.
+将特定频道加入白名单.
 
 ###### Example
 
@@ -517,7 +522,7 @@ await fetch(`http://localhost:8080/api/whitelist/${id}`, {
 
 `DELETE /api/whitelist/<id>`
 
-将特定消息队列从白名单中移除.
+将特定频道从白名单中移除.
 
 ###### Example
 
@@ -545,11 +550,11 @@ await fetch(`http://localhost:8080/api/whitelist/${id}`, {
 
 通过设置环境变量`PUBSUB_TOKEN_BASED_ACCESS_CONTROL=true`开启基于token的访问控制.
 
-基于token的访问控制将根据消息队列具有的token决定其访问规则, 具体行为见下方表格.
-一个消息队列可以有多个token, 每个token可以单独设置入列权限和出列权限.
-不同消息队列的token不共用.
+基于token的访问控制将根据频道具有的token决定其访问规则, 具体行为见下方表格.
+一个频道可以有多个token, 每个token可以单独设置入列权限和出列权限.
+不同频道的token不共用.
 
-| 此消息队列存在具有出列权限的token | 此消息队列存在具有入列权限的token | 行为 |
+| 此频道存在具有出列权限的token | 此频道存在具有入列权限的token | 行为 |
 | --- | --- | --- |
 | YES | YES | 只有使用具有相关权限的token才能执行操作 |
 | YES | NO | 无token可以入列, 只有具有出列权限的token可以出列 |
@@ -557,18 +562,18 @@ await fetch(`http://localhost:8080/api/whitelist/${id}`, {
 | NO | NO | 无token可以入列和出列 |
 
 在开启基于token的访问控制时,
-可以通过将环境变量`PUBSUB_DISABLE_NO_TOKENS`设置为`true`将无token的消息队列禁用.
+可以通过将环境变量`PUBSUB_DISABLE_NO_TOKENS`设置为`true`将无token的频道禁用.
 
 基于token的访问控制作出了如下假定, 因此不使用加密和消息验证码(MAC):
 - token的传输过程是安全的
 - token难以被猜测
 - token的意外泄露可以被迅速处理
 
-#### 获取所有具有token的消息队列id
+#### 获取所有具有token的频道id
 
 `GET /api/pubsub-with-tokens`
 
-获取所有具有token的消息队列id, 返回由JSON表示的字符串数组`string[]`
+获取所有具有token的频道id, 返回由JSON表示的字符串数组`string[]`
 
 ##### Example
 
@@ -588,11 +593,11 @@ await fetch(`http://localhost:8080/api/pubsub-with-tokens`, {
 }).then(res => res.json())
 ```
 
-#### 获取特定消息队列的所有token信息
+#### 获取特定频道的所有token信息
 
 `GET /api/pubsub/<id>/tokens`
 
-获取特定消息队列的所有token信息, 返回JSON表示的token信息数组
+获取特定频道的所有token信息, 返回JSON表示的token信息数组
 `Array<{ token: string, publish: boolean, subscribe: boolean }>`.
 
 ##### Example
@@ -613,7 +618,7 @@ await fetch(`http://localhost:8080/api/pubsub/${id}/tokens`, {
 }).then(res => res.json())
 ```
 
-#### 为特定消息队列的token设置入列权限
+#### 为特定频道的token设置入列权限
 
 `PUT /api/pubsub/<id>/tokens/<token>/publish`
 
@@ -639,7 +644,7 @@ await fetch(`http://localhost:8080/api/pubsub/${id}/tokens/$token/publish`, {
 })
 ```
 
-#### 取消特定消息队列的token的入列权限
+#### 取消特定频道的token的入列权限
 
 `DELETE /api/pubsub/<id>/tokens/<token>/publish`
 
@@ -665,7 +670,7 @@ await fetch(`http://localhost:8080/api/pubsub/${id}/tokens/${token}/publish`, {
 })
 ```
 
-#### 为特定消息队列的token设置出列权限
+#### 为特定频道的token设置出列权限
 
 `PUT /api/pubsub/<id>/tokens/<token>/subscribe`
 
@@ -691,7 +696,7 @@ await fetch(`http://localhost:8080/api/pubsub/${id}/tokens/$token/subscribe`, {
 })
 ```
 
-#### 取消特定消息队列的token的入列权限
+#### 取消特定频道的token的入列权限
 
 `DELETE /api/pubsub/<id>/tokens/<token>/subscribe`
 
