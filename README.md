@@ -138,22 +138,6 @@ fetch(`http://localhost:8080/pubsub/${id}`, {
 })
 ```
 
-### publish via Webhook
-
-`POST /pubsub/<id>/webhook`
-
-这是为Webhook准备的HTTP端点.
-它会按以下JSON格式转发HTTP请求:
-```ts
-{
-  headers: { [name: string]: string }
-  payload: string
-}
-```
-
-如果开启基于token的访问控制, 则可能需要在Querystring提供具有publish权限的token:
-`POST /pubsub/<id>/webhook?token=<token>`
-
 ### subscribe via Server-Sent Events(SSE)
 
 `GET /pubsub/<id>`
