@@ -142,62 +142,17 @@ fetch(`http://localhost:8080/pubsub/${id}`, {
 
 `POST /pubsub/<id>/webhook`
 
-这是为Webhook准备的HTTP端点, 只接受`application/json`和`application/x-www-form-urlencoded`,
+这是为Webhook准备的HTTP端点.
 它会按以下JSON格式转发HTTP请求:
 ```ts
 {
-  ip: string
-  timestamp: number
-  headers: { [name: string]: string }
-  payload: JSON
-}
-```
-如果请求为`application/json`, `payload`将是解析后的JSON.
-如果请求`application/x-www-form-urlencoded`, `payload`将是使用[qs]转换后的JSON.
-这意味着如果发送的请求不标准, 该端点会拒绝请求.
-
-如果开启基于token的访问控制, 则可能需要在Querystring提供具有publish权限的token:
-`POST /pubsub/<id>/webhook?token=<token>`
-
-环境变量`PUBSUB_JSON_PAYLOAD_ONLY`不对`Content-Type: application/x-www-form-urlencoded`生效.
-如果设置了JSON Schema验证, 则只有JSON格式的payload字段会被验证.
-
-[qs]: https://npmjs.org/package/qs
-
-### publish via Raw
-
-`POST /pubsub/<id>/raw`
-
-这是为发送任意文本格式的Webhook准备的HTTP端点.
-```ts
-{
-  ip: string
-  timestamp: number
   headers: { [name: string]: string }
   payload: string
 }
 ```
 
 如果开启基于token的访问控制, 则可能需要在Querystring提供具有publish权限的token:
-`POST /pubsub/<id>/raw?token=<token>`
-
-如果设置了环境变量`PUBSUB_JSON_PAYLOAD_ONLY=true`, 则该端点将只接受`application/json`, 但仍然不进行任何解析.
-如果设置了JSON Schema验证, 无论是全局的还是单独的, 都会导致该端点拒绝`application/json`请求.
-
-### publish via Form
-
-`POST /pubsub/<id>/form`
-
-这是为HTML表单准备的HTTP端点, 只接受`application/x-www-form-urlencoded`, 它会使用[qs]将表单项转换为JSON.
-该端点相当于简化版本的`POST /pubsub/<id>/webhook`, 如果不需要headers等额外信息, 则最好使用它.
-
-如果开启基于token的访问控制, 则可能需要在Querystring提供具有publish权限的token:
-`POST /pubsub/<id>/form?token=<token>`
-
-如果设置了JSON Schema验证, 则只有转换后的JSON(payload字段)会被验证.
-环境变量`PUBSUB_JSON_PAYLOAD_ONLY`不对此功能生效.
-
-[qs]: https://npmjs.org/package/qs
+`POST /pubsub/<id>/webhook?token=<token>`
 
 ### subscribe via Server-Sent Events(SSE)
 
@@ -251,11 +206,12 @@ ws.addEventListener('message', event => {
 })
 ```
 
-## 为publish添加JSON Schema验证
+## 为publish添加JSON验证
 
 通过设置环境变量`PUBSUB_JSON_VALIDATION=true`可开启publish的JSON Schema验证功能.
 任何带有`Content-Type: application/json`的请求都会被验证,
 即使没有设置JSON Schema, 也会拒绝不合法的JSON文本.
+JSON验证仅用于验证, 不会重新序列化消息, 因此subscribe得到的消息会与publish发送的消息相同.
 
 在开启验证功能的情况下, 通过环境变量`PUBSUB_DEFAULT_JSON_SCHEMA`可设置默认的JSON Schema,
 该验证仅对带有`Content-Type: application/json`的请求有效.
