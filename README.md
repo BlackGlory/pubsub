@@ -16,8 +16,8 @@
 
 ## Quickstart
 
-sse-cat: <https://github.com/BlackGlory/sse-cat>
-websocat: <https://github.com/vi/websocat>
+- sse-cat: <https://github.com/BlackGlory/sse-cat>
+- websocat: <https://github.com/vi/websocat>
 
 ```sh
 # 运行
@@ -179,7 +179,7 @@ id用于标识频道.
 
 websocat
 ```sh
-websocat ws://localhost:8080/pubsub/<id>
+websocat "ws://localhost:8080/pubsub/$id"
 ```
 
 JavaScript
@@ -366,7 +366,7 @@ curl
 ```sh
 curl \
   --request PUT \
-  --header "Authorization: Bearer $ADMIN_PASSWORD"
+  --header "Authorization: Bearer $ADMIN_PASSWORD" \
   "http://localhost:8080/api/blacklist/$id"
 ```
 
@@ -671,13 +671,18 @@ PUBSUB支持HTTP/2, 以多路复用反向代理时的连接, 可通过设置环�
 
 ## Webhook
 
-PubSub的publish端点可用于Webhook, 但它不会转发请求头, IP地址等信息, 因此无法用于需要这些信息的场景.
+PubSub的publish端点可用于Webhook,
+但它不会转发请求头, IP地址等信息, 因此无法用于需要这些信息的场景.
 
-在此项目的早期阶段, 曾设计过一个`/pubsub/<id>/webhook`端点, 该端点会生成包含必要信息的新JSON.
-但随即便发现它无法与基于JSON Schema的JSON验证进行整合, 也无法防止伪造消息, 解决这些问题需要单独为Webhook创建新的数据库表和API接口, 这为PubSub添加了过多的职责, 严重增加了项目的复杂性, 因此该设计被放弃.
+在此项目的早期阶段, 曾设计过一个`/pubsub/<id>/webhook`端点,
+该端点会生成包含必要信息的新JSON.
+但随即便发现它无法与基于JSON Schema的JSON验证进行整合, 也无法防止伪造消息.
+解决这些问题需要单独为Webhook创建新的数据库表和API接口,
+这为PubSub添加了过多的职责, 严重增加了项目的复杂性, 因此该设计被放弃.
 
-一种解决方案是为Webhook单独创建HTTP服务器, 然后手动生成包含所需信息的请求, 将其发送给PubSub, 并将响应返回.
-可以通过添加具有publish权限的token的方式, 防止伪造请求.
+一种解决方案是为Webhook单独创建HTTP服务器, 然后手动生成包含所需信息的请求,
+将其发送给PubSub, 并将响应返回.
+在这种情况下, 可以通过添加具有publish权限的token的方式, 防止伪造请求.
 
 ## TODO
 - [ ] 在更新访问控制规则时, 断开受影响的连接
