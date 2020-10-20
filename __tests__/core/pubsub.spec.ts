@@ -1,7 +1,17 @@
 import { createPubSub } from '@core'
 
 describe('PubSub', () => {
-  it('publish, subscribe', async done => {
+  test('publish,  subscribe', async done => {
+    const pubsub = await createPubSub()
+    const key = 'key'
+    const value = 'value'
+
+    pubsub.publish(key, value)
+    pubsub.subscribe(key, () => done.fail())
+    setImmediate(done)
+  })
+
+  test('subscribe, publish', async done => {
     const pubsub = await createPubSub()
     const key = 'key'
     const value = 'value'
@@ -13,7 +23,7 @@ describe('PubSub', () => {
     pubsub.publish(key, value)
   })
 
-  it('unsubscribe', async done => {
+  test('subscribe, unsubscribe, publish', async done => {
     const pubsub = await createPubSub()
     const key = 'key'
     const value = 'value'
