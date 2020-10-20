@@ -4,7 +4,7 @@ import { routes as pubsub } from '@services/pubsub'
 import { routes as api } from '@services/api'
 import { HTTP2 } from '@config'
 import { DAO } from '@dao'
-import { PubSubFactory } from '@core'
+import { createPubSub } from '@core'
 
 export async function buildServer({ logger = false }: Partial<{ logger: boolean }> = {}) {
   const server = fastify(({
@@ -14,7 +14,7 @@ export async function buildServer({ logger = false }: Partial<{ logger: boolean 
   , http2: HTTP2()
   }))
   server.register(cors, { origin: true })
-  server.register(pubsub, { DAO, PubSub: await PubSubFactory.create<string>() })
+  server.register(pubsub, { DAO, PubSub: await createPubSub<string>() })
   server.register(api, { DAO })
   return server
 }
