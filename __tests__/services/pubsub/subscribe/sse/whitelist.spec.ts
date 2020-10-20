@@ -26,6 +26,7 @@ describe('whitelist', () => {
       try {
         const es = new EventSource(`${address}/pubsub/${id}`)
         await waitForEvent(es as EventTarget, 'open')
+        es.close()
       } finally {
         await server.close()
       }

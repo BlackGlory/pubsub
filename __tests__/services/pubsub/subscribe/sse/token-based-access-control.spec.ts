@@ -28,6 +28,7 @@ describe('token-based access control', () => {
         try {
           const es = new EventSource(`${address}/pubsub/${id}?token=${token}`)
           await waitForEvent(es as EventTarget, 'open')
+          es.close()
         } finally {
           await server.close()
         }
@@ -68,6 +69,7 @@ describe('token-based access control', () => {
         try {
           const es = new EventSource(`${address}/pubsub/${id}?token=${token}`)
           await waitForEvent(es as EventTarget, 'open')
+          es.close()
         } finally {
           await server.close()
         }
@@ -103,6 +105,7 @@ describe('token-based access control', () => {
           try {
             const es = new EventSource(`${address}/pubsub/${id}`)
             await waitForEvent(es as EventTarget, 'open')
+            es.close()
           } finally {
             await server.close()
           }

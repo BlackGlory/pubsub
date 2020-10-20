@@ -55,7 +55,6 @@
     "jest": "^26.5.3",
     "jest-extended": "^0.11.5",
     "jest-json-schema": "^2.1.0",
-    "light-my-request": "^4.2.0",
     "node-fetch": "^2.6.1",
     "nodemon": "^2.0.5",
     "pino-pretty": "^4.3.0",
