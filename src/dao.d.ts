@@ -39,6 +39,6 @@ interface ITokenBasedAccessControlDAO {
 }
 
 interface IDataAccessObject extends IBlacklistDAO
-                                 , IWhitelistDAO
-                                 , IJsonSchemaDAO
-                                 , ITokenBasedAccessControlDAO {}
+                                  , IWhitelistDAO
+                                  , IJsonSchemaDAO
+                                  , ITokenBasedAccessControlDAO {}
