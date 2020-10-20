@@ -18,7 +18,7 @@ export const routes: FastifyPluginAsync<{
       // pain, see https://github.com/fastify/fastify-websocket/issues/70
       async verifyClient(info, next) {
         const noTokenRegExp = /^\/pubsub\/(?<id>[a-zA-Z0-9\.\-_]{1,256})$/
-        const tokenRegExp = /^\/pubsub\/(?<id>[a-zA-Z0-9\.\-_]{1,256})\?token=(?<token>[a-zA-Z0-9\.\-\_])$/
+        const tokenRegExp = /^\/pubsub\/(?<id>[a-zA-Z0-9\.\-_]{1,256})\?token=(?<token>[a-zA-Z0-9\.\-\_]{1,256})$/
 
         const url = info.req.url!
         const noTokenResult = url.match(noTokenRegExp)
@@ -26,12 +26,12 @@ export const routes: FastifyPluginAsync<{
         let token: string | undefined
         if (noTokenResult) {
           id = noTokenResult.groups!.id
-        }
-
-        const tokenResult = url.match(tokenRegExp)
-        if (tokenResult) {
-          id = tokenResult.groups!.id
-          token = tokenResult.groups!.token
+        } else {
+          const tokenResult = url.match(tokenRegExp)
+          if (tokenResult) {
+            id = tokenResult.groups!.id
+            token = tokenResult.groups!.token
+          }
         }
 
         if (id) {
