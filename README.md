@@ -680,8 +680,8 @@ PubSub的publish端点可用于Webhook,
 解决这些问题需要单独为Webhook创建新的数据库表和API接口,
 这为PubSub添加了过多的职责, 严重增加了项目的复杂性, 因此该设计被放弃.
 
-一种解决方案是为Webhook单独创建HTTP服务器, 然后手动生成包含所需信息的请求,
-将其发送给PubSub, 并将响应返回.
+推荐的解决方案是为Webhook单独创建HTTP服务器, 生成包含所需信息的请求,
+将其发送给PubSub.
 在这种情况下, 可以通过添加具有publish权限的token的方式, 防止伪造请求.
 
 ## TODO

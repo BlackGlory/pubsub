@@ -1,14 +1,16 @@
 {
   "compilerOptions": {
-    "target": "ES2020"
+    "target": "ES2019"
   , "module": "CommonJS"
   , "strict": true
   , "baseUrl": "."
   , "paths": {
       "@src/*": ["src/*"]
+    , "@dao": ["src/dao/index"]
+    , "@dao/*": ["src/dao/*"]
+    , "@config": ["src/config"]
     , "@test/*": ["__tests__/*"]
-    , "@service/*": ["src/service/*"]
-    , "@adapter/*": ["src/adapter/*"]
+    , "@services/*": ["src/services/*"]
     }
   }
 }

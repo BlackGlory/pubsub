@@ -1,12 +1,18 @@
 import fastify from 'fastify'
 import cors from 'fastify-cors'
-import { routes as pubsub } from '@service/pubsub'
-import { HOST, PORT } from '@src/config'
+import { routes as pubsub } from '@services/pubsub'
+import { routes as api } from '@services/api'
+import { HTTP2 } from '@config'
 
-const server = fastify(({ logger: true }))
-server.register(cors, { origin: true })
-server.register(pubsub)
-server.listen(PORT, HOST, (err, address) => {
-  if (err) throw err
-  console.log(`Server listening at ${address}`)
-})
+export function buildServer({ logger = false }: Partial<{ logger: boolean }> = {}) {
+  const server = fastify(({
+    logger
+  , maxParamLength: 600
+    /* @ts-ignore */
+  , http2: HTTP2()
+  }))
+  server.register(cors, { origin: true })
+  server.register(pubsub)
+  server.register(api)
+  return server
+}
