@@ -1,7 +1,7 @@
 import { buildServer } from '@src/server'
 import { prepareDatabase, resetEnvironment } from '@test/utils'
 import { matchers } from 'jest-json-schema'
-import DAO from '@dao'
+import { DAO } from '@dao'
 
 jest.mock('@dao/sqlite3/database')
 expect.extend(matchers)
@@ -18,7 +18,7 @@ describe('whitelist', () => {
       const message = 'message'
       process.env.PUBSUB_ADMIN_PASSWORD = 'password'
       process.env.PUBSUB_LIST_BASED_ACCESS_CONTROL = 'whitelist'
-      const server = buildServer()
+      const server = await buildServer()
       await DAO.addWhitelistItem(id)
 
       const res = await server.inject({
@@ -40,7 +40,7 @@ describe('whitelist', () => {
       process.env.PUBSUB_LIST_BASED_ACCESS_CONTROL = 'whitelist'
       const id = 'id'
       const message = 'message'
-      const server = buildServer()
+      const server = await buildServer()
 
       const res = await server.inject({
         method: 'POST'

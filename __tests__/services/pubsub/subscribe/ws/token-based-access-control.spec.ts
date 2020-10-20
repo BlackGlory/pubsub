@@ -1,7 +1,7 @@
 import { buildServer } from '@src/server'
 import { prepareDatabase, resetEnvironment } from '@test/utils'
 import { matchers } from 'jest-json-schema'
-import DAO from '@dao'
+import { DAO } from '@dao'
 import WebSocket = require('ws')
 import { waitForEvent } from '@blackglory/wait-for'
 
@@ -22,7 +22,7 @@ describe('token-based access control', () => {
         const id = 'id'
         const token = 'token'
         await DAO.setSubscribeToken({ id, token })
-        const server = buildServer()
+        const server = await buildServer()
         const address = await server.listen(0)
 
         try {
@@ -40,7 +40,7 @@ describe('token-based access control', () => {
         process.env.PUBSUB_TOKEN_BASED_ACCESS_CONTROL = 'true'
         const id = 'id'
         const token = 'token'
-        const server = buildServer()
+        const server = await buildServer()
         const address = await server.listen(0)
         await DAO.setSubscribeToken({ id, token })
 
@@ -59,7 +59,7 @@ describe('token-based access control', () => {
         process.env.PUBSUB_TOKEN_BASED_ACCESS_CONTROL = 'true'
         const id = 'id'
         const token = 'token'
-        const server = buildServer()
+        const server = await buildServer()
         const address = await server.listen(0)
         await DAO.setSubscribeToken({ id, token })
 
@@ -81,7 +81,7 @@ describe('token-based access control', () => {
         const id = 'id'
         const token = 'token'
         await DAO.setPublishToken({ id, token })
-        const server = buildServer()
+        const server = await buildServer()
         const address = await server.listen(0)
 
         try {
@@ -100,7 +100,7 @@ describe('token-based access control', () => {
           process.env.PUBSUB_TOKEN_BASED_ACCESS_CONTROL = 'true'
           process.env.PUBSUB_DISABLE_NO_TOKENS = 'true'
           const id = 'id'
-          const server = buildServer()
+          const server = await buildServer()
           const address = await server.listen(0)
 
           try {
@@ -117,7 +117,7 @@ describe('token-based access control', () => {
           process.env.PUBSUB_ADMIN_PASSWORD = 'password'
           process.env.PUBSUB_TOKEN_BASED_ACCESS_CONTROL = 'true'
           const id = 'id'
-          const server = buildServer()
+          const server = await buildServer()
           const address = await server.listen(0)
 
           try {

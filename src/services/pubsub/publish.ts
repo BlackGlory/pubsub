@@ -13,9 +13,9 @@ import Ajv from 'ajv'
 import { getErrorResult } from 'return-style'
 
 export const routes: FastifyPluginAsync<{
-  pubsub: IPubSub<string>
+  PubSub: IPubSub<string>
   DAO: IDataAccessObject
-}> = async function routes(server, { pubsub, DAO }) {
+}> = async function routes(server, { PubSub, DAO }) {
   // overwrite application/json parser
   server.addContentTypeParser(
     'application/json'
@@ -90,7 +90,7 @@ export const routes: FastifyPluginAsync<{
         }
       }
 
-      await pubsub.publish(req.params.id, req.body)
+      await PubSub.publish(req.params.id, req.body)
       reply.status(204).send()
     }
   )

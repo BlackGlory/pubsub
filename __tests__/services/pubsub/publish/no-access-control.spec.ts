@@ -1,7 +1,7 @@
 import { buildServer } from '@src/server'
 import { prepareDatabase, resetEnvironment } from '@test/utils'
 import { matchers } from 'jest-json-schema'
-import DAO from '@dao'
+import { DAO } from '@dao'
 
 jest.mock('@dao/sqlite3/database')
 expect.extend(matchers)
@@ -21,7 +21,7 @@ describe('no access control', () => {
             process.env.PUBSUB_DEFAULT_JSON_SCHEMA = JSON.stringify({
               type: 'number'
             })
-            const server = buildServer()
+            const server = await buildServer()
             const id = 'id'
             const message = '123'
 
@@ -44,7 +44,7 @@ describe('no access control', () => {
             process.env.PUBSUB_DEFAULT_JSON_SCHEMA = JSON.stringify({
               type: 'number'
             })
-            const server = buildServer()
+            const server = await buildServer()
             const id = 'id'
             const message = ' "message" '
 
@@ -68,7 +68,7 @@ describe('no access control', () => {
           process.env.PUBSUB_DEFAULT_JSON_SCHEMA = JSON.stringify({
             type: 'number'
           })
-          const server = buildServer()
+          const server = await buildServer()
           const id = 'id'
           const message = 'message'
 
@@ -98,7 +98,7 @@ describe('no access control', () => {
               id
             , schema: JSON.stringify(schema)
             })
-            const server = buildServer()
+            const server = await buildServer()
 
             const res = await server.inject({
               method: 'POST'
@@ -119,7 +119,7 @@ describe('no access control', () => {
             const id = 'id'
             const schema = { type: 'string' }
             const message = 'message'
-            const server = buildServer()
+            const server = await buildServer()
             await DAO.setJsonSchema({
               id
             , schema: JSON.stringify(schema)
@@ -145,7 +145,7 @@ describe('no access control', () => {
           const id = 'id'
           const schema = { type: 'string' }
           const message = ' "message" '
-          const server = buildServer()
+          const server = await buildServer()
           await DAO.setJsonSchema({
             id
           , schema: JSON.stringify(schema)
@@ -173,7 +173,7 @@ describe('no access control', () => {
             const id = 'id'
             const schema = { type: 'string' }
             const message = ' "message" '
-            const server = buildServer()
+            const server = await buildServer()
             await DAO.setJsonSchema({
               id
             , schema: JSON.stringify(schema)
@@ -197,7 +197,7 @@ describe('no access control', () => {
             process.env.PUBSUB_JSON_VALIDATION = 'true'
             const id = 'id'
             const message = 'message'
-            const server = buildServer()
+            const server = await buildServer()
 
             const res = await server.inject({
               method: 'POST'
@@ -219,7 +219,7 @@ describe('no access control', () => {
     describe('Content-Type: application/json', () => {
       it('accpet any plaintext, return 204', async () => {
         process.env.PUBSUB_JSON_PAYLOAD_ONLY = 'true'
-        const server = buildServer()
+        const server = await buildServer()
         const id = 'id'
         const message = JSON.stringify('message')
 
@@ -239,7 +239,7 @@ describe('no access control', () => {
     describe('other Content-Type', () => {
       it('400', async () => {
         process.env.PUBSUB_JSON_PAYLOAD_ONLY = 'true'
-        const server = buildServer()
+        const server = await buildServer()
         const id = 'id'
         const message = 'message'
 
@@ -259,7 +259,7 @@ describe('no access control', () => {
 
   describe('Content-Type', () => {
     it('accpet any content-type', async () => {
-      const server = buildServer()
+      const server = await buildServer()
       const id = 'id'
       const message = 'message'
 

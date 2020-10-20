@@ -15,7 +15,7 @@ beforeEach(async () => {
 describe('no access control', () => {
   it('open', async () => {
     const id = 'id'
-    const server = buildServer()
+    const server = await buildServer()
     const address = await server.listen(0)
 
     try {

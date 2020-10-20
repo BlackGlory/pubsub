@@ -9,9 +9,9 @@ import {
 import websocket from 'fastify-websocket'
 
 export const routes: FastifyPluginAsync<{
-  pubsub: IPubSub<string>
+  PubSub: IPubSub<string>
   DAO: IDataAccessObject
-}> = async function routes(server, { pubsub, DAO }) {
+}> = async function routes(server, { PubSub, DAO }) {
   server.register(websocket, {
     options: {
       // pain, see https://github.com/fastify/fastify-websocket/issues/70
@@ -109,9 +109,10 @@ export const routes: FastifyPluginAsync<{
         }
         reply.raw.flushHeaders()
 
-        const unsubscribe = pubsub.subscribe(id, value => {
+        const unsubscribe = PubSub.subscribe(id, value => {
           reply.raw.write(`data: ${value}\n\n`)
         })
+
         req.raw.on('close', () => unsubscribe())
       })()
     }
@@ -120,7 +121,7 @@ export const routes: FastifyPluginAsync<{
   , wsHandler(conn, req, params: Params) {
       const id = params.id
 
-      const unsubscribe = pubsub.subscribe(id, value => conn.socket.send(value))
+      const unsubscribe = PubSub.subscribe(id, value => conn.socket.send(value))
 
       conn.socket.on('close', () => unsubscribe())
       conn.socket.on('message', () => conn.socket.close())

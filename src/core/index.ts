@@ -1,0 +1,1 @@
+export { PubSubFactory } from './memory'
