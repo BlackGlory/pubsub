@@ -13,5 +13,6 @@ module.exports = {
   , 'no-empty': 'off'
   , '@typescript-eslint/ban-ts-comment': 'off'
   , '@typescript-eslint/no-extra-semi': 'off'
+  , 'no-useless-escape': 'off'
   }
 }

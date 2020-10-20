@@ -13,7 +13,56 @@ import websocket from 'fastify-websocket'
 export const routes: FastifyPluginAsync<{
   pubsub: PubSub<string>
 }> = async function routes(server, { pubsub }) {
-  server.register(websocket)
+  server.register(websocket, {
+    options: {
+      // pain, see https://github.com/fastify/fastify-websocket/issues/70
+      async verifyClient(info, next) {
+        const noTokenRegExp = /^\/pubsub\/(?<id>[a-zA-Z0-9\.\-_]{1,256})$/
+        const tokenRegExp = /^\/pubsub\/(?<id>[a-zA-Z0-9\.\-_]{1,256})\?token=(?<token>[a-zA-Z0-9\.\-\_])$/
+
+        const url = info.req.url!
+        const noTokenResult = url.match(noTokenRegExp)
+        let id: string | undefined
+        let token: string | undefined
+        if (noTokenResult) {
+          id = noTokenResult.groups!.id
+        }
+
+        const tokenResult = url.match(tokenRegExp)
+        if (tokenResult) {
+          id = tokenResult.groups!.id
+          token = tokenResult.groups!.token
+        }
+
+        if (id) {
+          if (LIST_BASED_ACCESS_CONTROL() === RBAC.Blacklist) {
+            if (await DAO.inBlacklist(id)) return next(false)
+          } else if (LIST_BASED_ACCESS_CONTROL() === RBAC.Whitelist) {
+            if (!await DAO.inWhitelist(id)) return next(false)
+          }
+
+          if (TOKEN_BASED_ACCESS_CONTROL()) {
+            if (await DAO.hasDequeueTokens(id)) {
+              if (token) {
+                if (!await DAO.matchDequeueToken({ token, id })) return next(false)
+              } else {
+                return next(false)
+              }
+            } else {
+              if (DISABLE_NO_TOKENS()) {
+                if (!await DAO.hasEnqueueTokens(id)) return next(false)
+              }
+            }
+          }
+
+          return next(true)
+        }
+
+        next(false)
+      }
+    }
+  })
+
   server.route<{
     Params: { id: string }
     Querystring: { token?: string }
