@@ -10,13 +10,12 @@ import {
 , JSON_PAYLOAD_ONLY
 } from '@config'
 import Ajv from 'ajv'
-import DAO from '@dao'
-import type { PubSub } from '@src/core/pubsub'
 import { getErrorResult } from 'return-style'
 
 export const routes: FastifyPluginAsync<{
-  pubsub: PubSub<string>
-}> = async function routes(server, { pubsub }) {
+  pubsub: IPubSub<string>
+  DAO: IDataAccessObject
+}> = async function routes(server, { pubsub, DAO }) {
   // overwrite application/json parser
   server.addContentTypeParser(
     'application/json'

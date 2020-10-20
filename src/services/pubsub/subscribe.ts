@@ -6,13 +6,12 @@ import {
 , TOKEN_BASED_ACCESS_CONTROL
 , DISABLE_NO_TOKENS
 } from '@config'
-import DAO from '@dao'
-import type { PubSub } from '@src/core/pubsub'
 import websocket from 'fastify-websocket'
 
 export const routes: FastifyPluginAsync<{
-  pubsub: PubSub<string>
-}> = async function routes(server, { pubsub }) {
+  pubsub: IPubSub<string>
+  DAO: IDataAccessObject
+}> = async function routes(server, { pubsub, DAO }) {
   server.register(websocket, {
     options: {
       // pain, see https://github.com/fastify/fastify-websocket/issues/70
@@ -110,12 +109,10 @@ export const routes: FastifyPluginAsync<{
         }
         reply.raw.flushHeaders()
 
-        const observable = pubsub.observe(req.params.id)
-        const subscription = observable.subscribe(value => {
+        const unsubscribe = pubsub.subscribe(id, value => {
           reply.raw.write(`data: ${value}\n\n`)
         })
-        req.raw.on('close', () => subscription.unsubscribe())
-
+        req.raw.on('close', () => unsubscribe())
       })()
     }
   // WebSocket
@@ -123,10 +120,9 @@ export const routes: FastifyPluginAsync<{
   , wsHandler(conn, req, params: Params) {
       const id = params.id
 
-      const observable = pubsub.observe(id)
-      const subscription = observable.subscribe(value => conn.socket.send(value))
+      const unsubscribe = pubsub.subscribe(id, value => conn.socket.send(value))
 
-      conn.socket.on('close', () => subscription.unsubscribe())
+      conn.socket.on('close', () => unsubscribe())
       conn.socket.on('message', () => conn.socket.close())
     }
   })
