@@ -28,15 +28,15 @@ const TokenBasedAccessControlDAO: TokenBasedAccessControlDAO = {
   getAllIdsWithTokens: asyncify(TokenBasedAccessControl.getAllIdsWithTokens)
 , getAllTokens: asyncify(TokenBasedAccessControl.getAllTokens)
 
-, hasEnqueueTokens: asyncify(TokenBasedAccessControl.hasEnqueueTokens)
-, matchEnqueueToken: asyncify(TokenBasedAccessControl.matchEnqueueToken)
-, setEnqueueToken: asyncify(TokenBasedAccessControl.setEnqueueToken)
-, unsetEnqueueToken: asyncify(TokenBasedAccessControl.unsetEnqueueToken)
+, hasPublishTokens: asyncify(TokenBasedAccessControl.hasPublishTokens)
+, matchPublishToken: asyncify(TokenBasedAccessControl.matchPublishToken)
+, setPublishToken: asyncify(TokenBasedAccessControl.setPublishToken)
+, unsetPublishToken: asyncify(TokenBasedAccessControl.unsetPublishToken)
 
-, hasDequeueTokens: asyncify(TokenBasedAccessControl.hasDequeueTokens)
-, matchDequeueToken: asyncify(TokenBasedAccessControl.matchDequeueToken)
-, setDequeueToken: asyncify(TokenBasedAccessControl.setDequeueToken)
-, unsetDequeueToken: asyncify(TokenBasedAccessControl.unsetDequeueToken)
+, hasSubscribeTokens: asyncify(TokenBasedAccessControl.hasSubscribeTokens)
+, matchSubscribeToken: asyncify(TokenBasedAccessControl.matchSubscribeToken)
+, setSubscribeToken: asyncify(TokenBasedAccessControl.setSubscribeToken)
+, unsetSubscribeToken: asyncify(TokenBasedAccessControl.unsetSubscribeToken)
 }
 
 const DAO: DataAccessObject = {

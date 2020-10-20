@@ -42,8 +42,8 @@ describe('TBAC(token-based access control)', () => {
     })
   })
 
-  describe('EnqueueToken', () => {
-    describe('hasEnqueueTokens(id: string): boolean', () => {
+  describe('PublishToken', () => {
+    describe('hasPublishTokens(id: string): boolean', () => {
       describe('tokens exist', () => {
         it('return true', async () => {
           const db = await prepareDatabase()
@@ -51,7 +51,7 @@ describe('TBAC(token-based access control)', () => {
           const id = 'id-1'
           insert(db, { token, id, subscribe: false, publish: true })
 
-          const result = DAO.hasEnqueueTokens(id)
+          const result = DAO.hasPublishTokens(id)
 
           expect(result).toBeTrue()
         })
@@ -64,14 +64,14 @@ describe('TBAC(token-based access control)', () => {
           const id = 'id-1'
           insert(db, { token, id, subscribe: true, publish: false })
 
-          const result = DAO.hasEnqueueTokens(id)
+          const result = DAO.hasPublishTokens(id)
 
           expect(result).toBeFalse()
         })
       })
     })
 
-    describe('matchEnqueueToken({ token: string; id: string }): boolean', () => {
+    describe('matchPublishToken({ token: string; id: string }): boolean', () => {
       describe('token exist', () => {
         it('return true', async () => {
           const db = await prepareDatabase()
@@ -79,7 +79,7 @@ describe('TBAC(token-based access control)', () => {
           const id = 'id-1'
           insert(db, { token, id, subscribe: false, publish: true })
 
-          const result = DAO.matchEnqueueToken({ token, id })
+          const result = DAO.matchPublishToken({ token, id })
 
           expect(result).toBeTrue()
         })
@@ -92,14 +92,14 @@ describe('TBAC(token-based access control)', () => {
           const id = 'id-1'
           insert(db, { token, id, subscribe: true, publish: false })
 
-          const result = DAO.matchEnqueueToken({ token, id })
+          const result = DAO.matchPublishToken({ token, id })
 
           expect(result).toBeFalse()
         })
       })
     })
 
-    describe('setEnqueueToken({ token: string; id: string })', () => {
+    describe('setPublishToken({ token: string; id: string })', () => {
       describe('token exists', () => {
         it('update row', async () => {
           const db = await prepareDatabase()
@@ -107,7 +107,7 @@ describe('TBAC(token-based access control)', () => {
           const id = 'id-1'
           insert(db, { token, id, subscribe: true, publish: false })
 
-          const result = DAO.setEnqueueToken({ token, id })
+          const result = DAO.setPublishToken({ token, id })
           const row = select(db, { token, id })
 
           expect(result).toBeUndefined()
@@ -121,7 +121,7 @@ describe('TBAC(token-based access control)', () => {
           const token = 'token-1'
           const id = 'id-1'
 
-          const result = DAO.setEnqueueToken({ token, id })
+          const result = DAO.setPublishToken({ token, id })
           const row = select(db, { token, id })
 
           expect(result).toBeUndefined()
@@ -130,7 +130,7 @@ describe('TBAC(token-based access control)', () => {
       })
     })
 
-    describe('unsetEnqueueToken({ token: string; id: string })', () => {
+    describe('unsetPublishToken({ token: string; id: string })', () => {
       describe('token exists', () => {
         it('return undefined', async () => {
           const db = await prepareDatabase()
@@ -138,7 +138,7 @@ describe('TBAC(token-based access control)', () => {
           const id = 'id-1'
           insert(db, { token, id, subscribe: true, publish: true })
 
-          const result = DAO.unsetEnqueueToken({ token, id })
+          const result = DAO.unsetPublishToken({ token, id })
           const row = select(db, { token, id })
 
           expect(result).toBeUndefined()
@@ -152,7 +152,7 @@ describe('TBAC(token-based access control)', () => {
           const token = 'token-1'
           const id = 'id-1'
 
-          const result = DAO.unsetEnqueueToken({ token, id })
+          const result = DAO.unsetPublishToken({ token, id })
 
           expect(result).toBeUndefined()
           expect(exist(db, { token, id })).toBeFalse()
@@ -161,8 +161,8 @@ describe('TBAC(token-based access control)', () => {
     })
   })
 
-  describe('DequeueToken', () => {
-    describe('hasDequeueTokens(id: string): boolean', () => {
+  describe('SubscribeToken', () => {
+    describe('hasSubscribeTokens(id: string): boolean', () => {
       describe('tokens exist', () => {
         it('return true', async () => {
           const db = await prepareDatabase()
@@ -170,7 +170,7 @@ describe('TBAC(token-based access control)', () => {
           const id = 'id-1'
           insert(db, { token, id, subscribe: true, publish: false })
 
-          const result = DAO.hasDequeueTokens(id)
+          const result = DAO.hasSubscribeTokens(id)
 
           expect(result).toBeTrue()
         })
@@ -183,14 +183,14 @@ describe('TBAC(token-based access control)', () => {
           const id = 'id-1'
           insert(db, { token, id, subscribe: false, publish: true })
 
-          const result = DAO.hasDequeueTokens(id)
+          const result = DAO.hasSubscribeTokens(id)
 
           expect(result).toBeFalse()
         })
       })
     })
 
-    describe('matchDequeueToken({ token: string; id: string }): boolean', () => {
+    describe('matchSubscribeToken({ token: string; id: string }): boolean', () => {
       describe('tokens exist', () => {
         it('return true', async () => {
           const db = await prepareDatabase()
@@ -198,7 +198,7 @@ describe('TBAC(token-based access control)', () => {
           const id = 'id-1'
           insert(db, { token, id, subscribe: true, publish: false })
 
-          const result = DAO.matchDequeueToken({ token, id })
+          const result = DAO.matchSubscribeToken({ token, id })
 
           expect(result).toBeTrue()
         })
@@ -211,14 +211,14 @@ describe('TBAC(token-based access control)', () => {
           const id = 'id-1'
           insert(db, { token, id, subscribe: false, publish: true })
 
-          const result = DAO.matchDequeueToken({ token, id })
+          const result = DAO.matchSubscribeToken({ token, id })
 
           expect(result).toBeFalse()
         })
       })
     })
 
-    describe('setDequeueToken(token: string, id: string)', () => {
+    describe('setSubscribeToken(token: string, id: string)', () => {
       describe('token exists', () => {
         it('update row', async () => {
           const db = await prepareDatabase()
@@ -226,7 +226,7 @@ describe('TBAC(token-based access control)', () => {
           const id = 'id-1'
           insert(db, { token, id, subscribe: false, publish: true })
 
-          const result = DAO.setDequeueToken({ token, id })
+          const result = DAO.setSubscribeToken({ token, id })
           const row = select(db, { token, id })
 
           expect(result).toBeUndefined()
@@ -240,7 +240,7 @@ describe('TBAC(token-based access control)', () => {
           const token = 'token-1'
           const id = 'id-1'
 
-          const result = DAO.setDequeueToken({ token, id })
+          const result = DAO.setSubscribeToken({ token, id })
           const row = select(db, { token, id })
 
           expect(result).toBeUndefined()
@@ -249,7 +249,7 @@ describe('TBAC(token-based access control)', () => {
       })
     })
 
-    describe('unsetDequeueToken', () => {
+    describe('unsetSubscribeToken', () => {
       describe('token exists', () => {
         it('return undefined', async () => {
           const db = await prepareDatabase()
@@ -257,7 +257,7 @@ describe('TBAC(token-based access control)', () => {
           const id = 'id-1'
           insert(db, { token, id, subscribe: true, publish: true })
 
-          const result = DAO.unsetDequeueToken({ token, id })
+          const result = DAO.unsetSubscribeToken({ token, id })
           const row = select(db, { token, id })
 
           expect(result).toBeUndefined()
@@ -271,7 +271,7 @@ describe('TBAC(token-based access control)', () => {
           const token = 'token-1'
           const id = 'id-1'
 
-          const result = DAO.unsetDequeueToken({ token, id })
+          const result = DAO.unsetSubscribeToken({ token, id })
 
           expect(result).toBeUndefined()
           expect(exist(db, { token, id })).toBeFalse()

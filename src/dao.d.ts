@@ -27,15 +27,15 @@ interface TokenBasedAccessControlDAO {
     subscribe: boolean
   }>>
 
-  hasEnqueueTokens(id: string): Promise<boolean>
-  matchEnqueueToken(props: { token: string; id: string }): Promise<boolean>
-  setEnqueueToken(props: { token: string; id: string }): Promise<void>
-  unsetEnqueueToken(props: { token: string; id: string }): Promise<void>
+  hasPublishTokens(id: string): Promise<boolean>
+  matchPublishToken(props: { token: string; id: string }): Promise<boolean>
+  setPublishToken(props: { token: string; id: string }): Promise<void>
+  unsetPublishToken(props: { token: string; id: string }): Promise<void>
 
-  hasDequeueTokens(id: string): Promise<boolean>
-  matchDequeueToken(props: { token: string; id: string }): Promise<boolean>
-  setDequeueToken(props: { token: string; id: string }): Promise<void>
-  unsetDequeueToken(props: { token: string; id: string }): Promise<void>
+  hasSubscribeTokens(id: string): Promise<boolean>
+  matchSubscribeToken(props: { token: string; id: string }): Promise<boolean>
+  setSubscribeToken(props: { token: string; id: string }): Promise<void>
+  unsetSubscribeToken(props: { token: string; id: string }): Promise<void>
 }
 
 interface DataAccessObject extends BlacklistDAO

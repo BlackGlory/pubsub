@@ -27,7 +27,7 @@ export function getAllTokens(id: string): Array<{ token: string, publish: boolea
   }))
 }
 
-export function hasEnqueueTokens(id: string): boolean {
+export function hasPublishTokens(id: string): boolean {
   const result = getDatabase().prepare(`
     SELECT EXISTS(
              SELECT *
@@ -38,7 +38,7 @@ export function hasEnqueueTokens(id: string): boolean {
   return result['publish_tokens_exist'] === 1
 }
 
-export function matchEnqueueToken({ token, id }: {
+export function matchPublishToken({ token, id }: {
   token: string
   id: string
 }): boolean {
@@ -52,7 +52,7 @@ export function matchEnqueueToken({ token, id }: {
   return result['matched'] === 1
 }
 
-export function setEnqueueToken({ token, id }: { token: string; id: string }) {
+export function setPublishToken({ token, id }: { token: string; id: string }) {
   const db = getDatabase()
   const row = db.prepare(`
     SELECT publish_permission
@@ -75,7 +75,7 @@ export function setEnqueueToken({ token, id }: { token: string; id: string }) {
   }
 }
 
-export function unsetEnqueueToken({ token, id }: { token: string; id: string }) {
+export function unsetPublishToken({ token, id }: { token: string; id: string }) {
   getDatabase().prepare(`
     UPDATE pubsub_tbac
        SET publish_permission = 0
@@ -83,7 +83,7 @@ export function unsetEnqueueToken({ token, id }: { token: string; id: string }) 
   `).run({ token, id })
 }
 
-export function hasDequeueTokens(id: string): boolean {
+export function hasSubscribeTokens(id: string): boolean {
   const result = getDatabase().prepare(`
     SELECT EXISTS(
              SELECT *
@@ -94,7 +94,7 @@ export function hasDequeueTokens(id: string): boolean {
   return result['subscribe_tokens_exist'] === 1
 }
 
-export function matchDequeueToken({ token, id }: {
+export function matchSubscribeToken({ token, id }: {
   token: string;
   id: string
 }): boolean {
@@ -108,7 +108,7 @@ export function matchDequeueToken({ token, id }: {
   return result['matched'] === 1
 }
 
-export function setDequeueToken({ token, id }: { token: string; id: string }) {
+export function setSubscribeToken({ token, id }: { token: string; id: string }) {
   const db = getDatabase()
   const row = db.prepare(`
     SELECT subscribe_permission
@@ -131,7 +131,7 @@ export function setDequeueToken({ token, id }: { token: string; id: string }) {
   }
 }
 
-export function unsetDequeueToken({ token, id }: { token: string; id: string }) {
+export function unsetSubscribeToken({ token, id }: { token: string; id: string }) {
   getDatabase().prepare(`
     UPDATE pubsub_tbac
        SET subscribe_permission = 0

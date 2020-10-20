@@ -21,7 +21,7 @@ describe('token-based access control', () => {
         const token = 'token'
         const message = 'message'
         const server = buildServer()
-        await DAO.setEnqueueToken({ id, token })
+        await DAO.setPublishToken({ id, token })
 
         const res = await server.inject({
           method: 'POST'
@@ -45,7 +45,7 @@ describe('token-based access control', () => {
         const token = 'token'
         const message = 'message'
         const server = buildServer()
-        await DAO.setEnqueueToken({ id, token })
+        await DAO.setPublishToken({ id, token })
 
         const res = await server.inject({
           method: 'POST'
@@ -71,7 +71,7 @@ describe('token-based access control', () => {
         const token = 'token'
         const message = 'message'
         const server = buildServer()
-        await DAO.setDequeueToken({ id, token })
+        await DAO.setSubscribeToken({ id, token })
 
         const res = await server.inject({
           method: 'POST'

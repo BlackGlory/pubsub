@@ -21,12 +21,12 @@ describe('token-based access control', () => {
         process.env.PUBSUB_TOKEN_BASED_ACCESS_CONTROL = 'true'
         const id = 'id'
         const token = 'token'
-        await DAO.setDequeueToken({ id, token })
+        await DAO.setSubscribeToken({ id, token })
         const server = buildServer()
         const address = await server.listen(0)
 
         try {
-          const ws = new WebSocket(`${address}/pubsub/${id}`.replace('http', 'ws'))
+          const ws = new WebSocket(`${address}/pubsub/${id}?token=${token}`.replace('http', 'ws'))
           await waitForEvent(ws as unknown as EventTarget, 'error')
         } finally {
           await server.close()
@@ -42,10 +42,10 @@ describe('token-based access control', () => {
         const token = 'token'
         const server = buildServer()
         const address = await server.listen(0)
-        await DAO.setDequeueToken({ id, token })
+        await DAO.setSubscribeToken({ id, token })
 
         try {
-          const ws = new WebSocket(`${address}/pubsub/${id}`.replace('http', 'ws'))
+          const ws = new WebSocket(`${address}/pubsub/${id}?token=bad`.replace('http', 'ws'))
           await waitForEvent(ws as unknown as EventTarget, 'error')
         } finally {
           await server.close()
@@ -61,7 +61,7 @@ describe('token-based access control', () => {
         process.env.PUBSUB_TOKEN_BASED_ACCESS_CONTROL = 'true'
         const id = 'id'
         const token = 'token'
-        await DAO.setEnqueueToken({ id, token })
+        await DAO.setPublishToken({ id, token })
         const server = buildServer()
         const address = await server.listen(0)
 

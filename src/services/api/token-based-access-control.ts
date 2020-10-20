@@ -69,7 +69,7 @@ export const routes: FastifyPluginAsync = async function routes(server, options)
       }
     }
   , async (req, reply) => {
-      await DAO.setEnqueueToken({ token: req.params.token, id: req.params.id })
+      await DAO.setPublishToken({ token: req.params.token, id: req.params.id })
       reply.status(204).send()
     }
   )
@@ -90,7 +90,7 @@ export const routes: FastifyPluginAsync = async function routes(server, options)
       }
     }
   , async (req, reply) => {
-      await DAO.unsetEnqueueToken({ token: req.params.token, id: req.params.id })
+      await DAO.unsetPublishToken({ token: req.params.token, id: req.params.id })
       reply.status(204).send()
     }
   )
@@ -112,7 +112,7 @@ export const routes: FastifyPluginAsync = async function routes(server, options)
       }
     }
   , async (req, reply) => {
-      await DAO.setDequeueToken({ token: req.params.token, id: req.params.id })
+      await DAO.setSubscribeToken({ token: req.params.token, id: req.params.id })
       reply.status(204).send()
     }
   )
@@ -133,7 +133,7 @@ export const routes: FastifyPluginAsync = async function routes(server, options)
       }
     }
   , async (req, reply) => {
-      await DAO.unsetDequeueToken({ token: req.params.token, id: req.params.id })
+      await DAO.unsetSubscribeToken({ token: req.params.token, id: req.params.id })
       reply.status(204).send()
     }
   )

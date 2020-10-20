@@ -21,7 +21,7 @@ describe('token-based access control', () => {
         process.env.PUBSUB_TOKEN_BASED_ACCESS_CONTROL = 'true'
         const id = 'id'
         const token = 'token'
-        await DAO.setDequeueToken({ id, token })
+        await DAO.setSubscribeToken({ id, token })
         const server = buildServer()
         const address = await server.listen(0)
 
@@ -42,7 +42,7 @@ describe('token-based access control', () => {
         const id = 'id'
         const token = 'token'
         const server = buildServer()
-        await DAO.setDequeueToken({ id, token })
+        await DAO.setSubscribeToken({ id, token })
 
         const res = await server.inject({
           method: 'GET'
@@ -62,12 +62,12 @@ describe('token-based access control', () => {
         process.env.PUBSUB_TOKEN_BASED_ACCESS_CONTROL = 'true'
         const id = 'id'
         const token = 'token'
-        await DAO.setEnqueueToken({ id, token })
+        await DAO.setPublishToken({ id, token })
         const server = buildServer()
         const address = await server.listen(0)
 
         try {
-          const es = new EventSource(`${address}/pubsub/${id}?token=${token}`)
+          const es = new EventSource(`${address}/pubsub/${id}`)
           await waitForEvent(es as EventTarget, 'open')
           es.close()
         } finally {
