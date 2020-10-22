@@ -691,7 +691,3 @@ PubSub的publish端点可用于Webhook,
 推荐的解决方案是为Webhook单独创建HTTP服务器, 生成包含所需信息的请求,
 将其发送给PubSub.
 在这种情况下, 可以通过添加具有publish权限的token的方式, 防止伪造请求.
-
-## TODO
-- [ ] 在更新访问控制规则时, 断开受影响的连接
-- [ ] Payload大小环境变量
