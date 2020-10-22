@@ -1,7 +1,7 @@
 # PubSub
 
 一个受[patchbay], [smee.io], [hookbot]启发的Web友好的自托管ad-hoc微服务,
-提供基于 HTTP SSE 和 WebSocket 的 PubSub 功能,
+提供基于 HTTP, SSE 和 WebSocket 的 PubSub 功能,
 带有基于token和名单的访问控制策略,
 支持JSON Schema.
 
@@ -79,8 +79,13 @@ services:
     restart: always
     environment:
       - PUBSUB_HOST=0.0.0.0
+    volumes:
+      - 'pubsub-data:/data'
     ports:
       - '8080:8080'
+
+volumes:
+  pubsub-data:
 ```
 
 ##### 私人服务器
@@ -174,6 +179,9 @@ id用于标识频道.
 
 如果开启基于token的访问控制, 则可能需要在Querystring提供具有subscribe权限的token:
 `/pubsub/<id>?token=<token>`
+
+注: 如果可以通过SSE订阅, 则推荐使用SSE订阅.
+SSE在HTTP/2协议下可以多路复用, 而WebSocket会给每个连接单独开启新的连接.
 
 #### Example
 
@@ -308,7 +316,7 @@ await fetch(`http://localhost:8080/api/pubsub/${id}/json-schema`, {
 
 ## 访问控制
 
-PUBSUB提供两种访问控制策略, 可以一并使用.
+PubSub提供两种访问控制策略, 可以一并使用.
 
 所有访问控制API都使用基于口令的Bearer Token Authentication.
 口令需通过环境变量`PUBSUB_ADMIN_PASSWORD`进行设置.
@@ -491,15 +499,15 @@ await fetch(`http://localhost:8080/api/whitelist/${id}`, {
 通过设置环境变量`PUBSUB_TOKEN_BASED_ACCESS_CONTROL=true`开启基于token的访问控制.
 
 基于token的访问控制将根据频道具有的token决定其访问规则, 具体行为见下方表格.
-一个频道可以有多个token, 每个token可以单独设置入列权限和出列权限.
+一个频道可以有多个token, 每个token可以单独设置publish权限和subscribe权限.
 不同频道的token不共用.
 
-| 此频道存在具有出列权限的token | 此频道存在具有入列权限的token | 行为 |
+| 此频道存在具有subscribe权限的token | 此频道存在具有publish权限的token | 行为 |
 | --- | --- | --- |
 | YES | YES | 只有使用具有相关权限的token才能执行操作 |
-| YES | NO | 无token可以入列, 只有具有出列权限的token可以出列 |
-| NO | YES | 无token可以出列, 只有具有入列权限的token可以入列 |
-| NO | NO | 无token可以入列和出列 |
+| YES | NO | 无token可以publish, 只有具有subscribe权限的token可以subscribe |
+| NO | YES | 无token可以subscribe, 只有具有publish权限的token可以publish |
+| NO | NO | 无token可以publish和subscribe |
 
 在开启基于token的访问控制时,
 可以通过将环境变量`PUBSUB_DISABLE_NO_TOKENS`设置为`true`将无token的频道禁用.
@@ -558,11 +566,11 @@ await fetch(`http://localhost:8080/api/pubsub/${id}/tokens`, {
 }).then(res => res.json())
 ```
 
-#### 为特定频道的token设置入列权限
+#### 为特定频道的token设置publish权限
 
 `PUT /api/pubsub/<id>/tokens/<token>/publish`
 
-添加/更新token, 为token设置入列权限.
+添加/更新token, 为token设置publish权限.
 
 ##### Example
 
@@ -584,11 +592,11 @@ await fetch(`http://localhost:8080/api/pubsub/${id}/tokens/$token/publish`, {
 })
 ```
 
-#### 取消特定频道的token的入列权限
+#### 取消特定频道的token的publish权限
 
 `DELETE /api/pubsub/<id>/tokens/<token>/publish`
 
-取消token的入列权限.
+取消token的publish权限.
 
 ##### Example
 
@@ -610,11 +618,11 @@ await fetch(`http://localhost:8080/api/pubsub/${id}/tokens/${token}/publish`, {
 })
 ```
 
-#### 为特定频道的token设置出列权限
+#### 为特定频道的token设置subscribe权限
 
 `PUT /api/pubsub/<id>/tokens/<token>/subscribe`
 
-添加/更新token, 为token设置出列权限.
+添加/更新token, 为token设置subscribe权限.
 
 ##### Example
 
@@ -636,11 +644,11 @@ await fetch(`http://localhost:8080/api/pubsub/${id}/tokens/$token/subscribe`, {
 })
 ```
 
-#### 取消特定频道的token的入列权限
+#### 取消特定频道的token的publish权限
 
 `DELETE /api/pubsub/<id>/tokens/<token>/subscribe`
 
-取消token的出列权限.
+取消token的subscribe权限.
 
 ##### Example
 
@@ -664,7 +672,7 @@ await fetch(`http://localhost:8080/api/pubsub/${id}/tokens/${token}/subscribe`, 
 
 ## HTTP/2
 
-PUBSUB支持HTTP/2, 以多路复用反向代理时的连接, 可通过设置环境变量`PUBSUB_HTTP2=true`开启.
+PubSub支持HTTP/2, 以多路复用反向代理时的连接, 可通过设置环境变量`PUBSUB_HTTP2=true`开启.
 
 此HTTP/2支持不提供从HTTP/1.1自动升级的功能, 亦不提供HTTPS.
 因此, 在本地curl里进行测试时, 需要开启`--http2-prior-knowledge`选项.
@@ -686,3 +694,4 @@ PubSub的publish端点可用于Webhook,
 
 ## TODO
 - [ ] 在更新访问控制规则时, 断开受影响的连接
+- [ ] Payload大小环境变量
