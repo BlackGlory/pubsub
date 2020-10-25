@@ -677,6 +677,12 @@ PubSub支持HTTP/2, 以多路复用反向代理时的连接, 可通过设置环�
 此HTTP/2支持不提供从HTTP/1.1自动升级的功能, 亦不提供HTTPS.
 因此, 在本地curl里进行测试时, 需要开启`--http2-prior-knowledge`选项.
 
+## 限制Payload大小
+
+设置环境变量`PUBSUB_PAYLOAD_LIMIT`可限制服务接受的单个Payload字节数, 默认值为1048576(1MB).
+
+设置环境变量`PUBSUB_PUBLISH_PAYLOAD_LIMIT`可限制enqueue接受的单个Payload字节数, 默认值继承自`PUBSUB_PAYLOAD_LIMIT`.
+
 ## Webhook
 
 PubSub的publish端点可用于Webhook,
