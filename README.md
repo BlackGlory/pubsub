@@ -683,6 +683,18 @@ PubSub支持HTTP/2, 以多路复用反向代理时的连接, 可通过设置环�
 
 设置环境变量`PUBSUB_PUBLISH_PAYLOAD_LIMIT`可限制enqueue接受的单个Payload字节数, 默认值继承自`PUBSUB_PAYLOAD_LIMIT`.
 
+## 统计信息
+
+`GET /stats`
+
+输出JSON:
+```ts
+{
+  memoryUsage: any // 与Node.js API保持一致
+  cpuUsage: any // 与Node.js API保持一致
+  resourceUsage: any // 与Node.js API保持一致
+}
+```
 ## Webhook
 
 PubSub的publish端点可用于Webhook,
