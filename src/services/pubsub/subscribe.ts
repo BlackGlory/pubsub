@@ -5,7 +5,7 @@ import {
 , RBAC
 , TOKEN_BASED_ACCESS_CONTROL
 , DISABLE_NO_TOKENS
-} from '@config'
+} from '@env'
 import websocket from 'fastify-websocket'
 
 export const routes: FastifyPluginAsync<{
