@@ -9,7 +9,7 @@ PRAGMA journal_mode = WAL;
 -- pubsub资源本身是松散的, 无需专门创建表
 
 CREATE TABLE pubsub_json_schema (
-  pubsub_id     VARCHAR(255) NOT NULL UNIQUE
+  pubsub_id   VARCHAR(255) NOT NULL UNIQUE
 , json_schema TEXT         NOT NULL
 );
 
@@ -22,10 +22,10 @@ CREATE TABLE pubsub_whitelist (
 );
 
 CREATE TABLE pubsub_tbac (
-  token              VARCHAR(255) NOT NULL
+  token                VARCHAR(255) NOT NULL
 , pubsub_id            VARCHAR(255) NOT NULL
 , subscribe_permission BOOLEAN      NOT NULL CHECK(subscribe_permission IN (0,1))
-, publish_permission BOOLEAN      NOT NULL CHECK(publish_permission IN (0,1))
+, publish_permission   BOOLEAN      NOT NULL CHECK(publish_permission IN (0,1))
 , UNIQUE (token, pubsub_id)
 );
 
