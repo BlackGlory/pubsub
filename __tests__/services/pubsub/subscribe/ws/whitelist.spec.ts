@@ -5,7 +5,7 @@ import { DAO } from '@dao'
 import WebSocket = require('ws')
 import { waitForEvent } from '@blackglory/wait-for'
 
-jest.mock('@dao/sqlite3/database')
+jest.mock('@dao/config/database')
 expect.extend(matchers)
 
 beforeEach(async () => {

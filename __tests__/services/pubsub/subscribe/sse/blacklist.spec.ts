@@ -5,7 +5,7 @@ import { DAO } from '@dao'
 import EventSource = require('eventsource')
 import { waitForEvent } from '@blackglory/wait-for'
 
-jest.mock('@dao/sqlite3/database')
+jest.mock('@dao/config/database')
 expect.extend(matchers)
 
 beforeEach(async () => {

@@ -1,57 +1,60 @@
-import * as DAO from '@dao/sqlite3/blacklist'
+import * as DAO from '@src/dao/config/json-schema'
 import { Database } from 'better-sqlite3'
 import { prepareDatabase } from '@test/utils'
 import 'jest-extended'
 
-jest.mock('@dao/sqlite3/database')
+jest.mock('@dao/config/database')
 
-describe('blacklist', () => {
-  describe('getAllBlacklistItems(): string[]', () => {
+describe('JSON Schema', () => {
+  describe('getAllIdsWithJsonSchema(): string[]', () => {
     it('return string[]', async () => {
       const db = await prepareDatabase()
       const id = 'id-1'
-      insert(db, id)
+      const schema = createSchema()
+      insert(db, { id, schema })
 
-      const result = DAO.getAllBlacklistItems()
+      const result = DAO.getAllIdsWithJsonSchema()
 
       // expect.toStrictEqual is broken, I have no idea
       expect(result).toEqual([id])
     })
   })
 
-  describe('inBlacklist(id: string): boolean', () => {
+  describe('getJsonSchema(id: string): string | null', () => {
     describe('exist', () => {
-      it('return true', async () => {
+      it('return schema', async () => {
         const db = await prepareDatabase()
         const id = 'id-1'
-        insert(db, id)
+        const schema = createSchema()
+        insert(db, { id, schema })
 
-        const result = DAO.inBlacklist(id)
+        const result = DAO.getJsonSchema(id)
 
-        expect(result).toBeTrue()
+        expect(result).toBe(schema)
       })
     })
 
     describe('not exist', () => {
-      it('return false', async () => {
-        const db = await prepareDatabase()
+      it('return null', async () => {
+        await prepareDatabase()
         const id = 'id-1'
 
-        const result = DAO.inBlacklist(id)
+        const result = DAO.getJsonSchema(id)
 
-        expect(result).toBeFalse()
+        expect(result).toBeNull()
       })
     })
   })
 
-  describe('addBlacklistItem', () => {
+  describe('setJsonSchema({ id: string; schema: string })', () => {
     describe('exist', () => {
       it('return undefined', async () => {
         const db = await prepareDatabase()
         const id = 'id-1'
-        insert(db, id)
+        const schema = createSchema()
+        insert(db, { id, schema })
 
-        const result = DAO.addBlacklistItem(id)
+        const result = DAO.setJsonSchema({ id, schema })
 
         expect(result).toBeUndefined()
         expect(exist(db, id)).toBeTrue()
@@ -62,8 +65,9 @@ describe('blacklist', () => {
       it('return undefined', async () => {
         const db = await prepareDatabase()
         const id = 'id-1'
+        const schema = createSchema()
 
-        const result = DAO.addBlacklistItem(id)
+        const result = DAO.setJsonSchema({ id, schema })
 
         expect(result).toBeUndefined()
         expect(exist(db, id)).toBeTrue()
@@ -71,14 +75,15 @@ describe('blacklist', () => {
     })
   })
 
-  describe('removeBlacklistItem', () => {
+  describe('removeJsonSchema(id: string)', () => {
     describe('exist', () => {
       it('return undefined', async () => {
         const db = await prepareDatabase()
         const id = 'id-1'
-        insert(db, id)
+        const schema = createSchema()
+        insert(db, { id, schema })
 
-        const result = DAO.removeBlacklistItem(id)
+        const result = DAO.removeJsonSchema(id)
 
         expect(result).toBeUndefined()
         expect(exist(db, id)).toBeFalse()
@@ -90,7 +95,7 @@ describe('blacklist', () => {
         const db = await prepareDatabase()
         const id = 'id-1'
 
-        const result = DAO.removeBlacklistItem(id)
+        const result = DAO.removeJsonSchema(id)
 
         expect(result).toBeUndefined()
         expect(exist(db, id)).toBeFalse()
@@ -99,14 +104,18 @@ describe('blacklist', () => {
   })
 })
 
+function createSchema() {
+  return JSON.stringify({ type: 'number' })
+}
+
 function exist(db: Database, id: string) {
   return !!select(db, id)
 }
 
-function insert(db: Database, id: string) {
-  db.prepare('INSERT INTO pubsub_blacklist (pubsub_id) VALUES ($id);').run({ id });
+function insert(db: Database, { id, schema }:{ id: string; schema: string }) {
+  db.prepare('INSERT INTO pubsub_json_schema (pubsub_id, json_schema) VALUES ($id, $schema);').run({ id, schema })
 }
 
 function select(db: Database, id: string) {
-  return db.prepare('SELECT * FROM pubsub_blacklist WHERE pubsub_id = $id;').get({ id })
+  return db.prepare('SELECT * FROM pubsub_json_schema WHERE pubsub_id = $id;').get({ id })
 }
