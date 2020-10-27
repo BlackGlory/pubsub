@@ -24,8 +24,8 @@ CREATE TABLE pubsub_whitelist (
 CREATE TABLE pubsub_tbac (
   token                VARCHAR(255) NOT NULL
 , pubsub_id            VARCHAR(255) NOT NULL
-, subscribe_permission BOOLEAN      NOT NULL DEFAULT 0 CHECK(subscribe_permission IN (0,1))
-, publish_permission   BOOLEAN      NOT NULL DEFAULT 0 CHECK(publish_permission IN (0,1))
+, subscribe_permission BOOLEAN      NOT NULL CHECK(subscribe_permission IN (0,1))
+, publish_permission   BOOLEAN      NOT NULL CHECK(publish_permission IN (0,1))
 , UNIQUE (token, pubsub_id)
 );
 
