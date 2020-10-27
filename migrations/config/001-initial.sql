@@ -35,7 +35,8 @@ CREATE TRIGGER auto_delete_after_insert_pubsub_tbac
    AND NEW.publish_permission = 0
 BEGIN
   DELETE FROM pubsub_tbac
-   WHERE pubsub_tbac.token = NEW.token AND pubsub_tbac.pubsub_id = NEW.pubsub_id;
+   WHERE pubsub_tbac.token = NEW.token
+     AND pubsub_tbac.pubsub_id = NEW.pubsub_id;
 END;
 
 CREATE TRIGGER auto_delete_after_update_pubsub_tbac
@@ -44,7 +45,8 @@ CREATE TRIGGER auto_delete_after_update_pubsub_tbac
    AND NEW.publish_permission = 0
 BEGIN
   DELETE FROM pubsub_tbac
-   WHERE pubsub_tbac.token = NEW.token AND pubsub_tbac.pubsub_id = NEW.pubsub_id;
+   WHERE pubsub_tbac.token = NEW.token
+     AND pubsub_tbac.pubsub_id = NEW.pubsub_id;
 END;
 
 --------------------------------------------------------------------------------
