@@ -53,26 +53,12 @@ export function matchPublishToken({ token, id }: {
 }
 
 export function setPublishToken({ token, id }: { token: string; id: string }) {
-  const db = getDatabase()
-  const row = db.prepare(`
-    SELECT publish_permission
-      FROM pubsub_tbac
-     WHERE token = $token AND pubsub_id = $id;
-  `).get({ token, id })
-  if (row) {
-    if (row['publish_permission'] === 0) {
-      db.prepare(`
-        UPDATE pubsub_tbac
-           SET publish_permission = 1
-         WHERE token = $token AND pubsub_id = $id;
-      `).run({ token, id })
-    }
-  } else {
-    db.prepare(`
-      INSERT INTO pubsub_tbac (token, pubsub_id, publish_permission)
-      VALUES ($token, $id, 1);
-    `).run({ token, id })
-  }
+  getDatabase().prepare(`
+    INSERT INTO pubsub_tbac (token, pubsub_id, publish_permission)
+    VALUES ($token, $id, 1)
+        ON CONFLICT (token, pubsub_id)
+        DO UPDATE SET publish_permission = 1;
+  `).run({ token, id })
 }
 
 export function unsetPublishToken({ token, id }: { token: string; id: string }) {
@@ -114,26 +100,12 @@ export function matchSubscribeToken({ token, id }: {
 }
 
 export function setSubscribeToken({ token, id }: { token: string; id: string }) {
-  const db = getDatabase()
-  const row = db.prepare(`
-    SELECT subscribe_permission
-      FROM pubsub_tbac
-     WHERE token = $token AND pubsub_id = $id;
-  `).get({ token, id })
-  if (row) {
-    if (row['subscribe_permission'] === 0) {
-      db.prepare(`
-        UPDATE pubsub_tbac
-           SET subscribe_permission = 1
-         WHERE token = $token AND pubsub_id = $id;
-      `).run({ token, id })
-    }
-  } else {
-    db.prepare(`
-      INSERT INTO pubsub_tbac (token, pubsub_id, subscribe_permission)
-      VALUES ($token, $id, 1);
-    `).run({ token, id })
-  }
+  getDatabase().prepare(`
+    INSERT INTO pubsub_tbac (token, pubsub_id, subscribe_permission)
+    VALUES ($token, $id, 1)
+        ON CONFLICT (token, pubsub_id)
+        DO UPDATE SET subscribe_permission = 1;
+  `).run({ token, id })
 }
 
 export function unsetSubscribeToken({ token, id }: { token: string; id: string }) {
