@@ -32,7 +32,8 @@ export function hasPublishTokens(id: string): boolean {
     SELECT EXISTS(
              SELECT *
                FROM pubsub_tbac
-               WHERE pubsub_id = $id AND publish_permission=1
+              WHERE pubsub_id = $id
+                AND publish_permission = 1
            ) AS publish_tokens_exist
   `).get({ id })
   return result['publish_tokens_exist'] === 1
@@ -46,7 +47,9 @@ export function matchPublishToken({ token, id }: {
     SELECT EXISTS(
              SELECT *
                FROM pubsub_tbac
-               WHERE pubsub_id = $id AND token = $token AND publish_permission=1
+              WHERE pubsub_id = $id
+                AND token = $token
+                AND publish_permission = 1
            ) AS matched
   `).get({ token, id })
   return result['matched'] === 1
@@ -66,9 +69,9 @@ export function unsetPublishToken({ token, id }: { token: string; id: string }) 
   db.transaction(() => {
     db.prepare(`
       UPDATE pubsub_tbac
-        SET publish_permission = 0
-      WHERE token = $token
-        AND pubsub_id = $id;
+         SET publish_permission = 0
+       WHERE token = $token
+         AND pubsub_id = $id;
     `).run({ token, id })
     deleteNoPermissionToken({ token, id })
   })()
@@ -79,7 +82,8 @@ export function hasSubscribeTokens(id: string): boolean {
     SELECT EXISTS(
              SELECT *
                FROM pubsub_tbac
-               WHERE pubsub_id = $id AND subscribe_permission=1
+              WHERE pubsub_id = $id
+                AND subscribe_permission = 1
            ) AS subscribe_tokens_exist
   `).get({ id })
   return result['subscribe_tokens_exist'] === 1
@@ -93,7 +97,9 @@ export function matchSubscribeToken({ token, id }: {
     SELECT EXISTS(
              SELECT *
                FROM pubsub_tbac
-               WHERE pubsub_id = $id AND token = $token AND subscribe_permission=1
+              WHERE pubsub_id = $id
+                AND token = $token
+                AND subscribe_permission = 1
            ) AS matched
   `).get({ token, id })
   return result['matched'] === 1
@@ -113,9 +119,9 @@ export function unsetSubscribeToken({ token, id }: { token: string; id: string }
   db.transaction(() => {
     db.prepare(`
       UPDATE pubsub_tbac
-        SET subscribe_permission = 0
-      WHERE token = $token
-        AND pubsub_id = $id;
+         SET subscribe_permission = 0
+       WHERE token = $token
+         AND pubsub_id = $id;
     `).run({ token, id })
     deleteNoPermissionToken({ token, id })
   })()
@@ -124,9 +130,9 @@ export function unsetSubscribeToken({ token, id }: { token: string; id: string }
 function deleteNoPermissionToken({ token, id }: { token: string, id: string }) {
   getDatabase().prepare(`
     DELETE FROM pubsub_tbac
-      WHERE token = $token
-        AND pubsub_id = $id
-        AND subscribe_permission = 0
-        AND publish_permission = 0;
+     WHERE token = $token
+       AND pubsub_id = $id
+       AND subscribe_permission = 0
+       AND publish_permission = 0;
   `).run({ token, id })
 }
