@@ -76,11 +76,16 @@ export function setPublishToken({ token, id }: { token: string; id: string }) {
 }
 
 export function unsetPublishToken({ token, id }: { token: string; id: string }) {
-  getDatabase().prepare(`
-    UPDATE pubsub_tbac
-       SET publish_permission = 0
-     WHERE token = $token AND pubsub_id = $id;
-  `).run({ token, id })
+  const db = getDatabase()
+  db.transaction(() => {
+    db.prepare(`
+      UPDATE pubsub_tbac
+        SET publish_permission = 0
+      WHERE token = $token
+        AND pubsub_id = $id;
+    `).run({ token, id })
+    deleteNoPermissionToken({ token, id })
+  })()
 }
 
 export function hasSubscribeTokens(id: string): boolean {
@@ -132,9 +137,24 @@ export function setSubscribeToken({ token, id }: { token: string; id: string }) 
 }
 
 export function unsetSubscribeToken({ token, id }: { token: string; id: string }) {
+  const db = getDatabase()
+  db.transaction(() => {
+    db.prepare(`
+      UPDATE pubsub_tbac
+        SET subscribe_permission = 0
+      WHERE token = $token
+        AND pubsub_id = $id;
+    `).run({ token, id })
+    deleteNoPermissionToken({ token, id })
+  })()
+}
+
+function deleteNoPermissionToken({ token, id }: { token: string, id: string }) {
   getDatabase().prepare(`
-    UPDATE pubsub_tbac
-       SET subscribe_permission = 0
-     WHERE token = $token AND pubsub_id = $id;
+    DELETE FROM pubsub_tbac
+      WHERE token = $token
+        AND pubsub_id = $id
+        AND subscribe_permission = 0
+        AND publish_permission = 0;
   `).run({ token, id })
 }
