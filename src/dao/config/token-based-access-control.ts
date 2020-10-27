@@ -69,8 +69,8 @@ export function setPublishToken({ token, id }: { token: string; id: string }) {
     }
   } else {
     db.prepare(`
-      INSERT INTO pubsub_tbac (token, pubsub_id, subscribe_permission, publish_permission)
-      VALUES ($token, $id, 0, 1);
+      INSERT INTO pubsub_tbac (token, pubsub_id, publish_permission)
+      VALUES ($token, $id, 1);
     `).run({ token, id })
   }
 }
@@ -125,8 +125,8 @@ export function setSubscribeToken({ token, id }: { token: string; id: string }) 
     }
   } else {
     db.prepare(`
-      INSERT INTO pubsub_tbac (token, pubsub_id, subscribe_permission, publish_permission)
-      VALUES ($token, $id, 1, 0);
+      INSERT INTO pubsub_tbac (token, pubsub_id, subscribe_permission)
+      VALUES ($token, $id, 1);
     `).run({ token, id })
   }
 }
