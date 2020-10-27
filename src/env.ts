@@ -19,11 +19,11 @@ export function NODE_ENV(): NodeEnv | undefined {
 }
 
 export function PORT(): number {
-  return Number(process.env.PUBSUB_PORT) || 8080
+  return Number(process.env.PUBSUB_PORT) ?? 8080
 }
 
 export function HOST(): string {
-  return process.env.PUBSUB_HOST || 'localhost'
+  return process.env.PUBSUB_HOST ?? 'localhost'
 }
 
 export function ADMIN_PASSWORD(): string | undefined {
