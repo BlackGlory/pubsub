@@ -123,7 +123,7 @@ volumes:
 往特定频道发布消息, 所有订阅此频道的客户端都会收到消息.
 id用于标识频道.
 
-如果开启基于token的访问控制, 则可能需要在Querystring提供具有publish权限的token:
+如果开启基于token的访问控制, 则可能需要在Querystring提供具有write权限的token:
 `POST /pubsub/<id>?token=<token>`
 
 #### Example
@@ -152,7 +152,7 @@ id用于标识频道.
 
 使用SSE时, 建议服务器提供 HTTP/2 协议的反向代理.
 
-如果开启基于token的访问控制, 则可能需要在Querystring提供具有subscribe权限的token:
+如果开启基于token的访问控制, 则可能需要在Querystring提供具有read权限的token:
 `/pubsub/<id>?token=<token>`
 
 #### Example
@@ -177,7 +177,7 @@ es.addEventListener('message', event => {
 通过WebSocket订阅特定频道.
 id用于标识频道.
 
-如果开启基于token的访问控制, 则可能需要在Querystring提供具有subscribe权限的token:
+如果开启基于token的访问控制, 则可能需要在Querystring提供具有read权限的token:
 `/pubsub/<id>?token=<token>`
 
 注: 如果可以通过SSE订阅, 则推荐使用SSE订阅.
@@ -499,20 +499,20 @@ await fetch(`http://localhost:8080/api/whitelist/${id}`, {
 通过设置环境变量`PUBSUB_TOKEN_BASED_ACCESS_CONTROL=true`开启基于token的访问控制.
 
 基于token的访问控制将根据频道具有的token决定其访问规则, 具体行为见下方表格.
-一个频道可以有多个token, 每个token可以单独设置publish权限和subscribe权限.
+一个频道可以有多个token, 每个token可以单独设置write和read权限.
 不同频道的token不共用.
 
-| 此频道存在具有subscribe权限的token | 此频道存在具有publish权限的token | 行为 |
+| 此频道存在具有read权限的token | 此频道存在具有write权限的token | 行为 |
 | --- | --- | --- |
-| YES | YES | 只有使用具有相关权限的token才能执行操作 |
-| YES | NO | 无token可以publish, 只有具有subscribe权限的token可以subscribe |
-| NO | YES | 无token可以subscribe, 只有具有publish权限的token可以publish |
-| NO | NO | 无token可以publish和subscribe |
+| YES | YES | 有read权限才能subscribe, 有write权限才能publish |
+| YES | NO | 无token可以publish, 有read权限才能subscribe |
+| NO | YES | 无token可以subscribe, 有write权限才能publish |
+| NO | NO | 无token可以publish, subscribe |
 
 在开启基于token的访问控制时,
 可以通过将环境变量`PUBSUB_DISABLE_NO_TOKENS`设置为`true`将无token的频道禁用.
 
-基于token的访问控制作出了如下假定, 因此不使用加密和消息验证码(MAC):
+基于token的访问控制作出了以下假设, 因此不使用加密和消息验证码(MAC):
 - token的传输过程是安全的
 - token难以被猜测
 - token的意外泄露可以被迅速处理
@@ -546,7 +546,7 @@ await fetch(`http://localhost:8080/api/pubsub-with-tokens`, {
 `GET /api/pubsub/<id>/tokens`
 
 获取特定频道的所有token信息, 返回JSON表示的token信息数组
-`Array<{ token: string, publish: boolean, subscribe: boolean }>`.
+`Array<{ token: string, wirte: boolean, read: boolean }>`.
 
 ##### Example
 
@@ -566,11 +566,11 @@ await fetch(`http://localhost:8080/api/pubsub/${id}/tokens`, {
 }).then(res => res.json())
 ```
 
-#### 为特定频道的token设置publish权限
+#### 为特定频道的token设置write权限
 
-`PUT /api/pubsub/<id>/tokens/<token>/publish`
+`PUT /api/pubsub/<id>/tokens/<token>/write`
 
-添加/更新token, 为token设置publish权限.
+添加/更新token, 为token设置write权限.
 
 ##### Example
 
@@ -579,12 +579,12 @@ curl
 curl \
   --request PUT \
   --header "Authorization: Bearer $ADMIN_PASSWORD" \
-  "http://localhost:8080/api/pubsub/$id/tokens/$token/publish"
+  "http://localhost:8080/api/pubsub/$id/tokens/$token/write"
 ```
 
 fetch
 ```js
-await fetch(`http://localhost:8080/api/pubsub/${id}/tokens/$token/publish`, {
+await fetch(`http://localhost:8080/api/pubsub/${id}/tokens/$token/write`, {
   method: 'PUT'
 , headers: {
     'Authorization': `Bearer ${adminPassword}`
@@ -592,11 +592,11 @@ await fetch(`http://localhost:8080/api/pubsub/${id}/tokens/$token/publish`, {
 })
 ```
 
-#### 取消特定频道的token的publish权限
+#### 取消特定频道的token的write权限
 
-`DELETE /api/pubsub/<id>/tokens/<token>/publish`
+`DELETE /api/pubsub/<id>/tokens/<token>/write`
 
-取消token的publish权限.
+取消token的write权限.
 
 ##### Example
 
@@ -605,12 +605,12 @@ curl
 curl \
   --request DELETE \
   --header "Authorization: Bearer $ADMIN_PASSWORD" \
-  "http://localhost:8080/api/pubsub/$id/tokens/$token/publish"
+  "http://localhost:8080/api/pubsub/$id/tokens/$token/write"
 ```
 
 fetch
 ```js
-await fetch(`http://localhost:8080/api/pubsub/${id}/tokens/${token}/publish`, {
+await fetch(`http://localhost:8080/api/pubsub/${id}/tokens/${token}/write`, {
   method: 'DELETE'
 , headers: {
     'Authorization': `Bearer ${adminPassword}`
@@ -618,11 +618,11 @@ await fetch(`http://localhost:8080/api/pubsub/${id}/tokens/${token}/publish`, {
 })
 ```
 
-#### 为特定频道的token设置subscribe权限
+#### 为特定频道的token设置read权限
 
-`PUT /api/pubsub/<id>/tokens/<token>/subscribe`
+`PUT /api/pubsub/<id>/tokens/<token>/read`
 
-添加/更新token, 为token设置subscribe权限.
+添加/更新token, 为token设置read权限.
 
 ##### Example
 
@@ -631,12 +631,12 @@ curl
 curl \
   --request PUT \
   --header "Authorization: Bearer $ADMIN_PASSWORD" \
-  "http://localhost:8080/api/pubsub/$id/tokens/$token/subscribe"
+  "http://localhost:8080/api/pubsub/$id/tokens/$token/read"
 ```
 
 fetch
 ```js
-await fetch(`http://localhost:8080/api/pubsub/${id}/tokens/$token/subscribe`, {
+await fetch(`http://localhost:8080/api/pubsub/${id}/tokens/$token/read`, {
   method: 'PUT'
 , headers: {
     'Authorization': `Bearer ${adminPassword}`
@@ -644,11 +644,11 @@ await fetch(`http://localhost:8080/api/pubsub/${id}/tokens/$token/subscribe`, {
 })
 ```
 
-#### 取消特定频道的token的publish权限
+#### 取消特定频道的token的read权限
 
-`DELETE /api/pubsub/<id>/tokens/<token>/subscribe`
+`DELETE /api/pubsub/<id>/tokens/<token>/read`
 
-取消token的subscribe权限.
+取消token的read权限.
 
 ##### Example
 
@@ -657,12 +657,12 @@ curl
 curl \
   --request DELETE \
   --header "Authorization: Bearer $ADMIN_PASSWORD" \
-  "http://localhost:8080/api/pubsub/$id/tokens/$token/subscribe"
+  "http://localhost:8080/api/pubsub/$id/tokens/$token/read"
 ```
 
 fetch
 ```js
-await fetch(`http://localhost:8080/api/pubsub/${id}/tokens/${token}/subscribe`, {
+await fetch(`http://localhost:8080/api/pubsub/${id}/tokens/${token}/read`, {
   method: 'DELETE'
 , headers: {
     'Authorization': `Bearer ${adminPassword}`

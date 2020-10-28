@@ -21,7 +21,7 @@ describe('token-based access control', () => {
         process.env.PUBSUB_TOKEN_BASED_ACCESS_CONTROL = 'true'
         const id = 'id'
         const token = 'token'
-        await DAO.setSubscribeToken({ id, token })
+        await DAO.setReadToken({ id, token })
         const server = await buildServer()
         const address = await server.listen(0)
 
@@ -42,7 +42,7 @@ describe('token-based access control', () => {
         const token = 'token'
         const server = await buildServer()
         const address = await server.listen(0)
-        await DAO.setSubscribeToken({ id, token })
+        await DAO.setReadToken({ id, token })
 
         try {
           const ws = new WebSocket(`${address}/pubsub/${id}?token=bad`.replace('http', 'ws'))
@@ -61,7 +61,7 @@ describe('token-based access control', () => {
         const token = 'token'
         const server = await buildServer()
         const address = await server.listen(0)
-        await DAO.setSubscribeToken({ id, token })
+        await DAO.setReadToken({ id, token })
 
         try {
           const ws = new WebSocket(`${address}/pubsub/${id}`.replace('http', 'ws'))
@@ -80,7 +80,7 @@ describe('token-based access control', () => {
         process.env.PUBSUB_TOKEN_BASED_ACCESS_CONTROL = 'true'
         const id = 'id'
         const token = 'token'
-        await DAO.setPublishToken({ id, token })
+        await DAO.setWriteToken({ id, token })
         const server = await buildServer()
         const address = await server.listen(0)
 

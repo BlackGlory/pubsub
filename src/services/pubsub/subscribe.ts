@@ -41,15 +41,15 @@ export const routes: FastifyPluginAsync<{
           }
 
           if (TOKEN_BASED_ACCESS_CONTROL()) {
-            if (await DAO.hasSubscribeTokens(id)) {
+            if (await DAO.hasReadTokens(id)) {
               if (token) {
-                if (!await DAO.matchSubscribeToken({ token, id })) return next(false)
+                if (!await DAO.matchReadToken({ token, id })) return next(false)
               } else {
                 return next(false)
               }
             } else {
               if (DISABLE_NO_TOKENS()) {
-                if (!await DAO.hasPublishTokens(id)) return next(false)
+                if (!await DAO.hasWriteTokens(id)) return next(false)
               }
             }
           }
@@ -88,15 +88,15 @@ export const routes: FastifyPluginAsync<{
         }
 
         if (TOKEN_BASED_ACCESS_CONTROL()) {
-          if (await DAO.hasSubscribeTokens(id)) {
+          if (await DAO.hasReadTokens(id)) {
             if (token) {
-              if (!await DAO.matchSubscribeToken({ token, id })) return reply.status(401).send()
+              if (!await DAO.matchReadToken({ token, id })) return reply.status(401).send()
             } else {
               return reply.status(401).send()
             }
           } else {
             if (DISABLE_NO_TOKENS()) {
-              if (!await DAO.hasPublishTokens(id)) return reply.status(403).send()
+              if (!await DAO.hasWriteTokens(id)) return reply.status(403).send()
             }
           }
         }

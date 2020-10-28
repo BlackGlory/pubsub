@@ -13,8 +13,8 @@ describe('TBAC(token-based access control)', () => {
       const token1 = 'token-1'
       const id2 = 'id-2'
       const token2 = 'token-2'
-      insert(db, { token: token1, id: id1, subscribe: true, publish: false })
-      insert(db, { token: token2, id: id2, subscribe: false, publish: true })
+      insert(db, { token: token1, id: id1, read: true, write: false })
+      insert(db, { token: token2, id: id2, read: false, write: true })
 
       const result = DAO.getAllIdsWithTokens()
 
@@ -23,35 +23,35 @@ describe('TBAC(token-based access control)', () => {
     })
   })
 
-  describe('getAllTokens(id: string): Array<{ token: string; publish: boolean; subscribe: boolean }>', () => {
-    it('return Array<{ token: string; publish: boolean; subscribe: boolean }>', async () => {
+  describe('getAllTokens(id: string): Array<{ token: string; write: boolean; read: boolean }>', () => {
+    it('return Array<{ token: string; write: boolean; read: boolean }>', async () => {
       const db = await prepareDatabase()
       const id = 'id-1'
       const token1 = 'token-1'
       const token2 = 'token-2'
-      insert(db, { token: token1, id, subscribe: true, publish: false })
-      insert(db, { token: token2, id, subscribe: false, publish: true })
+      insert(db, { token: token1, id, read: true, write: false })
+      insert(db, { token: token2, id, read: false, write: true })
 
       const result = DAO.getAllTokens(id)
 
       // expect.toStrictEqual is broken, I have no idea
       expect(result).toEqual([
-        { token: token1, subscribe: true, publish: false }
-      , { token: token2, subscribe: false, publish: true }
+        { token: token1, read: true, write: false }
+      , { token: token2, read: false, write: true }
       ])
     })
   })
 
-  describe('PublishToken', () => {
-    describe('hasPublishTokens(id: string): boolean', () => {
+  describe('WriteToken', () => {
+    describe('hasWriteTokens(id: string): boolean', () => {
       describe('tokens exist', () => {
         it('return true', async () => {
           const db = await prepareDatabase()
           const token = 'token-1'
           const id = 'id-1'
-          insert(db, { token, id, subscribe: false, publish: true })
+          insert(db, { token, id, read: false, write: true })
 
-          const result = DAO.hasPublishTokens(id)
+          const result = DAO.hasWriteTokens(id)
 
           expect(result).toBeTrue()
         })
@@ -62,24 +62,24 @@ describe('TBAC(token-based access control)', () => {
           const db = await prepareDatabase()
           const token = 'token-1'
           const id = 'id-1'
-          insert(db, { token, id, subscribe: true, publish: false })
+          insert(db, { token, id, read: true, write: false })
 
-          const result = DAO.hasPublishTokens(id)
+          const result = DAO.hasWriteTokens(id)
 
           expect(result).toBeFalse()
         })
       })
     })
 
-    describe('matchPublishToken({ token: string; id: string }): boolean', () => {
+    describe('matchWriteToken({ token: string; id: string }): boolean', () => {
       describe('token exist', () => {
         it('return true', async () => {
           const db = await prepareDatabase()
           const token = 'token-1'
           const id = 'id-1'
-          insert(db, { token, id, subscribe: false, publish: true })
+          insert(db, { token, id, read: false, write: true })
 
-          const result = DAO.matchPublishToken({ token, id })
+          const result = DAO.matchWriteToken({ token, id })
 
           expect(result).toBeTrue()
         })
@@ -90,28 +90,28 @@ describe('TBAC(token-based access control)', () => {
           const db = await prepareDatabase()
           const token = 'token-1'
           const id = 'id-1'
-          insert(db, { token, id, subscribe: true, publish: false })
+          insert(db, { token, id, read: true, write: false })
 
-          const result = DAO.matchPublishToken({ token, id })
+          const result = DAO.matchWriteToken({ token, id })
 
           expect(result).toBeFalse()
         })
       })
     })
 
-    describe('setPublishToken({ token: string; id: string })', () => {
+    describe('setWriteToken({ token: string; id: string })', () => {
       describe('token exists', () => {
         it('update row', async () => {
           const db = await prepareDatabase()
           const token = 'token-1'
           const id = 'id-1'
-          insert(db, { token, id, subscribe: true, publish: false })
+          insert(db, { token, id, read: true, write: false })
 
-          const result = DAO.setPublishToken({ token, id })
+          const result = DAO.setWriteToken({ token, id })
           const row = select(db, { token, id })
 
           expect(result).toBeUndefined()
-          expect(row['publish_permission']).toBe(1)
+          expect(row['write_permission']).toBe(1)
         })
       })
 
@@ -121,28 +121,28 @@ describe('TBAC(token-based access control)', () => {
           const token = 'token-1'
           const id = 'id-1'
 
-          const result = DAO.setPublishToken({ token, id })
+          const result = DAO.setWriteToken({ token, id })
           const row = select(db, { token, id })
 
           expect(result).toBeUndefined()
-          expect(row['publish_permission']).toBe(1)
+          expect(row['write_permission']).toBe(1)
         })
       })
     })
 
-    describe('unsetPublishToken({ token: string; id: string })', () => {
+    describe('unsetWriteToken({ token: string; id: string })', () => {
       describe('token exists', () => {
         it('return undefined', async () => {
           const db = await prepareDatabase()
           const token = 'token-1'
           const id = 'id-1'
-          insert(db, { token, id, subscribe: true, publish: true })
+          insert(db, { token, id, read: true, write: true })
 
-          const result = DAO.unsetPublishToken({ token, id })
+          const result = DAO.unsetWriteToken({ token, id })
           const row = select(db, { token, id })
 
           expect(result).toBeUndefined()
-          expect(row['publish_permission']).toBe(0)
+          expect(row['write_permission']).toBe(0)
         })
       })
 
@@ -152,7 +152,7 @@ describe('TBAC(token-based access control)', () => {
           const token = 'token-1'
           const id = 'id-1'
 
-          const result = DAO.unsetPublishToken({ token, id })
+          const result = DAO.unsetWriteToken({ token, id })
 
           expect(result).toBeUndefined()
           expect(exist(db, { token, id })).toBeFalse()
@@ -161,16 +161,16 @@ describe('TBAC(token-based access control)', () => {
     })
   })
 
-  describe('SubscribeToken', () => {
-    describe('hasSubscribeTokens(id: string): boolean', () => {
+  describe('ReadToken', () => {
+    describe('hasReadTokens(id: string): boolean', () => {
       describe('tokens exist', () => {
         it('return true', async () => {
           const db = await prepareDatabase()
           const token = 'token-1'
           const id = 'id-1'
-          insert(db, { token, id, subscribe: true, publish: false })
+          insert(db, { token, id, read: true, write: false })
 
-          const result = DAO.hasSubscribeTokens(id)
+          const result = DAO.hasReadTokens(id)
 
           expect(result).toBeTrue()
         })
@@ -181,24 +181,24 @@ describe('TBAC(token-based access control)', () => {
           const db = await prepareDatabase()
           const token = 'token-1'
           const id = 'id-1'
-          insert(db, { token, id, subscribe: false, publish: true })
+          insert(db, { token, id, read: false, write: true })
 
-          const result = DAO.hasSubscribeTokens(id)
+          const result = DAO.hasReadTokens(id)
 
           expect(result).toBeFalse()
         })
       })
     })
 
-    describe('matchSubscribeToken({ token: string; id: string }): boolean', () => {
+    describe('matchReadToken({ token: string; id: string }): boolean', () => {
       describe('tokens exist', () => {
         it('return true', async () => {
           const db = await prepareDatabase()
           const token = 'token-1'
           const id = 'id-1'
-          insert(db, { token, id, subscribe: true, publish: false })
+          insert(db, { token, id, read: true, write: false })
 
-          const result = DAO.matchSubscribeToken({ token, id })
+          const result = DAO.matchReadToken({ token, id })
 
           expect(result).toBeTrue()
         })
@@ -209,28 +209,28 @@ describe('TBAC(token-based access control)', () => {
           const db = await prepareDatabase()
           const token = 'token-1'
           const id = 'id-1'
-          insert(db, { token, id, subscribe: false, publish: true })
+          insert(db, { token, id, read: false, write: true })
 
-          const result = DAO.matchSubscribeToken({ token, id })
+          const result = DAO.matchReadToken({ token, id })
 
           expect(result).toBeFalse()
         })
       })
     })
 
-    describe('setSubscribeToken(token: string, id: string)', () => {
+    describe('setReadToken(token: string, id: string)', () => {
       describe('token exists', () => {
         it('update row', async () => {
           const db = await prepareDatabase()
           const token = 'token-1'
           const id = 'id-1'
-          insert(db, { token, id, subscribe: false, publish: true })
+          insert(db, { token, id, read: false, write: true })
 
-          const result = DAO.setSubscribeToken({ token, id })
+          const result = DAO.setReadToken({ token, id })
           const row = select(db, { token, id })
 
           expect(result).toBeUndefined()
-          expect(row['subscribe_permission']).toBe(1)
+          expect(row['read_permission']).toBe(1)
         })
       })
 
@@ -240,28 +240,28 @@ describe('TBAC(token-based access control)', () => {
           const token = 'token-1'
           const id = 'id-1'
 
-          const result = DAO.setSubscribeToken({ token, id })
+          const result = DAO.setReadToken({ token, id })
           const row = select(db, { token, id })
 
           expect(result).toBeUndefined()
-          expect(row['subscribe_permission']).toBe(1)
+          expect(row['read_permission']).toBe(1)
         })
       })
     })
 
-    describe('unsetSubscribeToken', () => {
+    describe('unsetReadToken', () => {
       describe('token exists', () => {
         it('return undefined', async () => {
           const db = await prepareDatabase()
           const token = 'token-1'
           const id = 'id-1'
-          insert(db, { token, id, subscribe: true, publish: true })
+          insert(db, { token, id, read: true, write: true })
 
-          const result = DAO.unsetSubscribeToken({ token, id })
+          const result = DAO.unsetReadToken({ token, id })
           const row = select(db, { token, id })
 
           expect(result).toBeUndefined()
-          expect(row['subscribe_permission']).toBe(0)
+          expect(row['read_permission']).toBe(0)
         })
       })
 
@@ -271,7 +271,7 @@ describe('TBAC(token-based access control)', () => {
           const token = 'token-1'
           const id = 'id-1'
 
-          const result = DAO.unsetSubscribeToken({ token, id })
+          const result = DAO.unsetReadToken({ token, id })
 
           expect(result).toBeUndefined()
           expect(exist(db, { token, id })).toBeFalse()
@@ -295,20 +295,20 @@ function select(db: Database, { token, id }: { token: string; id: string }) {
 
 function insert(
   db: Database
-, { token, id, subscribe, publish }: {
+, { token, id, read, write }: {
     token: string
     id: string
-    subscribe: boolean
-    publish: boolean
+    read: boolean
+    write: boolean
   }
 ) {
   db.prepare(`
-    INSERT INTO pubsub_tbac (token, pubsub_id, subscribe_permission, publish_permission)
-    VALUES ($token, $id, $subscribe, $publish);
+    INSERT INTO pubsub_tbac (token, pubsub_id, read_permission, write_permission)
+    VALUES ($token, $id, $read, $write);
   `).run({
     token
   , id
-  , subscribe: subscribe ? 1 : 0
-  , publish: publish ? 1 : 0
+  , read: read ? 1 : 0
+  , write: write ? 1 : 0
   })
 }

@@ -23,19 +23,19 @@ interface ITokenBasedAccessControlDAO {
   getAllIdsWithTokens(): Promise<string[]>
   getAllTokens(id: string): Promise<Array<{
     token: string
-    publish: boolean
-    subscribe: boolean
+    write: boolean
+    read: boolean
   }>>
 
-  hasPublishTokens(id: string): Promise<boolean>
-  matchPublishToken(props: { token: string; id: string }): Promise<boolean>
-  setPublishToken(props: { token: string; id: string }): Promise<void>
-  unsetPublishToken(props: { token: string; id: string }): Promise<void>
+  hasWriteTokens(id: string): Promise<boolean>
+  matchWriteToken(props: { token: string; id: string }): Promise<boolean>
+  setWriteToken(props: { token: string; id: string }): Promise<void>
+  unsetWriteToken(props: { token: string; id: string }): Promise<void>
 
-  hasSubscribeTokens(id: string): Promise<boolean>
-  matchSubscribeToken(props: { token: string; id: string }): Promise<boolean>
-  setSubscribeToken(props: { token: string; id: string }): Promise<void>
-  unsetSubscribeToken(props: { token: string; id: string }): Promise<void>
+  hasReadTokens(id: string): Promise<boolean>
+  matchReadToken(props: { token: string; id: string }): Promise<boolean>
+  setReadToken(props: { token: string; id: string }): Promise<void>
+  unsetReadToken(props: { token: string; id: string }): Promise<void>
 }
 
 interface IDataAccessObject extends IBlacklistDAO

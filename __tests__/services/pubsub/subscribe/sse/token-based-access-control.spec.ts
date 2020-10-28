@@ -21,7 +21,7 @@ describe('token-based access control', () => {
         process.env.PUBSUB_TOKEN_BASED_ACCESS_CONTROL = 'true'
         const id = 'id'
         const token = 'token'
-        await DAO.setSubscribeToken({ id, token })
+        await DAO.setReadToken({ id, token })
         const server = await buildServer()
         const address = await server.listen(0)
 
@@ -42,7 +42,7 @@ describe('token-based access control', () => {
         const id = 'id'
         const token = 'token'
         const server = await buildServer()
-        await DAO.setSubscribeToken({ id, token })
+        await DAO.setReadToken({ id, token })
 
         const res = await server.inject({
           method: 'GET'
@@ -61,7 +61,7 @@ describe('token-based access control', () => {
         const id = 'id'
         const token = 'token'
         const server = await buildServer()
-        await DAO.setSubscribeToken({ id, token })
+        await DAO.setReadToken({ id, token })
 
         const res = await server.inject({
           method: 'GET'
@@ -80,7 +80,7 @@ describe('token-based access control', () => {
         process.env.PUBSUB_TOKEN_BASED_ACCESS_CONTROL = 'true'
         const id = 'id'
         const token = 'token'
-        await DAO.setPublishToken({ id, token })
+        await DAO.setWriteToken({ id, token })
         const server = await buildServer()
         const address = await server.listen(0)
 
