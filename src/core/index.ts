@@ -1,4 +1,4 @@
-import { isAdmin } from './valid-admin'
+import { isAdmin } from './admin'
 import { publish } from './publish'
 import { subscribe } from './subscribe'
 import { stats } from './stats'
