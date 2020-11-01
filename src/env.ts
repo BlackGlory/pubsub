@@ -71,8 +71,8 @@ export function CI(): boolean {
 }
 
 export function PAYLOAD_LIMIT(): number {
-  if (process.env.MPMC_PAYLOAD_LIMIT) {
-    return Number(process.env.MPMC_PAYLOAD_LIMIT)
+  if (process.env.PUBSUB_PAYLOAD_LIMIT) {
+    return Number(process.env.PUBSUB_PAYLOAD_LIMIT)
   } else {
     return 1048576
   }

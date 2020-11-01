@@ -676,9 +676,9 @@ PubSub支持HTTP/2, 以多路复用反向代理时的连接, 可通过设置环�
 
 ## 限制Payload大小
 
-设置环境变量`PUBSUB_PAYLOAD_LIMIT`可限制服务接受的单个Payload字节数, 默认值为1048576(1MB).
+设置环境变量`PUBSUB_PAYLOAD_LIMIT`可限制服务接受的单个请求的Payload字节数, 默认值为1048576(1MB).
 
-设置环境变量`PUBSUB_PUBLISH_PAYLOAD_LIMIT`可限制enqueue接受的单个Payload字节数, 默认值继承自`PUBSUB_PAYLOAD_LIMIT`.
+设置环境变量`PUBSUB_PUBLISH_PAYLOAD_LIMIT`可限制publish接受的单个请求Payload字节数, 默认值继承自`PUBSUB_PAYLOAD_LIMIT`.
 
 ## 统计信息
 
