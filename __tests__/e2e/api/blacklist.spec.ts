@@ -162,9 +162,3 @@ function createAuthHeaders(adminPassword?: string) {
     'Authorization': `Bearer ${ adminPassword ?? process.env.PUBSUB_ADMIN_PASSWORD }`
   }
 }
-
-function createJsonHeaders() {
-  return {
-    'Content-Type': 'application/json'
-  }
-}

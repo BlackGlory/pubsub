@@ -1,7 +1,9 @@
 import { buildServer } from '@src/server'
 import { prepareDatabase, resetEnvironment } from '@test/utils'
 import { matchers } from 'jest-json-schema'
-import { DAO } from '@dao'
+import { ConfigDAO } from '@dao'
+import EventSource = require('eventsource')
+import { waitForEvent } from '@blackglory/wait-for'
 
 jest.mock('@dao/config/database')
 expect.extend(matchers)
@@ -11,23 +13,18 @@ beforeEach(async () => {
   await prepareDatabase()
 })
 
-describe('blacklist', () => {
+describe('blackllist', () => {
   describe('id in blacklist', () => {
     it('403', async () => {
       process.env.PUBSUB_ADMIN_PASSWORD = 'password'
       process.env.PUBSUB_LIST_BASED_ACCESS_CONTROL = 'blacklist'
       const id = 'id'
-      const message = 'message'
       const server = await buildServer()
-      await DAO.addBlacklistItem(id)
+      await ConfigDAO.addBlacklistItem(id)
 
       const res = await server.inject({
-        method: 'POST'
+        method: 'GET'
       , url: `/pubsub/${id}`
-      , headers: {
-          'Content-Type': 'text/plain'
-        }
-      , payload: message
       })
 
       expect(res.statusCode).toBe(403)
@@ -35,23 +32,20 @@ describe('blacklist', () => {
   })
 
   describe('id not in blacklist', () => {
-    it('204', async () => {
+    it('200', async () => {
       process.env.PUBSUB_ADMIN_PASSWORD = 'password'
       process.env.PUBSUB_LIST_BASED_ACCESS_CONTROL = 'blacklist'
       const id = 'id'
-      const message = 'message'
       const server = await buildServer()
+      const address = await server.listen(0)
 
-      const res = await server.inject({
-        method: 'POST'
-      , url: `/pubsub/${id}`
-      , headers: {
-          'Content-Type': 'text/plain'
-        }
-      , payload: message
-      })
-
-      expect(res.statusCode).toBe(204)
+      try {
+        const es = new EventSource(`${address}/pubsub/${id}`)
+        await waitForEvent(es as EventTarget, 'open')
+        es.close()
+      } finally {
+        await server.close()
+      }
     })
   })
 })

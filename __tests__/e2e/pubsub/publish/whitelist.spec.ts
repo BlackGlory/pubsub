@@ -1,7 +1,7 @@
 import { buildServer } from '@src/server'
 import { prepareDatabase, resetEnvironment } from '@test/utils'
 import { matchers } from 'jest-json-schema'
-import { DAO } from '@dao'
+import * as DAO from '@dao/config/whitelist'
 
 jest.mock('@dao/config/database')
 expect.extend(matchers)

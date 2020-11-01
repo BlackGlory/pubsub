@@ -1,7 +1,7 @@
 import { buildServer } from '@src/server'
 import { prepareDatabase, resetEnvironment } from '@test/utils'
 import { matchers } from 'jest-json-schema'
-import { DAO } from '@dao'
+import { ConfigDAO } from '@dao'
 import WebSocket = require('ws')
 import { waitForEvent } from '@blackglory/wait-for'
 
@@ -19,7 +19,7 @@ describe('whitelist', () => {
       process.env.PUBSUB_ADMIN_PASSWORD = 'password'
       process.env.PUBSUB_LIST_BASED_ACCESS_CONTROL = 'whitelist'
       const id = 'id'
-      await DAO.addWhitelistItem(id)
+      await ConfigDAO.addWhitelistItem(id)
       const server = await buildServer()
       const address = await server.listen(0)
 

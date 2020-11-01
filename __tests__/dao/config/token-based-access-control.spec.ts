@@ -5,7 +5,7 @@ import 'jest-extended'
 
 jest.mock('@dao/config/database')
 
-describe('TBAC(token-based access control)', () => {
+describe('TBAC', () => {
   describe('getAllIdsWithTokens(): string[]', () => {
     it('return string[]', async () => {
       const db = await prepareDatabase()

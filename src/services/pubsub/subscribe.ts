@@ -1,17 +1,8 @@
 import { FastifyPluginAsync } from 'fastify'
 import { idSchema, tokenSchema } from '@src/schema'
-import {
-  LIST_BASED_ACCESS_CONTROL
-, ListBasedAccessControl
-, TOKEN_BASED_ACCESS_CONTROL
-, DISABLE_NO_TOKENS
-} from '@env'
 import websocket from 'fastify-websocket'
 
-export const routes: FastifyPluginAsync<{
-  PubSub: IPubSub<string>
-  DAO: IDataAccessObject
-}> = async function routes(server, { PubSub, DAO }) {
+export const routes: FastifyPluginAsync<{ Core: ICore }> = async function routes(server, { Core }) {
   server.register(websocket, {
     options: {
       // pain, see https://github.com/fastify/fastify-websocket/issues/70
@@ -33,31 +24,16 @@ export const routes: FastifyPluginAsync<{
           }
         }
 
-        if (id) {
-          if (LIST_BASED_ACCESS_CONTROL() === ListBasedAccessControl.Blacklist) {
-            if (await DAO.inBlacklist(id)) return next(false)
-          } else if (LIST_BASED_ACCESS_CONTROL() === ListBasedAccessControl.Whitelist) {
-            if (!await DAO.inWhitelist(id)) return next(false)
-          }
+        if (!id) return next(false)
 
-          if (TOKEN_BASED_ACCESS_CONTROL()) {
-            if (await DAO.hasReadTokens(id)) {
-              if (token) {
-                if (!await DAO.matchReadToken({ token, id })) return next(false)
-              } else {
-                return next(false)
-              }
-            } else {
-              if (DISABLE_NO_TOKENS()) {
-                if (!await DAO.hasWriteTokens(id)) return next(false)
-              }
-            }
-          }
-
-          return next(true)
+        try {
+          await Core.Blacklist.check(id)
+          await Core.Whitelist.check(id)
+          await Core.TBAC.checkReadPermission(id, token)
+        } catch {
+          return next(false)
         }
-
-        next(false)
+        return next(true)
       }
     }
   })
@@ -81,24 +57,15 @@ export const routes: FastifyPluginAsync<{
         const id = req.params.id
         const token = req.query.token
 
-        if (LIST_BASED_ACCESS_CONTROL() === ListBasedAccessControl.Blacklist) {
-          if (await DAO.inBlacklist(id)) return reply.status(403).send()
-        } else if (LIST_BASED_ACCESS_CONTROL() === ListBasedAccessControl.Whitelist) {
-          if (!await DAO.inWhitelist(id)) return reply.status(403).send()
-        }
-
-        if (TOKEN_BASED_ACCESS_CONTROL()) {
-          if (await DAO.hasReadTokens(id)) {
-            if (token) {
-              if (!await DAO.matchReadToken({ token, id })) return reply.status(401).send()
-            } else {
-              return reply.status(401).send()
-            }
-          } else {
-            if (DISABLE_NO_TOKENS()) {
-              if (!await DAO.hasWriteTokens(id)) return reply.status(403).send()
-            }
-          }
+        try {
+          await Core.Blacklist.check(id)
+          await Core.Whitelist.check(id)
+          await Core.TBAC.checkReadPermission(id, token)
+        } catch (e) {
+          if (e instanceof Core.Unauthorized) return reply.status(401).send()
+          if (e instanceof Core.Forbidden) return reply.status(403).send()
+          if (e instanceof Error) return reply.status(400).send(e.message)
+          throw e
         }
 
         reply.raw.setHeader('Content-Type','text/event-stream')
@@ -109,20 +76,16 @@ export const routes: FastifyPluginAsync<{
         }
         reply.raw.flushHeaders()
 
-        const unsubscribe = PubSub.subscribe(id, value => {
-          reply.raw.write(`data: ${value}\n\n`)
-        })
-
+        const unsubscribe = Core.subscribe(id, value => reply.raw.write(`data: ${value}\n\n`))
         req.raw.on('close', () => unsubscribe())
       })()
     }
   // WebSocket
   // @ts-ignore Do not want to waste time to fight the terrible types of fastify.
-  , wsHandler(conn, req, params: Params) {
+  , async wsHandler(conn, req, params: Params) {
       const id = params.id
 
-      const unsubscribe = PubSub.subscribe(id, value => conn.socket.send(value))
-
+      const unsubscribe = Core.subscribe(id, value => conn.socket.send(value))
       conn.socket.on('close', () => unsubscribe())
       conn.socket.on('message', () => conn.socket.close())
     }

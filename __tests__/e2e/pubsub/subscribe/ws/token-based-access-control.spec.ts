@@ -1,7 +1,7 @@
 import { buildServer } from '@src/server'
 import { prepareDatabase, resetEnvironment } from '@test/utils'
 import { matchers } from 'jest-json-schema'
-import { DAO } from '@dao'
+import { ConfigDAO } from '@dao/config'
 import WebSocket = require('ws')
 import { waitForEvent } from '@blackglory/wait-for'
 
@@ -21,7 +21,7 @@ describe('token-based access control', () => {
         process.env.PUBSUB_TOKEN_BASED_ACCESS_CONTROL = 'true'
         const id = 'id'
         const token = 'token'
-        await DAO.setReadToken({ id, token })
+        await ConfigDAO.setReadToken({ id, token })
         const server = await buildServer()
         const address = await server.listen(0)
 
@@ -42,7 +42,7 @@ describe('token-based access control', () => {
         const token = 'token'
         const server = await buildServer()
         const address = await server.listen(0)
-        await DAO.setReadToken({ id, token })
+        await ConfigDAO.setReadToken({ id, token })
 
         try {
           const ws = new WebSocket(`${address}/pubsub/${id}?token=bad`.replace('http', 'ws'))
@@ -61,7 +61,7 @@ describe('token-based access control', () => {
         const token = 'token'
         const server = await buildServer()
         const address = await server.listen(0)
-        await DAO.setReadToken({ id, token })
+        await ConfigDAO.setReadToken({ id, token })
 
         try {
           const ws = new WebSocket(`${address}/pubsub/${id}`.replace('http', 'ws'))
@@ -80,7 +80,7 @@ describe('token-based access control', () => {
         process.env.PUBSUB_TOKEN_BASED_ACCESS_CONTROL = 'true'
         const id = 'id'
         const token = 'token'
-        await DAO.setWriteToken({ id, token })
+        await ConfigDAO.setWriteToken({ id, token })
         const server = await buildServer()
         const address = await server.listen(0)
 
