@@ -690,11 +690,12 @@ PubSub支持HTTP/2, 以多路复用反向代理时的连接, 可通过设置环�
 输出JSON:
 ```ts
 {
-  memoryUsage: any // 与Node.js API保持一致
-  cpuUsage: any // 与Node.js API保持一致
-  resourceUsage: any // 与Node.js API保持一致
+  memoryUsage: NodeJS.MemoryUsage
+  cpuUsage: NodeJS.CpuUsage
+  resourceUsage: NodeJS.ResourceUsage
 }
 ```
+
 ## Webhook
 
 PubSub的publish端点可用于Webhook,
