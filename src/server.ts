@@ -17,7 +17,7 @@ export async function buildServer() {
   server.register(cors, { origin: true })
   server.register(pubsub, { Core })
   server.register(api, { Core })
-  server.register(stats)
+  server.register(stats, { Core })
   return server
 }
 
