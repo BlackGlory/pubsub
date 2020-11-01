@@ -1,7 +1,7 @@
 import { buildServer } from '@src/server'
 import { prepareAccessControlDatabase, resetEnvironment } from '@test/utils'
 import { matchers } from 'jest-json-schema'
-import * as DAO from '@src/dao/access-control/whitelist'
+import { AccessControlDAO } from '@dao'
 
 jest.mock('@dao/access-control/database')
 expect.extend(matchers)
@@ -14,12 +14,12 @@ beforeEach(async () => {
 describe('whitelist', () => {
   describe('id in whitelist', () => {
     it('204', async () => {
-      const id = 'id'
-      const message = 'message'
       process.env.PUBSUB_ADMIN_PASSWORD = 'password'
       process.env.PUBSUB_LIST_BASED_ACCESS_CONTROL = 'whitelist'
+      const id = 'id'
+      const message = 'message'
       const server = await buildServer()
-      await DAO.addWhitelistItem(id)
+      await AccessControlDAO.addWhitelistItem(id)
 
       const res = await server.inject({
         method: 'POST'
