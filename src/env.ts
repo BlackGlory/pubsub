@@ -19,9 +19,11 @@ export function NODE_ENV(): NodeEnv | undefined {
 }
 
 export function PORT(): number {
-  const port = Number(process.env.UID_PORT)
-  if (Number.isInteger(port)) return port
-  else return 8080
+  if (process.env.PUBSUB_PORT) {
+    return Number(process.env.PUBSUB_PORT)
+  } else {
+    return 8080
+  }
 }
 
 export function HOST(): string {
