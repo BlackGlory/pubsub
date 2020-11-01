@@ -1,4 +1,4 @@
-import * as DAO from '@src/dao/access-control/token-based-access-control'
+import * as DAO from '@dao/access-control/token-based-access-control'
 import { prepareAccessControlDatabase } from '@test/utils'
 import { Database } from 'better-sqlite3'
 import 'jest-extended'

@@ -1,4 +1,4 @@
-import * as DAO from '@src/dao/access-control/whitelist'
+import * as DAO from '@dao/access-control/whitelist'
 import { Database } from 'better-sqlite3'
 import { prepareAccessControlDatabase } from '@test/utils'
 import 'jest-extended'

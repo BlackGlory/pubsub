@@ -1,4 +1,4 @@
-import * as DAO from '@src/dao/json-schema/json-schema'
+import * as DAO from '@dao/json-schema/json-schema'
 import { Database } from 'better-sqlite3'
 import { prepareJsonSchemaDatabase } from '@test/utils'
 import 'jest-extended'
