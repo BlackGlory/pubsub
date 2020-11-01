@@ -62,8 +62,8 @@ export const routes: FastifyPluginAsync<{ Core: ICore }> = async function routes
           await Core.Whitelist.check(id)
           await Core.TBAC.checkReadPermission(id, token)
         } catch (e) {
-          if (e instanceof Core.Unauthorized) return reply.status(401).send()
-          if (e instanceof Core.Forbidden) return reply.status(403).send()
+          if (e instanceof Core.Error.Unauthorized) return reply.status(401).send()
+          if (e instanceof Core.Error.Forbidden) return reply.status(403).send()
           if (e instanceof Error) return reply.status(400).send(e.message)
           throw e
         }
@@ -76,7 +76,7 @@ export const routes: FastifyPluginAsync<{ Core: ICore }> = async function routes
         }
         reply.raw.flushHeaders()
 
-        const unsubscribe = Core.subscribe(id, value => reply.raw.write(`data: ${value}\n\n`))
+        const unsubscribe = Core.PubSub.subscribe(id, value => reply.raw.write(`data: ${value}\n\n`))
         req.raw.on('close', () => unsubscribe())
       })()
     }
@@ -85,7 +85,7 @@ export const routes: FastifyPluginAsync<{ Core: ICore }> = async function routes
   , wsHandler(conn, req, params: Params) {
       const id = params.id
 
-      const unsubscribe = Core.subscribe(id, value => conn.socket.send(value))
+      const unsubscribe = Core.PubSub.subscribe(id, value => conn.socket.send(value))
       conn.socket.on('close', () => unsubscribe())
       conn.socket.on('message', () => conn.socket.close())
     }

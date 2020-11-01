@@ -9,17 +9,16 @@ type Json =
 interface ICore {
   isAdmin(password: string): boolean
 
-  publish(id: string, payload: string): void
-  subscribe(id: string, cb: (value: string) => void): () => void
-
   stats(): {
     memoryUsage: NodeJS.MemoryUsage
     cpuUsage: NodeJS.CpuUsage
     resourceUsage: NodeJS.ResourceUsage
   }
 
-  Forbidden: new () => Error
-  Unauthorized: new () => Error
+  PubSub: {
+    publish(id: string, payload: string): void
+    subscribe(id: string, cb: (value: string) => void): () => void
+  }
 
   Blacklist: {
     isEnabled(): boolean
@@ -65,5 +64,10 @@ interface ICore {
     checkReadPermission(id: string, token?: string): Promise<void>
     setReadToken(id: string, token: string): Promise<void>
     unsetReadToken(id: string, token: string): Promise<void>
+  }
+
+  Error: {
+    Forbidden: new () => Error
+    Unauthorized: new () => Error
   }
 }
