@@ -77,8 +77,6 @@ services:
   pubsub:
     image: 'blackglory/pubsub'
     restart: always
-    environment:
-      - PUBSUB_HOST=0.0.0.0
     volumes:
       - 'pubsub-data:/data'
     ports:
@@ -99,7 +97,6 @@ services:
     image: 'blackglory/pubsub'
     restart: always
     environment:
-      - PUBSUB_HOST=0.0.0.0
       - PUBSUB_ADMIN_PASSWORD=password
       - PUBSUB_TOKEN_BASED_ACCESS_CONTROL=true
       - PUBSUB_DISABLE_NO_TOKENS=true
