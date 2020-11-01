@@ -1,16 +1,16 @@
 import { buildServer } from '@src/server'
-import { prepareDatabase, resetEnvironment } from '@test/utils'
+import { prepareAccessControlDatabase, resetEnvironment } from '@test/utils'
 import { matchers } from 'jest-json-schema'
-import { ConfigDAO } from '@dao'
+import { AccessControlDAO } from '@dao'
 import EventSource = require('eventsource')
 import { waitForEvent } from '@blackglory/wait-for'
 
-jest.mock('@dao/config/database')
+jest.mock('@dao/access-control/database')
 expect.extend(matchers)
 
 beforeEach(async () => {
   resetEnvironment()
-  await prepareDatabase()
+  await prepareAccessControlDatabase()
 })
 
 describe('blackllist', () => {
@@ -20,7 +20,7 @@ describe('blackllist', () => {
       process.env.PUBSUB_LIST_BASED_ACCESS_CONTROL = 'blacklist'
       const id = 'id'
       const server = await buildServer()
-      await ConfigDAO.addBlacklistItem(id)
+      await AccessControlDAO.addBlacklistItem(id)
 
       const res = await server.inject({
         method: 'GET'
