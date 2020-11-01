@@ -1,6 +1,6 @@
 type IUnsubscribe = () => void
 
-interface IPubSubDAO {
-  publish(key: string, value: string): void
-  subscribe(key: string, listener: (value: string) => void): IUnsubscribe
+interface IPubSubDAO<T> {
+  publish(key: string, value: T): void
+  subscribe(key: string, listener: (value: T) => void): IUnsubscribe
 }
