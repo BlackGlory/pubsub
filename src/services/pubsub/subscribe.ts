@@ -82,7 +82,7 @@ export const routes: FastifyPluginAsync<{ Core: ICore }> = async function routes
     }
   // WebSocket
   // @ts-ignore Do not want to waste time to fight the terrible types of fastify.
-  , async wsHandler(conn, req, params: Params) {
+  , wsHandler(conn, req, params: Params) {
       const id = params.id
 
       const unsubscribe = Core.subscribe(id, value => conn.socket.send(value))
