@@ -15,15 +15,16 @@ beforeEach(async () => {
 
 describe('token-based access control', () => {
   describe('enabled', () => {
-    describe('id has subscribe tokens', () => {
+    describe('id need read tokens', () => {
       describe('token matched', () => {
         it('open', async () => {
           process.env.PUBSUB_TOKEN_BASED_ACCESS_CONTROL = 'true'
           const id = 'id'
           const token = 'token'
-          await AccessControlDAO.setReadToken({ id, token })
           const server = await buildServer()
           const address = await server.listen(0)
+          await AccessControlDAO.setReadTokenRequired(id, true)
+          await AccessControlDAO.setReadToken({ id, token })
 
           try {
             const ws = new WebSocket(`${address}/pubsub/${id}?token=${token}`.replace('http', 'ws'))
@@ -41,6 +42,7 @@ describe('token-based access control', () => {
           const token = 'token'
           const server = await buildServer()
           const address = await server.listen(0)
+          await AccessControlDAO.setReadTokenRequired(id, true)
           await AccessControlDAO.setReadToken({ id, token })
 
           try {
@@ -59,6 +61,7 @@ describe('token-based access control', () => {
           const token = 'token'
           const server = await buildServer()
           const address = await server.listen(0)
+          await AccessControlDAO.setReadTokenRequired(id, true)
           await AccessControlDAO.setReadToken({ id, token })
 
           try {
@@ -72,12 +75,28 @@ describe('token-based access control', () => {
     })
 
     describe('id does not have subscribe tokens', () => {
-      describe('id has publish tokens', () => {
+      describe('READ_TOKEN_REQUIRED', () => {
+        it('error', async () => {
+          process.env.PUBSUB_TOKEN_BASED_ACCESS_CONTROL = 'true'
+          process.env.PUBSUB_READ_TOKEN_REQUIRED = 'true'
+          const id = 'id'
+          const server = await buildServer()
+          const address = await server.listen(0)
+
+          try {
+            const ws = new WebSocket(`${address}/pubsub/${id}`.replace('http', 'ws'))
+            await waitForEvent(ws as unknown as EventTarget, 'error')
+          } finally {
+            await server.close()
+          }
+        })
+      })
+
+      describe('not READ_TOKEN_REQUIRED', () => {
         it('open', async () => {
           process.env.PUBSUB_TOKEN_BASED_ACCESS_CONTROL = 'true'
+          process.env.PUBSUB_READ_TOKEN_REQUIRED = 'false'
           const id = 'id'
-          const token = 'token'
-          await AccessControlDAO.setWriteToken({ id, token })
           const server = await buildServer()
           const address = await server.listen(0)
 
@@ -89,53 +108,37 @@ describe('token-based access control', () => {
           }
         })
       })
-
-      describe('id has no tokens', () => {
-        describe('READ_TOKEN_REQUIRED', () => {
-          it('error', async () => {
-            process.env.PUBSUB_TOKEN_BASED_ACCESS_CONTROL = 'true'
-            process.env.PUBSUB_READ_TOKEN_REQUIRED = 'true'
-            const id = 'id'
-            const server = await buildServer()
-            const address = await server.listen(0)
-
-            try {
-              const ws = new WebSocket(`${address}/pubsub/${id}`.replace('http', 'ws'))
-              await waitForEvent(ws as unknown as EventTarget, 'error')
-            } finally {
-              await server.close()
-            }
-          })
-        })
-
-        describe('not READ_TOKEN_REQUIRED', () => {
-          it('open', async () => {
-            process.env.PUBSUB_TOKEN_BASED_ACCESS_CONTROL = 'true'
-            const id = 'id'
-            const server = await buildServer()
-            const address = await server.listen(0)
-
-            try {
-              const ws = new WebSocket(`${address}/pubsub/${id}`.replace('http', 'ws'))
-              await waitForEvent(ws as unknown as EventTarget, 'open')
-            } finally {
-              await server.close()
-            }
-          })
-        })
-      })
     })
   })
 
   describe('disabled', () => {
-    describe('id has subscribe tokens', () => {
+    describe('id need read tokens', () => {
       describe('no token', () => {
-        it('error', async () => {
+        it('open', async () => {
           const id = 'id'
           const token = 'token'
           const server = await buildServer()
           const address = await server.listen(0)
+          await AccessControlDAO.setReadTokenRequired(id, true)
           await AccessControlDAO.setReadToken({ id, token })
+
+          try {
+            const ws = new WebSocket(`${address}/pubsub/${id}`.replace('http', 'ws'))
+            await waitForEvent(ws as unknown as EventTarget, 'open')
+          } finally {
+            await server.close()
+          }
+        })
+      })
+    })
+
+    describe('id does not need read tokens', () => {
+      describe('READ_TOKEN_REQUIRED=true', () => {
+        it('open', async () => {
+          process.env.PUBSUB_READ_TOKEN_REQUIRED = 'true'
+          const id = 'id'
+          const server = await buildServer()
+          const address = await server.listen(0)
 
           try {
             const ws = new WebSocket(`${address}/pubsub/${id}`.replace('http', 'ws'))

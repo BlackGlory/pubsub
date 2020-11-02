@@ -3,7 +3,7 @@ import { getDatabase } from './database'
 export function getAllIdsWithTokens(): string[] {
   const result = getDatabase().prepare(`
     SELECT pubsub_id
-      FROM pubsub_tbac;
+      FROM pubsub_token;
   `).all()
   return result.map(x => x['pubsub_id'])
 }
@@ -17,7 +17,7 @@ export function getAllTokens(id: string): Array<{ token: string, write: boolean,
     SELECT token
          , write_permission
          , read_permission
-      FROM pubsub_tbac
+      FROM pubsub_token
      WHERE pubsub_id = $id;
   `).all({ id })
   return result.map(x => ({
@@ -31,7 +31,7 @@ export function hasWriteTokens(id: string): boolean {
   const result = getDatabase().prepare(`
     SELECT EXISTS(
              SELECT *
-               FROM pubsub_tbac
+               FROM pubsub_token
               WHERE pubsub_id = $id
                 AND write_permission = 1
            ) AS write_tokens_exist
@@ -46,7 +46,7 @@ export function matchWriteToken({ token, id }: {
   const result = getDatabase().prepare(`
     SELECT EXISTS(
              SELECT *
-               FROM pubsub_tbac
+               FROM pubsub_token
               WHERE pubsub_id = $id
                 AND token = $token
                 AND write_permission = 1
@@ -57,7 +57,7 @@ export function matchWriteToken({ token, id }: {
 
 export function setWriteToken({ token, id }: { token: string; id: string }) {
   getDatabase().prepare(`
-    INSERT INTO pubsub_tbac (token, pubsub_id, write_permission)
+    INSERT INTO pubsub_token (token, pubsub_id, write_permission)
     VALUES ($token, $id, 1)
         ON CONFLICT (token, pubsub_id)
         DO UPDATE SET write_permission = 1;
@@ -68,7 +68,7 @@ export function unsetWriteToken({ token, id }: { token: string; id: string }) {
   const db = getDatabase()
   db.transaction(() => {
     db.prepare(`
-      UPDATE pubsub_tbac
+      UPDATE pubsub_token
          SET write_permission = 0
        WHERE token = $token
          AND pubsub_id = $id;
@@ -81,7 +81,7 @@ export function hasReadTokens(id: string): boolean {
   const result = getDatabase().prepare(`
     SELECT EXISTS(
              SELECT *
-               FROM pubsub_tbac
+               FROM pubsub_token
               WHERE pubsub_id = $id
                 AND read_permission = 1
            ) AS read_tokens_exist
@@ -96,7 +96,7 @@ export function matchReadToken({ token, id }: {
   const result = getDatabase().prepare(`
     SELECT EXISTS(
              SELECT *
-               FROM pubsub_tbac
+               FROM pubsub_token
               WHERE pubsub_id = $id
                 AND token = $token
                 AND read_permission = 1
@@ -107,7 +107,7 @@ export function matchReadToken({ token, id }: {
 
 export function setReadToken({ token, id }: { token: string; id: string }) {
   getDatabase().prepare(`
-    INSERT INTO pubsub_tbac (token, pubsub_id, read_permission)
+    INSERT INTO pubsub_token (token, pubsub_id, read_permission)
     VALUES ($token, $id, 1)
         ON CONFLICT (token, pubsub_id)
         DO UPDATE SET read_permission = 1;
@@ -118,7 +118,7 @@ export function unsetReadToken({ token, id }: { token: string; id: string }) {
   const db = getDatabase()
   db.transaction(() => {
     db.prepare(`
-      UPDATE pubsub_tbac
+      UPDATE pubsub_token
          SET read_permission = 0
        WHERE token = $token
          AND pubsub_id = $id;
@@ -129,7 +129,7 @@ export function unsetReadToken({ token, id }: { token: string; id: string }) {
 
 function deleteNoPermissionToken({ token, id }: { token: string, id: string }) {
   getDatabase().prepare(`
-    DELETE FROM pubsub_tbac
+    DELETE FROM pubsub_token
      WHERE token = $token
        AND pubsub_id = $id
        AND read_permission = 0

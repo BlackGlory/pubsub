@@ -13,7 +13,7 @@ beforeEach(async () => {
 
 describe('token-based access control', () => {
   describe('enabled', () => {
-    describe('id has publish tokens', () => {
+    describe('id need write tokens', () => {
       describe('token matched', () => {
         it('204', async () => {
           process.env.PUBSUB_TOKEN_BASED_ACCESS_CONTROL = 'true'
@@ -21,6 +21,7 @@ describe('token-based access control', () => {
           const token = 'token'
           const message = 'message'
           const server = await buildServer()
+          await AccessControlDAO.setWriteTokenRequired(id, true)
           await AccessControlDAO.setWriteToken({ id, token })
 
           const res = await server.inject({
@@ -44,6 +45,7 @@ describe('token-based access control', () => {
           const token = 'token'
           const message = 'message'
           const server = await buildServer()
+          await AccessControlDAO.setWriteTokenRequired(id, true)
           await AccessControlDAO.setWriteToken({ id, token })
 
           const res = await server.inject({
@@ -61,12 +63,13 @@ describe('token-based access control', () => {
       })
 
       describe('no token', () => {
-        it('401', async () => {
+        it('403', async () => {
           process.env.PUBSUB_TOKEN_BASED_ACCESS_CONTROL = 'true'
           const id = 'id'
           const token = 'token'
           const message = 'message'
           const server = await buildServer()
+          await AccessControlDAO.setWriteTokenRequired(id, true)
           await AccessControlDAO.setWriteToken({ id, token })
 
           const res = await server.inject({
@@ -78,20 +81,39 @@ describe('token-based access control', () => {
           , payload: message
           })
 
-          expect(res.statusCode).toBe(401)
+          expect(res.statusCode).toBe(403)
         })
       })
     })
 
-    describe('id does not have publish tokens', () => {
-      describe('id has subscribe tokens', () => {
+    describe('id does not need write tokens', () => {
+      describe('WRITE_TOKEN_REQUIRED=true', () => {
+        it('403', async () => {
+          process.env.PUBSUB_TOKEN_BASED_ACCESS_CONTROL = 'true'
+          process.env.PUBSUB_WRITE_TOKEN_REQUIRED = 'true'
+          const id = 'id'
+          const message = 'message'
+          const server = await buildServer()
+
+          const res = await server.inject({
+            method: 'POST'
+          , url: `/pubsub/${id}`
+          , headers: {
+              'Content-Type': 'text/plain'
+            }
+          , payload: message
+          })
+
+          expect(res.statusCode).toBe(403)
+        })
+      })
+
+      describe('WRITE_TOKEN_REQUIRED=false', () => {
         it('204', async () => {
           process.env.PUBSUB_TOKEN_BASED_ACCESS_CONTROL = 'true'
           const id = 'id'
-          const token = 'token'
           const message = 'message'
           const server = await buildServer()
-          await AccessControlDAO.setReadToken({ id, token })
 
           const res = await server.inject({
             method: 'POST'
@@ -105,60 +127,43 @@ describe('token-based access control', () => {
           expect(res.statusCode).toBe(204)
         })
       })
-
-      describe('id has no tokens', () => {
-        describe('WRITE_TOKEN_REQUIRED', () => {
-          it('403', async () => {
-            process.env.PUBSUB_TOKEN_BASED_ACCESS_CONTROL = 'true'
-            process.env.PUBSUB_WRITE_TOKEN_REQUIRED = 'true'
-            const id = 'id'
-            const message = 'message'
-            const server = await buildServer()
-
-            const res = await server.inject({
-              method: 'POST'
-            , url: `/pubsub/${id}`
-            , headers: {
-                'Content-Type': 'text/plain'
-              }
-            , payload: message
-            })
-
-            expect(res.statusCode).toBe(403)
-          })
-        })
-
-        describe('not WRITE_TOKEN_REQUIRED', () => {
-          it('204', async () => {
-            process.env.PUBSUB_TOKEN_BASED_ACCESS_CONTROL = 'true'
-            const id = 'id'
-            const message = 'message'
-            const server = await buildServer()
-
-            const res = await server.inject({
-              method: 'POST'
-            , url: `/pubsub/${id}`
-            , headers: {
-                'Content-Type': 'text/plain'
-              }
-            , payload: message
-            })
-
-            expect(res.statusCode).toBe(204)
-          })
-        })
-      })
     })
   })
 
   describe('disabled', () => {
-    describe('id has publish tokens', () => {
+    describe('id need write tokens', () => {
       describe('no token', () => {
-        it('401', async () => {
+        it('200', async () => {
           const id = 'id'
           const token = 'token'
           const message = 'message'
           const server = await buildServer()
+          await AccessControlDAO.setWriteTokenRequired(id, true)
+          await AccessControlDAO.setWriteToken({ id, token })
+
+          const res = await server.inject({
+            method: 'POST'
+          , url: `/pubsub/${id}`
+          , headers: {
+              'Content-Type': 'text/plain'
+            }
+          , payload: message
+          })
+
+          expect(res.statusCode).toBe(204)
+        })
+      })
+    })
+
+    describe('id does not need write tokens', () => {
+      describe('WRITE_TOKEN_REQUIRED=true', () => {
+        it('200', async () => {
+          process.env.PUBSUB_WRITE_TOKEN_REQUIRED = 'true'
+          const id = 'id'
+          const token = 'token'
+          const message = 'message'
+          const server = await buildServer()
+          await AccessControlDAO.setWriteTokenRequired(id, true)
           await AccessControlDAO.setWriteToken({ id, token })
 
           const res = await server.inject({

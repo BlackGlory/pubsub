@@ -16,11 +16,17 @@ CREATE TABLE pubsub_whitelist (
   pubsub_id VARCHAR(255) NOT NULL UNIQUE
 );
 
-CREATE TABLE pubsub_tbac (
-  token                VARCHAR(255) NOT NULL
-, pubsub_id            VARCHAR(255) NOT NULL
-, read_permission BOOLEAN      NOT NULL DEFAULT 0 CHECK(read_permission IN (0,1))
-, write_permission   BOOLEAN      NOT NULL DEFAULT 0 CHECK(write_permission IN (0,1))
+CREATE TABLE pubsub_token_policy (
+  pubsub_id            VARCHAR(255) NOT NULL UNIQUE
+, write_token_required BOOLEAN
+, read_token_required  BOOLEAN
+);
+
+CREATE TABLE pubsub_token (
+  pubsub_id        VARCHAR(255) NOT NULL
+, token            VARCHAR(255) NOT NULL
+, read_permission  BOOLEAN      NOT NULL DEFAULT 0 CHECK(read_permission IN (0,1))
+, write_permission BOOLEAN      NOT NULL DEFAULT 0 CHECK(write_permission IN (0,1))
 , UNIQUE (token, pubsub_id)
 );
 
@@ -32,4 +38,5 @@ PRAGMA journal_mode = DELETE;
 
 DROP TABLE pubsub_blacklist;
 DROP TABLE pubsub_whitelist;
-DROP TABLE pubsub_tbac;
+DROP TABLE pubsub_token_policy;
+DROP TABLE pubsub_token;

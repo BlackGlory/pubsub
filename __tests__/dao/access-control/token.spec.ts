@@ -1,11 +1,11 @@
-import * as DAO from '@dao/access-control/token-based-access-control'
+import * as DAO from '@dao/access-control/token'
 import { prepareAccessControlDatabase } from '@test/utils'
 import { Database } from 'better-sqlite3'
 import 'jest-extended'
 
 jest.mock('@dao/access-control/database')
 
-describe('TBAC', () => {
+describe('token-based access control', () => {
   describe('getAllIdsWithTokens(): string[]', () => {
     it('return string[]', async () => {
       const db = await prepareAccessControlDatabase()
@@ -23,7 +23,7 @@ describe('TBAC', () => {
     })
   })
 
-  describe('getAllTokens(id: string): Array<{ token: string; write: boolean; read: boolean }>', () => {
+  describe('getAllTokens(id: string): Array<{ token: string; enqueue: boolean; dequeue: boolean }>', () => {
     it('return Array<{ token: string; write: boolean; read: boolean }>', async () => {
       const db = await prepareAccessControlDatabase()
       const id = 'id-1'
@@ -288,7 +288,7 @@ function exist(db: Database, { token, id }: { token: string; id: string }) {
 function select(db: Database, { token, id }: { token: string; id: string }) {
   return db.prepare(`
     SELECT *
-      FROM pubsub_tbac
+      FROM pubsub_token
      WHERE token = $token AND pubsub_id = $id;
   `).get({ token, id })
 }
@@ -303,7 +303,7 @@ function insert(
   }
 ) {
   db.prepare(`
-    INSERT INTO pubsub_tbac (token, pubsub_id, read_permission, write_permission)
+    INSERT INTO pubsub_token (token, pubsub_id, read_permission, write_permission)
     VALUES ($token, $id, $read, $write);
   `).run({
     token
