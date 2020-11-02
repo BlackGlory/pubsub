@@ -32,7 +32,7 @@ export async function resetEnvironment() {
   delete process.env.PUBSUB_ADMIN_PASSWORD
   delete process.env.PUBSUB_LIST_BASED_ACCESS_CONTROL
   delete process.env.PUBSUB_TOKEN_BASED_ACCESS_CONTROL
-  delete process.env.PUBSUB_DISABLE_NO_TOKENS
+  delete process.env.PUBSUB_TOKEN_REQUIRED
   delete process.env.PUBSUB_JSON_VALIDATION
   delete process.env.PUBSUB_DEFAULT_JSON_SCHEMA
   delete process.env.PUBSUB_JSON_PAYLOAD_ONLY
