@@ -52,7 +52,7 @@ export const routes: FastifyPluginAsync<{ Core: ICore }> = async function routes
     }
   )
 
-  // publish token
+  // write token
   server.put<{
     Params: { token: string, id: string }
   }>(
@@ -99,7 +99,7 @@ export const routes: FastifyPluginAsync<{ Core: ICore }> = async function routes
     }
   )
 
-  // subscribe token
+  // read token
   server.put<{
     Params: { token: string, id : string }
   }>(
