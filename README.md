@@ -99,7 +99,8 @@ services:
     environment:
       - PUBSUB_ADMIN_PASSWORD=password
       - PUBSUB_TOKEN_BASED_ACCESS_CONTROL=true
-      - PUBSUB_TOKEN_REQUIRED=true
+      - PUBSUB_READ_TOKEN_REQUIRED=true
+      - PUBSUB_WRITE_TOKEN_REQUIRED=true
     volumes:
       - 'pubsub-data:/data'
     ports:
