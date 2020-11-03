@@ -47,9 +47,6 @@ export const routes: FastifyPluginAsync<{ Core: ICore }> = async function routes
   , schema: {
       params: { id: idSchema }
     , querystring: { token: tokenSchema }
-    , response: {
-        200: { type: 'null' }
-      }
     }
   // Server-Sent Events
   , handler(req, reply) {
@@ -68,7 +65,7 @@ export const routes: FastifyPluginAsync<{ Core: ICore }> = async function routes
           throw e
         }
 
-        reply.raw.setHeader('Content-Type','text/event-stream')
+        reply.raw.setHeader('Content-Type', 'text/event-stream')
         reply.raw.setHeader('Connection', 'keep-alive')
         reply.raw.setHeader('Cache-Control', 'no-store')
         if (req.headers.origin) {
