@@ -1,7 +1,7 @@
 import { buildServer } from '@src/server'
 import { prepareAccessControlDatabase, resetEnvironment } from '@test/utils'
 import { matchers } from 'jest-json-schema'
-import { AccessControlDAO } from '@src/dao/access-control'
+import { AccessControlDAO } from '@dao'
 import WebSocket = require('ws')
 import { waitForEvent } from '@blackglory/wait-for'
 
@@ -74,8 +74,8 @@ describe('token-based access control', () => {
       })
     })
 
-    describe('id does not have subscribe tokens', () => {
-      describe('READ_TOKEN_REQUIRED', () => {
+    describe('id does not have read tokens', () => {
+      describe('READ_TOKEN_REQUIRED=true', () => {
         it('error', async () => {
           process.env.PUBSUB_TOKEN_BASED_ACCESS_CONTROL = 'true'
           process.env.PUBSUB_READ_TOKEN_REQUIRED = 'true'
@@ -92,7 +92,7 @@ describe('token-based access control', () => {
         })
       })
 
-      describe('not READ_TOKEN_REQUIRED', () => {
+      describe('READ_TOKEN_REQUIRED=false', () => {
         it('open', async () => {
           process.env.PUBSUB_TOKEN_BASED_ACCESS_CONTROL = 'true'
           process.env.PUBSUB_READ_TOKEN_REQUIRED = 'false'
