@@ -7,24 +7,13 @@ export const routes: FastifyPluginAsync<{ Core: ICore }> = async function routes
     options: {
       // pain, see https://github.com/fastify/fastify-websocket/issues/70
       async verifyClient(info, next) {
-        const noTokenRegExp = /^\/pubsub\/(?<id>[a-zA-Z0-9\.\-_]{1,256})$/
-        const tokenRegExp = /^\/pubsub\/(?<id>[a-zA-Z0-9\.\-_]{1,256})\?token=(?<token>[a-zA-Z0-9\.\-\_]{1,256})$/
-
         const url = info.req.url!
-        const noTokenResult = url.match(noTokenRegExp)
-        let id: string | undefined
-        let token: string | undefined
-        if (noTokenResult) {
-          id = noTokenResult.groups!.id
-        } else {
-          const tokenResult = url.match(tokenRegExp)
-          if (tokenResult) {
-            id = tokenResult.groups!.id
-            token = tokenResult.groups!.token
-          }
-        }
+        const pathnameRegExp = /^\/pubsub\/(?<id>[a-zA-Z0-9\.\-_]{1,256})$/
+        const result = getPathname(url).match(pathnameRegExp)
+        if (!result) return next(false)
 
-        if (!id) return next(false)
+        const id = result.groups!.id
+        const token = parseQuerystring<{ token?: string }>(url).token
 
         try {
           await Core.Blacklist.check(id)
@@ -87,4 +76,15 @@ export const routes: FastifyPluginAsync<{ Core: ICore }> = async function routes
       conn.socket.on('message', () => conn.socket.close())
     }
   })
+}
+
+function getPathname(url: string): string {
+  const urlObject = new URL(url, 'http://localhost/')
+  return urlObject.pathname
+}
+
+function parseQuerystring<T extends NodeJS.Dict<string | string[]>>(url: string): T {
+  const urlObject = new URL(url, 'http://localhost/')
+  const result = Object.fromEntries(urlObject.searchParams.entries()) as T
+  return result
 }
