@@ -1,11 +1,11 @@
 import { Emitter } from './emitter'
 
-let emitter = new Emitter<unknown>()
+let emitter = new Emitter<string>()
 
-export function getPubSubEmitter(): Emitter<unknown> {
+export function getPubSubEmitter(): Emitter<string> {
   return emitter
 }
 
 export function rebuildPubSubEmitter(): void {
-  emitter = new Emitter<unknown>()
+  emitter = new Emitter<string>()
 }

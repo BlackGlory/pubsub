@@ -16,8 +16,8 @@ interface ICore {
   }
 
   PubSub: {
-    publish(id: string, payload: unknown): void
-    subscribe(id: string, cb: (value: unknown) => void): () => void
+    publish(id: string, payload: string): void
+    subscribe(id: string, cb: (value: string) => void): () => void
   }
 
   JsonSchema: {

@@ -62,7 +62,11 @@ export const routes: FastifyPluginAsync<{ Core: ICore }> = async function routes
         }
         reply.raw.flushHeaders()
 
-        const unsubscribe = Core.PubSub.subscribe(id, value => reply.raw.write(`data: ${value}\n\n`))
+        const unsubscribe = Core.PubSub.subscribe(id, value => {
+          for (const data of generateSSEData(value)) {
+            reply.raw.write(data)
+          }
+        })
         req.raw.on('close', () => unsubscribe())
       })()
     }
@@ -87,4 +91,20 @@ function parseQuerystring<T extends NodeJS.Dict<string | string[]>>(url: string)
   const urlObject = new URL(url, 'http://localhost/')
   const result = Object.fromEntries(urlObject.searchParams.entries()) as T
   return result
+}
+
+function lastIndex(arr: Array<unknown>): number {
+  return arr.length - 1
+}
+
+function* generateSSEData(text: string): Iterable<string> {
+  const lines = text.split('\n')
+  for (let i = 0; i < lines.length; i++) {
+    const line = lines[i]
+    if (i === lastIndex(lines)) {
+      yield `data: ${line}\n\n`
+    } else {
+      yield `data: ${line}\n`
+    }
+  }
 }
