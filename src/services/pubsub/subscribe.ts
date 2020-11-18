@@ -64,6 +64,7 @@ export const routes: FastifyPluginAsync<{ Core: ICore }> = async function routes
 
         const unsubscribe = Core.PubSub.subscribe(id, value => {
           for (const data of generateSSEData(value)) {
+            // `publish` is non-blocking, so it cannot handle back-pressure.
             reply.raw.write(data)
           }
         })
