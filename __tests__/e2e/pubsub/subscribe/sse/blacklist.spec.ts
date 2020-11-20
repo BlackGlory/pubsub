@@ -1,5 +1,5 @@
 import { buildServer } from '@src/server'
-import { resetEnvironment, prepareDatabases } from '@test/utils'
+import { resetEnvironment, resetDatabases } from '@test/utils'
 import { matchers } from 'jest-json-schema'
 import { AccessControlDAO } from '@dao'
 import EventSource = require('eventsource')
@@ -11,7 +11,7 @@ expect.extend(matchers)
 
 beforeEach(async () => {
   resetEnvironment()
-  await prepareDatabases()
+  await resetDatabases()
 })
 
 describe('blackllist', () => {
