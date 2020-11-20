@@ -4,6 +4,7 @@ import { matchers } from 'jest-json-schema'
 import { AccessControlDAO } from '@dao'
 
 jest.mock('@dao/access-control/database')
+jest.mock('@dao/json-schema/database')
 expect.extend(matchers)
 
 beforeEach(async () => {

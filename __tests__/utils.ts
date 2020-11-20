@@ -9,6 +9,11 @@ import {
 , migrateDatabase as migrateJsonSchemaDatabase
 } from '@dao/json-schema/database'
 
+export async function prepareDatabases() {
+  await prepareAccessControlDatabase()
+  await prepareJsonSchemaDatabase()
+}
+
 export async function prepareAccessControlDatabase() {
   reconnectAccessControlDatabase()
   const db = getAccessControlDatabase()
@@ -23,7 +28,7 @@ export async function prepareJsonSchemaDatabase() {
   return db
 }
 
-export async function resetEnvironment() {
+export function resetEnvironment() {
   // assigning a property on `process.env` will implicitly convert the value to a string.
   // use `delete` to delete a property from `process.env`.
   // sjee also: https://nodejs.org/api/process.html#process_process_env

@@ -1,9 +1,15 @@
 import * as DAO from '@dao/access-control/blacklist'
 import { Database } from 'better-sqlite3'
-import { prepareAccessControlDatabase } from '@test/utils'
+import { prepareAccessControlDatabase, prepareJsonSchemaDatabase, resetEnvironment } from '@test/utils'
 import 'jest-extended'
 
 jest.mock('@dao/access-control/database')
+jest.mock('@dao/json-schema/database')
+
+beforeEach(async () => {
+  resetEnvironment()
+  await prepareJsonSchemaDatabase()
+})
 
 describe('blacklist', () => {
   describe('getAllBlacklistItems(): string[]', () => {

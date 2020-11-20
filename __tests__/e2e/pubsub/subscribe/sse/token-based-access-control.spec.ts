@@ -1,16 +1,17 @@
 import { buildServer } from '@src/server'
-import { prepareAccessControlDatabase, resetEnvironment } from '@test/utils'
+import { resetEnvironment, prepareDatabases } from '@test/utils'
 import { matchers } from 'jest-json-schema'
 import EventSource = require('eventsource')
 import { waitForEvent } from '@blackglory/wait-for'
 import { AccessControlDAO } from '@dao'
 
 jest.mock('@dao/access-control/database')
+jest.mock('@dao/json-schema/database')
 expect.extend(matchers)
 
 beforeEach(async () => {
   resetEnvironment()
-  await prepareAccessControlDatabase()
+  await prepareDatabases()
 })
 
 describe('token-based access control', () => {

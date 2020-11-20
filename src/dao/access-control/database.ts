@@ -4,6 +4,9 @@ import * as path from 'path'
 import * as fs from 'fs-extra'
 import { readMigrations } from 'migrations-file'
 import { migrate } from '@blackglory/better-sqlite3-migrations'
+import { strict as assert } from 'assert'
+import { NODE_ENV, NodeEnv } from '@env'
+assert(NODE_ENV() !== NodeEnv.Test)
 
 const migrationsPath = path.join(appRoot, 'migrations/access-control')
 const dataPath = path.join(appRoot, 'data')
