@@ -30,6 +30,11 @@ CREATE TABLE pubsub_token (
 , UNIQUE (token, pubsub_id)
 );
 
+CREATE TABLE pubsub_json_schema (
+  pubsub_id   VARCHAR(255) NOT NULL UNIQUE
+, json_schema TEXT         NOT NULL
+);
+
 --------------------------------------------------------------------------------
 -- Down
 --------------------------------------------------------------------------------
@@ -40,3 +45,4 @@ DROP TABLE pubsub_blacklist;
 DROP TABLE pubsub_whitelist;
 DROP TABLE pubsub_token_policy;
 DROP TABLE pubsub_token;
+DROP TABLE pubsub_json_schema;

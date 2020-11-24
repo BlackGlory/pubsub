@@ -4,8 +4,7 @@ import { matchers } from 'jest-json-schema'
 import WebSocket = require('ws')
 import { waitForEvent } from '@blackglory/wait-for'
 
-jest.mock('@dao/access-control/database')
-jest.mock('@dao/json-schema/database')
+jest.mock('@dao/sqlite3/database')
 expect.extend(matchers)
 
 beforeEach(async () => {

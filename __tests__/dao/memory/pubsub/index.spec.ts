@@ -1,5 +1,5 @@
-import { rebuildPubSubEmitter } from '@dao/pubsub/pubsub-emitter'
-import { PubSubDAO } from '@dao/pubsub'
+import { rebuildPubSubEmitter } from '@dao/memory/pubsub/pubsub-emitter'
+import { PubSubDAO } from '@dao/memory/pubsub'
 
 beforeEach(() => {
   rebuildPubSubEmitter()

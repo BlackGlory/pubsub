@@ -1,14 +1,13 @@
 import { buildServer } from '@src/server'
-import { resetAccessControlDatabase, resetEnvironment } from '@test/utils'
+import { resetSqlite3Database, resetEnvironment } from '@test/utils'
 import { matchers } from 'jest-json-schema'
 
-jest.mock('@dao/access-control/database')
-jest.mock('@dao/json-schema/database')
+jest.mock('@dao/sqlite3/database')
 expect.extend(matchers)
 
 beforeEach(async () => {
   resetEnvironment()
-  await resetAccessControlDatabase()
+  await resetSqlite3Database()
 })
 
 describe('whitelist', () => {
