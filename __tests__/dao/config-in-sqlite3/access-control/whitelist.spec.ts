@@ -1,10 +1,10 @@
-import * as DAO from '@dao/sqlite3/access-control/whitelist'
-import { getDatabase } from '@dao/sqlite3/database'
+import * as DAO from '@dao/config-in-sqlite3/access-control/whitelist'
+import { getDatabase } from '@dao/config-in-sqlite3/database'
 import { Database } from 'better-sqlite3'
 import { resetEnvironment, resetDatabases } from '@test/utils'
 import 'jest-extended'
 
-jest.mock('@dao/sqlite3/database')
+jest.mock('@dao/config-in-sqlite3/database')
 
 beforeEach(async () => {
   resetEnvironment()

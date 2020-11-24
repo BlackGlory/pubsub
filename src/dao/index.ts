@@ -1,3 +1,3 @@
-export { AccessControlDAO } from './sqlite3/access-control'
-export { JsonSchemaDAO } from './sqlite3/json-schema'
-export { PubSubDAO } from './memory/pubsub'
+export { AccessControlDAO } from './config-in-sqlite3/access-control'
+export { JsonSchemaDAO } from './config-in-sqlite3/json-schema'
+export { PubSubDAO } from './data-in-memory/pubsub'
