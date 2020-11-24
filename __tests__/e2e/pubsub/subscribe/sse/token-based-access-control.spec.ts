@@ -2,7 +2,7 @@ import { buildServer } from '@src/server'
 import { resetEnvironment, resetDatabases } from '@test/utils'
 import { matchers } from 'jest-json-schema'
 import EventSource = require('eventsource')
-import { waitForEvent } from '@blackglory/wait-for'
+import { waitForEventTarget } from '@blackglory/wait-for'
 import { AccessControlDAO } from '@dao'
 
 jest.mock('@dao/config-in-sqlite3/database')
@@ -28,7 +28,7 @@ describe('token-based access control', () => {
 
           try {
             const es = new EventSource(`${address}/pubsub/${id}?token=${token}`)
-            await waitForEvent(es as EventTarget, 'open')
+            await waitForEventTarget(es as EventTarget, 'open')
             es.close()
           } finally {
             await server.close()
@@ -101,7 +101,7 @@ describe('token-based access control', () => {
 
           try {
             const es = new EventSource(`${address}/pubsub/${id}`)
-            await waitForEvent(es as EventTarget, 'open')
+            await waitForEventTarget(es as EventTarget, 'open')
             es.close()
           } finally {
             await server.close()
@@ -124,7 +124,7 @@ describe('token-based access control', () => {
 
           try {
             const es = new EventSource(`${address}/pubsub/${id}`)
-            await waitForEvent(es as EventTarget, 'open')
+            await waitForEventTarget(es as EventTarget, 'open')
             es.close()
           } finally {
             await server.close()
@@ -144,7 +144,7 @@ describe('token-based access control', () => {
 
           try {
             const es = new EventSource(`${address}/pubsub/${id}`)
-            await waitForEvent(es as EventTarget, 'open')
+            await waitForEventTarget(es as EventTarget, 'open')
             es.close()
           } finally {
             await server.close()

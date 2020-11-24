@@ -3,7 +3,7 @@ import { resetDatabases, resetEnvironment } from '@test/utils'
 import { matchers } from 'jest-json-schema'
 import { AccessControlDAO } from '@dao'
 import WebSocket = require('ws')
-import { waitForEvent } from '@blackglory/wait-for'
+import { waitForEventTarget } from '@blackglory/wait-for'
 
 jest.mock('@dao/config-in-sqlite3/database')
 expect.extend(matchers)
@@ -25,7 +25,7 @@ describe('blackllist', () => {
 
         try {
           const ws = new WebSocket(`${address}/pubsub/${id}`.replace('http', 'ws'))
-          await waitForEvent(ws as unknown as EventTarget, 'error')
+          await waitForEventTarget(ws as unknown as EventTarget, 'error')
         } finally {
           await server.close()
         }
@@ -41,7 +41,7 @@ describe('blackllist', () => {
 
         try {
           const ws = new WebSocket(`${address}/pubsub/${id}`.replace('http', 'ws'))
-          await waitForEvent(ws as unknown as EventTarget, 'open')
+          await waitForEventTarget(ws as unknown as EventTarget, 'open')
         } finally {
           await server.close()
         }
@@ -59,7 +59,7 @@ describe('blackllist', () => {
 
         try {
           const ws = new WebSocket(`${address}/pubsub/${id}`.replace('http', 'ws'))
-          await waitForEvent(ws as unknown as EventTarget, 'open')
+          await waitForEventTarget(ws as unknown as EventTarget, 'open')
         } finally {
           await server.close()
         }
