@@ -1,3 +1,5 @@
+import { memoize } from 'lodash'
+
 export enum ListBasedAccessControl {
   Disable
 , Whitelist
@@ -10,82 +12,82 @@ export enum NodeEnv {
 , Production
 }
 
-export function NODE_ENV(): NodeEnv | undefined {
+export const NODE_ENV = memoize(function (): NodeEnv | undefined {
   switch (process.env.NODE_ENV) {
     case 'test': return NodeEnv.Test
     case 'development': return NodeEnv.Development
     case 'production': return NodeEnv.Production
   }
-}
+})
 
-export function PORT(): number {
+export const PORT = memoize(function (): number {
   if (process.env.PUBSUB_PORT) {
     return Number(process.env.PUBSUB_PORT)
   } else {
     return 8080
   }
-}
+})
 
-export function HOST(): string {
+export const HOST = memoize(function (): string {
   return process.env.PUBSUB_HOST ?? 'localhost'
-}
+})
 
-export function ADMIN_PASSWORD(): string | undefined {
+export const ADMIN_PASSWORD = memoize(function (): string | undefined {
   return process.env.PUBSUB_ADMIN_PASSWORD
-}
+})
 
-export function LIST_BASED_ACCESS_CONTROL(): ListBasedAccessControl {
+export const LIST_BASED_ACCESS_CONTROL = memoize(function (): ListBasedAccessControl {
   switch (process.env.PUBSUB_LIST_BASED_ACCESS_CONTROL) {
     case 'whitelist': return ListBasedAccessControl.Whitelist
     case 'blacklist': return ListBasedAccessControl.Blacklist
     default: return ListBasedAccessControl.Disable
   }
-}
+})
 
-export function TOKEN_BASED_ACCESS_CONTROL(): boolean {
+export const TOKEN_BASED_ACCESS_CONTROL = memoize(function (): boolean {
   return process.env.PUBSUB_TOKEN_BASED_ACCESS_CONTROL === 'true'
-}
+})
 
-export function READ_TOKEN_REQUIRED(): boolean {
+export const READ_TOKEN_REQUIRED = memoize(function (): boolean {
   return process.env.PUBSUB_READ_TOKEN_REQUIRED === 'true'
-}
+})
 
-export function WRITE_TOKEN_REQUIRED(): boolean {
+export const WRITE_TOKEN_REQUIRED = memoize(function (): boolean {
   return process.env.PUBSUB_WRITE_TOKEN_REQUIRED === 'true'
-}
+})
 
-export function HTTP2(): boolean {
+export const HTTP2 = memoize(function (): boolean {
   return process.env.PUBSUB_HTTP2 === 'true'
-}
+})
 
-export function JSON_VALIDATION(): boolean {
+export const JSON_VALIDATION = memoize(function (): boolean {
   return process.env.PUBSUB_JSON_VALIDATION === 'true'
-}
+})
 
-export function DEFAULT_JSON_SCHEMA(): string | undefined {
+export const DEFAULT_JSON_SCHEMA = memoize(function (): string | undefined {
   return process.env.PUBSUB_DEFAULT_JSON_SCHEMA
-}
+})
 
-export function JSON_PAYLOAD_ONLY(): boolean {
+export const JSON_PAYLOAD_ONLY = memoize(function (): boolean {
   return process.env.PUBSUB_JSON_PAYLOAD_ONLY === 'true'
-}
+})
 
-export function CI(): boolean {
+export const CI = memoize(function (): boolean {
   return process.env.CI === 'true'
-}
+})
 
-export function PAYLOAD_LIMIT(): number {
+export const PAYLOAD_LIMIT = memoize(function (): number {
   if (process.env.PUBSUB_PAYLOAD_LIMIT) {
     return Number(process.env.PUBSUB_PAYLOAD_LIMIT)
   } else {
     return 1048576
   }
-}
+})
 
-export function PUBLISH_PAYLOAD_LIMIT(): number {
+export const PUBLISH_PAYLOAD_LIMIT = memoize(function (): number {
   if (process.env.PUBSUB_PUBLISH_PAYLOAD_LIMIT) {
     return Number(process.env.PUBSUB_PUBLISH_PAYLOAD_LIMIT)
   } else {
     return PAYLOAD_LIMIT()
   }
-}
+})
