@@ -1,11 +1,15 @@
 import { Emitter } from './emitter'
 
-let emitter = new Emitter<string>()
+let emitter = createPubSubEmitter()
 
 export function getPubSubEmitter(): Emitter<string> {
   return emitter
 }
 
 export function rebuildPubSubEmitter(): void {
-  emitter = new Emitter<string>()
+  emitter = createPubSubEmitter()
+}
+
+function createPubSubEmitter(): Emitter<string> {
+  return new Emitter<string>()
 }
