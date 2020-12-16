@@ -1,6 +1,7 @@
 import { FastifyPluginAsync } from 'fastify'
 import { idSchema, tokenSchema } from '@src/schema'
 import { JSON_PAYLOAD_ONLY, PUBLISH_PAYLOAD_LIMIT } from '@env'
+import { CustomError } from '@blackglory/errors'
 
 export const routes: FastifyPluginAsync<{ Core: ICore }> = async function routes(server, { Core }) {
   // overwrite application/json parser
@@ -49,14 +50,16 @@ export const routes: FastifyPluginAsync<{ Core: ICore }> = async function routes
             await Core.JsonSchema.validate(id, payload)
           } else {
             if (await Core.JsonSchema.get(id)) {
-              throw new Error('This id only accepts application/json')
+              throw new BadContentType('application/json')
             }
           }
         }
       } catch (e) {
-        if (e instanceof Core.Error.Unauthorized) return reply.status(401).send()
-        if (e instanceof Core.Error.Forbidden) return reply.status(403).send()
-        if (e instanceof Error) return reply.status(400).send(e.message)
+        if (e instanceof Core.Blacklist.Forbidden) return reply.status(403).send()
+        if (e instanceof Core.Whitelist.Forbidden) return reply.status(403).send()
+        if (e instanceof Core.TBAC.Unauthorized) return reply.status(401).send()
+        if (e instanceof Core.JsonSchema.InvalidPayload) return reply.status(400).send()
+        if (e instanceof BadContentType) return reply.status(415).send()
         throw e
       }
 
@@ -72,4 +75,10 @@ export const routes: FastifyPluginAsync<{ Core: ICore }> = async function routes
       }
     }
   )
+}
+
+class BadContentType extends CustomError {
+  constructor(contentType: string) {
+    super(`Content-Type must be ${contentType}`)
+  }
 }

@@ -1,4 +1,3 @@
-import { Forbidden, Unauthorized } from '../error'
 import {
   TOKEN_BASED_ACCESS_CONTROL
 , READ_TOKEN_REQUIRED
@@ -7,11 +6,15 @@ import {
 import { AccessControlDAO } from '@dao'
 import * as TokenPolicy from './token-policy'
 import * as Token from './token'
+import { CustomError } from '@blackglory/errors'
+
+class Unauthorized extends CustomError {}
 
 export const TBAC: ICore['TBAC'] = {
   isEnabled
 , checkWritePermission
 , checkReadPermission
+, Unauthorized
 , TokenPolicy
 , Token
 }
@@ -20,6 +23,9 @@ function isEnabled() {
   return TOKEN_BASED_ACCESS_CONTROL()
 }
 
+/**
+ * @throws {Unauthorized}
+ */
 async function checkWritePermission(id: string, token?: string) {
   if (!isEnabled()) return
 
@@ -33,6 +39,9 @@ async function checkWritePermission(id: string, token?: string) {
   }
 }
 
+/**
+ * @throws {Unauthorized}
+ */
 async function checkReadPermission(id: string, token?: string) {
   if (!isEnabled()) return
 
