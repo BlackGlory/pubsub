@@ -1,4 +1,4 @@
-import { Emitter } from './emitter'
+import { Emitter } from '@blackglory/structures'
 
 let emitter = createPubSubEmitter()
 
