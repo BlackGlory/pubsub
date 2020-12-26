@@ -11,8 +11,9 @@ module.exports = {
 , rules: {
     'no-constant-condition': 'off'
   , 'no-empty': 'off'
+  , 'no-useless-escape': 'off'
   , '@typescript-eslint/ban-ts-comment': 'off'
   , '@typescript-eslint/no-extra-semi': 'off'
-  , 'no-useless-escape': 'off'
+  , '@typescript-eslint/ban-types': 'off'
   }
 }
