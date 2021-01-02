@@ -1,5 +1,5 @@
 import { buildServer } from '@src/server'
-import { resetConfigInSqlite3Database, resetEnvironment } from '@test/utils'
+import { resetDatabases, resetEnvironment } from '@test/utils'
 import { matchers } from 'jest-json-schema'
 import { AccessControlDAO } from '@dao'
 
@@ -8,7 +8,7 @@ expect.extend(matchers)
 
 beforeEach(async () => {
   resetEnvironment()
-  await resetConfigInSqlite3Database()
+  await resetDatabases()
 })
 
 describe('token-based access control', () => {
