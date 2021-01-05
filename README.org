@@ -99,7 +99,7 @@ volumes:
 #+END_SRC
 
 ** API
-所有API中的id都需要满足此正则表达式: `^[a-zA-Z0-9\.\-_]{1,256}$`
+所有API中的id都需要满足此正则表达式: `^[a-zA-Z0-9\.\-_]{0,255}$`
 
 *** Public
 **** publish
