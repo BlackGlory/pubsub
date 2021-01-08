@@ -1,17 +1,16 @@
 import Database = require('better-sqlite3')
 import type { Database as IDatabase } from 'better-sqlite3'
-import { path as appRoot } from 'app-root-path'
 import * as path from 'path'
 import * as fs from 'fs-extra'
 import { strict as assert } from 'assert'
-import { NODE_ENV, NodeEnv } from '@env'
+import { NODE_ENV, NodeEnv, DATA } from '@env'
 import { enableAutoVacuum, migrateDatabase } from './utils'
 assert(NODE_ENV() !== NodeEnv.Test)
 
 let db: IDatabase
 
 export function openDatabase(): void {
-  const dataPath = path.join(appRoot, 'data')
+  const dataPath = DATA()
   const dataFilename = path.join(dataPath, 'config.db')
   fs.ensureDirSync(dataPath)
 
