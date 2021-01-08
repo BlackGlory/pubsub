@@ -43,7 +43,7 @@ yarn --silent start
 
 #+BEGIN_SRC sh
 docker run \
-  --detach j\
+  --detach \
   --publish 8080:8080 \
   blackglory/pubsub
 #+END_SRC
