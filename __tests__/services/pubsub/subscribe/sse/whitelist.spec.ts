@@ -2,7 +2,7 @@ import { buildServer } from '@src/server'
 import { resetDatabases, resetEnvironment } from '@test/utils'
 import { matchers } from 'jest-json-schema'
 import { AccessControlDAO } from '@dao'
-import EventSource = require('eventsource')
+import { EventSource } from 'extra-fetch'
 import { waitForEventTarget } from '@blackglory/wait-for'
 
 jest.mock('@dao/config-in-sqlite3/database')
