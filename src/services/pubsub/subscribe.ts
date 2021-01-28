@@ -10,10 +10,10 @@ export const routes: FastifyPluginAsync<{ Core: ICore }> = async function routes
   })
 
   server.server.on('upgrade', async (req, socket, head) => {
-    const url = req.url!
+    const url = req.url
     const pathnameRegExp = /^\/pubsub\/(?<id>[a-zA-Z0-9\.\-_]{1,256})$/
     const result = getPathname(url).match(pathnameRegExp)
-    if (!result) return socket.destory()
+    if (!result) return socket.destroy()
 
     const id = result.groups!.id
     const token = parseQuerystring<{ token?: string }>(url).token
