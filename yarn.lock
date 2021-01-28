@@ -3319,13 +3319,12 @@ fastify-warning@^0.2.0:
   resolved "https://registry.yarnpkg.com/fastify-warning/-/fastify-warning-0.2.0.tgz#e717776026a4493dc9a2befa44db6d17f618008f"
   integrity sha512-s1EQguBw/9qtc1p/WTY4eq9WMRIACkj+HTcOIK1in4MV5aFaQC9ZCIt0dJ7pr5bIf4lPpHvAtP2ywpTNgs7hqw==
 
-fastify-websocket@^2.1.0:
-  version "2.1.0"
-  resolved "https://registry.yarnpkg.com/fastify-websocket/-/fastify-websocket-2.1.0.tgz#3e0e83d09512e19d5084f0440d9767e289cf91c2"
-  integrity sha512-u5zClCarOHctvzKq76Gc0rDwtWfU7pw+JGYETfSu77YzZ/uzXLDX4jB70vLliUc3nqK0zXFRDK2/KnEnfdF9Kw==
+fastify-websocket@^3.0.0:
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/fastify-websocket/-/fastify-websocket-3.0.0.tgz#da423991ac3260ba8022f83a30c18508275276a2"
+  integrity sha512-WD9vWoMP8cDVFfcJzLupZ9UHRLnWpxmQ9kdcPaIhilZLndXMbk7H4vHzQ0GSfpld8p6eopGuWr3MXpH5n2/CuA==
   dependencies:
     fastify-plugin "^3.0.0"
-    find-my-way "^3.0.5"
     ws "^7.4.2"
 
 fastify@^3.11.0:

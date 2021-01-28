@@ -5,7 +5,6 @@ import websocket from 'fastify-websocket'
 export const routes: FastifyPluginAsync<{ Core: ICore }> = async function routes(server, { Core }) {
   server.register(websocket, {
     options: {
-      // pain, see https://github.com/fastify/fastify-websocket/issues/70
       async verifyClient(info, next) {
         const url = info.req.url!
         const pathnameRegExp = /^\/pubsub\/(?<id>[a-zA-Z0-9\.\-_]{1,256})$/
@@ -73,8 +72,9 @@ export const routes: FastifyPluginAsync<{ Core: ICore }> = async function routes
     }
   // WebSocket
   // @ts-ignore Do not want to waste time to fight the terrible types of fastify.
-  , wsHandler(conn, req, params: Params) {
-      const id = params.id
+  , wsHandler(conn, req) {
+      // @ts-ignore
+      const id = req.params.id
 
       const unsubscribe = Core.PubSub.subscribe(id, value => conn.socket.send(value))
       conn.socket.on('close', () => unsubscribe())

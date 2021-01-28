@@ -83,7 +83,7 @@
     "fastify-bearer-auth": "^5.0.2",
     "fastify-cors": "^5.2.0",
     "fastify-plugin": "^3.0.0",
-    "fastify-websocket": "^2.1.0",
+    "fastify-websocket": "^3.0.0",
     "fs-extra": "^9.1.0",
     "migrations-file": "^0.1.1",
     "return-style": "^0.11.4",
