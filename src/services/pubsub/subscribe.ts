@@ -1,6 +1,7 @@
 import { FastifyPluginAsync } from 'fastify'
 import { idSchema, tokenSchema } from '@src/schema'
 import { sse } from 'extra-generator'
+import { waitForEventEmitter } from '@blackglory/wait-for'
 import websocket from 'fastify-websocket'
 
 export const routes: FastifyPluginAsync<{ Core: ICore }> = async function routes(server, { Core }) {
@@ -67,10 +68,12 @@ export const routes: FastifyPluginAsync<{ Core: ICore }> = async function routes
         }
         reply.raw.flushHeaders()
 
-        const unsubscribe = Core.PubSub.subscribe(id, value => {
+        const unsubscribe = Core.PubSub.subscribe(id, async value => {
           for (const data of sse(value)) {
             // `publish` is non-blocking, so it cannot handle back-pressure.
-            reply.raw.write(data)
+            if (!reply.raw.write(data)) {
+              await waitForEventEmitter(reply.raw, 'drain')
+            }
           }
         })
         req.raw.on('close', () => unsubscribe())
