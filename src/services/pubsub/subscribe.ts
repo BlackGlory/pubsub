@@ -1,5 +1,6 @@
 import { FastifyPluginAsync } from 'fastify'
 import { idSchema, tokenSchema } from '@src/schema'
+import { sse } from 'extra-generator'
 import websocket from 'fastify-websocket'
 
 export const routes: FastifyPluginAsync<{ Core: ICore }> = async function routes(server, { Core }) {
@@ -67,7 +68,7 @@ export const routes: FastifyPluginAsync<{ Core: ICore }> = async function routes
         reply.raw.flushHeaders()
 
         const unsubscribe = Core.PubSub.subscribe(id, value => {
-          for (const data of generateSSEData(value)) {
+          for (const data of sse(value)) {
             // `publish` is non-blocking, so it cannot handle back-pressure.
             reply.raw.write(data)
           }
@@ -97,20 +98,4 @@ function parseQuerystring<T extends NodeJS.Dict<string | string[]>>(url: string)
   const urlObject = new URL(url, 'http://localhost/')
   const result = Object.fromEntries(urlObject.searchParams.entries()) as T
   return result
-}
-
-function lastIndex(arr: Array<unknown>): number {
-  return arr.length - 1
-}
-
-function* generateSSEData(text: string): Iterable<string> {
-  const lines = text.split('\n')
-  for (let i = 0; i < lines.length; i++) {
-    const line = lines[i]
-    if (i === lastIndex(lines)) {
-      yield `data: ${line}\n\n`
-    } else {
-      yield `data: ${line}\n`
-    }
-  }
 }
