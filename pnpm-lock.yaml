@@ -1,6 +1,6 @@
 dependencies:
   '@blackglory/better-sqlite3-migrations': 0.1.2_better-sqlite3@7.1.2
-  '@blackglory/errors': 0.1.5
+  '@blackglory/errors': 1.1.2
   '@blackglory/structures': 0.1.12
   '@blackglory/types': 0.2.14
   ajv: 7.0.4
@@ -9,7 +9,7 @@ dependencies:
   common-tags: 1.8.0
   dotenv: 8.2.0
   extra-generator: 0.1.4
-  extra-promise: 0.13.15
+  extra-promise: 0.14.3
   fastify: 3.11.0
   fastify-bearer-auth: 5.0.2
   fastify-cors: 5.2.0
@@ -37,7 +37,7 @@ devDependencies:
   '@typescript-eslint/parser': 4.14.2_eslint@7.19.0+typescript@4.1.3
   cross-env: 7.0.3
   eslint: 7.19.0
-  extra-fetch: 0.1.11
+  extra-fetch: 1.0.2
   husky: 4.3.8
   jest: 26.6.3_ts-node@9.1.1
   jest-extended: 0.11.5
@@ -347,11 +347,6 @@ packages:
       better-sqlite3: 7.x
     resolution:
       integrity: sha512-r5UoDJmdj+ECDXlLltITGV20mOGHLQEojJrGGdGukzDnQ89FkMo0F7m+/z/c95oHU8mDHrHUk9xDl4WC24k+FQ==
-  /@blackglory/errors/0.1.5:
-    engines:
-      node: '>=12'
-    resolution:
-      integrity: sha512-n0pCQ8JKx5Tw9QuNBWsokvOwX0oJn/qnEYWspSNaPzo/QrmZAiHhpIiPWHEhtmt8gLVsHw3dizw7iQbiOwR/ZA==
   /@blackglory/errors/1.1.2:
     engines:
       node: '>=12'
@@ -393,7 +388,7 @@ packages:
       integrity: sha512-yKVlkf+Rvhc9XWfGxdFXQmRUllST2upR6NCfD5k/Q5FWDfSHBo4eQkJMdDSpQdZcnS8L1uWoeGCYSEz/LVCEHg==
   /@blackglory/wait-for/0.2.8:
     dependencies:
-      extra-promise: 0.14.2
+      extra-promise: 0.14.3
       iterable-operator: 0.13.2
       rxjs: 7.0.0-beta.10
     dev: true
@@ -1750,14 +1745,14 @@ packages:
     dev: false
     resolution:
       integrity: sha512-p2q/t/mhvuOj/UeLlV6566GD/guowlr0hHxClI0W9m7MWYkL1F0hLo+0Aexs9HSPCtR1SXQ0TD3MMKrXZajbiQ==
-  /bl/4.0.3:
+  /bl/4.0.4:
     dependencies:
       buffer: 5.7.1
       inherits: 2.0.4
       readable-stream: 3.6.0
     dev: false
     resolution:
-      integrity: sha512-fs4G6/Hu4/EE+F75J8DuN/0IpQqNjAdC7aEQv7Qt8MHGUH7Ckv2MwTEEeN9QehD0pfIDkMI1bkHYkKy7xHyKIg==
+      integrity: sha512-7tdr4EpSd7jJ6tuQ21vu2ke8w7pNEstzj1O8wwq6sNNzO3UDi5MA8Gny/gquCj7r2C6fHudg8tKRGyjRgmvNxQ==
   /blessed/0.1.81:
     dev: true
     engines:
@@ -3193,7 +3188,7 @@ packages:
       iterable-operator: 0.13.2
     resolution:
       integrity: sha512-4eE7g0UWNRcv3EsNl7u3qzkZ7fNGmx6kXa9mLLHJJOKxgCAmSjTrxX5DEkMe4xZaWi09tZUc0zIwspQF4HJz9g==
-  /extra-fetch/0.1.11:
+  /extra-fetch/1.0.2:
     dependencies:
       abort-controller: 3.0.0
       domexception: 2.0.1
@@ -3203,7 +3198,7 @@ packages:
       node-fetch: 3.0.0-beta.9_domexception@2.0.1
     dev: true
     resolution:
-      integrity: sha512-cD3eXlOlmcAvtH68ly5CPiffUgh+7Wluw++Ik7rrH9e3sjl1skgHPMAcFLYAl4bGSIBzhT+9rPWn3UZWmMM8yg==
+      integrity: sha512-ijLcGHH3XgKMnyHRu4HFPw8tmVW/4oClgkm+uMIRmPcrUKQcfw+QOcm6qm9d0xYpl/Amwe9zloX6w0/WUhbWPA==
   /extra-generator/0.1.4:
     dependencies:
       '@blackglory/errors': 1.1.2
@@ -3211,22 +3206,9 @@ packages:
     dev: false
     resolution:
       integrity: sha512-zgcGbkUhe7xJoonjNwBPR0C73S6F7osW2j7yt52YuFBMLdRBigBrcKmRRJULJFwlga5q9MWb8kLzpl/zq80Hww==
-  /extra-promise/0.13.15:
+  /extra-promise/0.14.3:
     dependencies:
-      '@blackglory/errors': 0.1.5
-      '@blackglory/structures': 0.1.12
-      '@blackglory/types': 0.2.14
-      abort-controller: 3.0.0
-      eventemitter3: 4.0.7
-      iterable-operator: 0.12.11
-      reflect-metadata: 0.1.13
-      return-style: 0.11.6
-    dev: false
-    resolution:
-      integrity: sha512-Bnpv2W1FDT5KtafVVW9Ljvuz8snsNt27dScaTe7VUfXHhH8qpJQv2XOPSZCV2+Yp4rj2EGxiOAFCPHxNK1ycqg==
-  /extra-promise/0.14.2:
-    dependencies:
-      '@blackglory/errors': 0.1.5
+      '@blackglory/errors': 1.1.2
       '@blackglory/structures': 0.1.12
       '@blackglory/types': 0.2.14
       abort-controller: 3.0.0
@@ -3235,7 +3217,7 @@ packages:
       reflect-metadata: 0.1.13
       return-style: 0.11.6
     resolution:
-      integrity: sha512-QvCZzC4jMZ3TuJJcY91hWrdCXFjbXNFfO2JEjzqOV2rYap4wIHz12AR9scucNIOEBTj7v7KearnkqcRkEy3PBA==
+      integrity: sha512-je7LfqBF8FTfuAHhl6i3P3AH9KvEqUCU8E3aQXqPiI9zdbyLKi3EA/0xbZHoYT/XXnWsSivHa/MUmm0YgIWFsw==
   /extsprintf/1.3.0:
     engines:
       '0': node >=0.6.0
@@ -4574,12 +4556,6 @@ packages:
       node: '>=8'
     resolution:
       integrity: sha512-9tZvz7AiR3PEDNGiV9vIouQ/EAcqMXFmkcA1CDFTwOB98OZVDL0PH9glHotf5Ugp6GCOTypfzGWI/OqjWNCRUw==
-  /iterable-operator/0.12.11:
-    dependencies:
-      '@blackglory/types': 0.2.14
-    dev: false
-    resolution:
-      integrity: sha512-f6g7Ftzxk4JyJNL19/tB1Lt7CnXQC2kcRQ2+SZX0RaSr8+3SuAPLAMzU515dRl5/yfK9YI0JdDvW+hL02+tShQ==
   /iterable-operator/0.13.2:
     dependencies:
       '@blackglory/types': 0.2.14
@@ -5607,7 +5583,7 @@ packages:
       integrity: sha512-y7FpHSbMUMoyPbYUSzO6PaZ6FyRnQOpHuKwbo1G+Knck95XVU4QAiKdGEnj5wwoS7PlOgthX/09u5iFJ+aYf5Q==
   /migrations-file/0.1.3:
     dependencies:
-      extra-promise: 0.14.2
+      extra-promise: 0.14.3
     dev: false
     resolution:
       integrity: sha512-41JIwMB91RnTV2LsrHj/3U2aY8WRYwuGV0hDtPTcM2Zi11pueKYy0sMqRDzk7zxjGlAXa5xvoewfdUvnI8AodA==
@@ -7843,7 +7819,7 @@ packages:
       integrity: sha512-V0r2Y9scmbDRLCNex/+hYzvp/zyYjvFbHPNgVTKfQvVrb6guiE/fxP+XblDNR011utopbkex2nM4dHNV6GDsng==
   /tar-stream/2.2.0:
     dependencies:
-      bl: 4.0.3
+      bl: 4.0.4
       end-of-stream: 1.4.4
       fs-constants: 1.0.0
       inherits: 2.0.4
@@ -8620,12 +8596,12 @@ packages:
       tarball: https://codeload.github.com/EventSource/eventsource/tar.gz/46fe04e03e54f4129a28bf75b3a1e5f4ab68b52a
     version: 1.0.7
 specifiers:
-  '@blackglory/better-sqlite3-migrations': ^0.1.1
-  '@blackglory/errors': ^0.1.4
-  '@blackglory/jest-matchers': ^0.1.7
-  '@blackglory/structures': ^0.1.9
-  '@blackglory/types': ^0.2.9
-  '@blackglory/wait-for': ^0.2.6
+  '@blackglory/better-sqlite3-migrations': ^0.1.2
+  '@blackglory/errors': ^1.1.2
+  '@blackglory/jest-matchers': ^0.1.9
+  '@blackglory/structures': ^0.1.12
+  '@blackglory/types': ^0.2.14
+  '@blackglory/wait-for': ^0.2.8
   '@commitlint/cli': ^11.0.0
   '@commitlint/config-conventional': ^11.0.0
   '@types/app-root-path': ^1.2.4
@@ -8634,20 +8610,20 @@ specifiers:
   '@types/fs-extra': ^9.0.6
   '@types/jest': ^26.0.20
   '@types/jest-json-schema': ^2.1.3
-  '@types/node': ^14.14.22
+  '@types/node': ^14.14.25
   '@types/ws': ^7.4.0
-  '@typescript-eslint/eslint-plugin': ^4.14.1
-  '@typescript-eslint/parser': ^4.14.1
-  ajv: ^7.0.3
+  '@typescript-eslint/eslint-plugin': ^4.14.2
+  '@typescript-eslint/parser': ^4.14.2
+  ajv: ^7.0.4
   app-root-path: ^3.0.0
   better-sqlite3: ^7.1.2
   common-tags: ^1.8.0
   cross-env: ^7.0.3
   dotenv: ^8.2.0
-  eslint: ^7.18.0
-  extra-fetch: ^0.1.10
-  extra-generator: ^0.1.3
-  extra-promise: ^0.13.15
+  eslint: ^7.19.0
+  extra-fetch: ^1.0.2
+  extra-generator: ^0.1.4
+  extra-promise: ^0.14.3
   fastify: ^3.11.0
   fastify-bearer-auth: ^5.0.2
   fastify-cors: ^5.2.0
@@ -8658,19 +8634,19 @@ specifiers:
   jest: ^26.6.3
   jest-extended: ^0.11.5
   jest-json-schema: ^5.0.0
-  migrations-file: ^0.1.1
+  migrations-file: ^0.1.3
   nodemon: ^2.0.7
   npm-run-all: ^4.1.5
-  pino-pretty: ^4.3.0
-  pm2: ^4.5.1
-  return-style: ^0.11.4
+  pino-pretty: ^4.5.0
+  pm2: ^4.5.4
+  return-style: ^0.11.6
   rimraf: ^3.0.2
   rxjs: ^7.0.0-beta.10
   standard-version: ^9.1.0
-  ts-jest: ^26.4.4
+  ts-jest: ^26.5.0
   ts-node: ^9.1.1
   tsconfig-paths: ^3.9.0
   tscpaths: ^0.0.9
   typescript: ^4.1.3
-  value-getter: ^0.1.7
-  ws: ^7.4.2
+  value-getter: ^0.1.8
+  ws: ^7.4.3
