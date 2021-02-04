@@ -1,8 +1,8 @@
-import { rebuildPubSubEmitter } from '@dao/data-in-memory/pubsub/pubsub-emitter'
+import { resetEmitter } from '@dao/data-in-memory/pubsub/emitter-instance'
 import { PubSubDAO } from '@dao/data-in-memory/pubsub'
 
 beforeEach(() => {
-  rebuildPubSubEmitter()
+  resetEmitter()
 })
 
 describe('PubSubDAO', () => {

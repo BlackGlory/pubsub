@@ -1,8 +1,8 @@
 import { Observable } from 'rxjs'
-import { getPubSubEmitter } from './pubsub-emitter'
+import { getEmitter } from './emitter-instance'
 
 export function subscribe(key: string, listener: (value: string) => void): IUnsubscribe {
-  const emitter = getPubSubEmitter()
+  const emitter = getEmitter()
   const observable = new Observable<string>(observer => {
     const listener = (value: string) => observer.next(value)
     emitter.on(key, listener)
