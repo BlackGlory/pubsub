@@ -1,7 +1,7 @@
 FROM node:12-alpine
 WORKDIR /usr/src/app
 
-COPY package.json yarn.lock ./
+COPY package.json pnpm-lock.yaml ./
 
 RUN apk add --update --no-cache --virtual .build-deps \
       # extra-fetch
@@ -9,18 +9,19 @@ RUN apk add --update --no-cache --virtual .build-deps \
       # better-sqlite3
       build-base \
       python3 \
- && yarn install \
- && yarn cache clean \
+ && npm install -g pnpm \
+ && pnpm install \
+ && pnpm store prune \
  && apk del .build-deps
 
 COPY . ./
 
-RUN yarn build \
+RUN pnpm build \
  && mkdir /data \
  && ln -s /data data
 
 ENV PUBSUB_HOST=0.0.0.0
 ENV PUBSUB_PORT=8080
 EXPOSE 8080
-ENTRYPOINT ["yarn"]
+ENTRYPOINT ["pnpm"]
 CMD ["--silent", "start"]
