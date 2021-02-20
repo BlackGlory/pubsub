@@ -1,6 +1,6 @@
 import Database = require('better-sqlite3')
 import type { Database as IDatabase } from 'better-sqlite3'
-import { strict as assert } from 'assert'
+import { assert } from '@blackglory/errors'
 import { migrateDatabase } from '../utils'
 
 let db: IDatabase

@@ -2,7 +2,7 @@ import Database = require('better-sqlite3')
 import type { Database as IDatabase } from 'better-sqlite3'
 import * as path from 'path'
 import * as fs from 'fs-extra'
-import { strict as assert } from 'assert'
+import { assert } from '@blackglory/errors'
 import { NODE_ENV, NodeEnv, DATA } from '@env'
 import { migrateDatabase } from './utils'
 assert(NODE_ENV() !== NodeEnv.Test)
