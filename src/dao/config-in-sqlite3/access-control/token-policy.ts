@@ -5,6 +5,7 @@ export function getAllIdsWithTokenPolicies(): string[] {
     SELECT pubsub_id
       FROM pubsub_token_policy;
   `).all()
+
   return result.map(x => x['pubsub_id'])
 }
 
@@ -29,8 +30,8 @@ export function getTokenPolicies(id: string): {
                           ? null
                           : numberToBoolean(writeTokenRequired)
     , readTokenRequired: readTokenRequired === null
-                        ? null
-                        : numberToBoolean(readTokenRequired)
+                         ? null
+                         : numberToBoolean(readTokenRequired)
     }
   } else {
     return { writeTokenRequired: null, readTokenRequired: null }
@@ -54,6 +55,7 @@ export function unsetWriteTokenRequired(id: string): void {
          SET write_token_required = NULL
        WHERE pubsub_id = $id;
     `).run({ id })
+
     deleteNoPoliciesRow(id)
   })()
 }
@@ -75,6 +77,7 @@ export function unsetReadTokenRequired(id: string): void {
          SET read_token_required = NULL
        WHERE pubsub_id = $id;
     `).run({ id })
+
     deleteNoPoliciesRow(id)
   })()
 }

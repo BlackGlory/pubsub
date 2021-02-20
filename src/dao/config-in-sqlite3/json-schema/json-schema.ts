@@ -2,8 +2,10 @@ import { getDatabase } from '../database'
 
 export function getAllIdsWithJsonSchema(): string[] {
   const result = getDatabase().prepare(`
-    SELECT pubsub_id FROM pubsub_json_schema
+    SELECT pubsub_id
+      FROM pubsub_json_schema
   `).all()
+
   return result.map(x => x['pubsub_id'])
 }
 
@@ -12,8 +14,8 @@ export function getJsonSchema(id: string): string | null {
     SELECT json_schema FROM pubsub_json_schema
      WHERE pubsub_id = $id;
   `).get({ id })
-  if (result) return result['json_schema']
-  else return null
+
+  return result ? result['json_schema'] : null
 }
 
 export function setJsonSchema({ id, schema }: { id: string; schema: string }): void {
