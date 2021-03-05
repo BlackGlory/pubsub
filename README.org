@@ -146,7 +146,7 @@ sse-cat "http://localhost:8080/pubsub/$id"
 
 ****** JavaScript
 #+BEGIN_SRC js
-const es = new EventSource(`http://localhost:8080/pubsub/$id`)
+const es = new EventSource(`http://localhost:8080/pubsub/${id}`)
 es.addEventListener('message', event => {
   console.log(event.data)
 })
@@ -172,7 +172,7 @@ websocat "ws://localhost:8080/pubsub/$id"
 
 ****** JavaScript
 #+BEGIN_SRC js
-const ws = new WebSocket('ws://localhost:8080')
+const ws = new WebSocket(`ws://localhost:8080/pubsub/${id}`)
 ws.addEventListener('message', event => {
     console.log(event.data);
 })
@@ -644,7 +644,7 @@ curl \
 
 ******** fetch
 #+BEGIN_SRC js
-await fetch(`http://localhost:8080/api/pubsub/${id}/tokens/$token/write`, {
+await fetch(`http://localhost:8080/api/pubsub/${id}/tokens/${token}/write`, {
   method: 'PUT'
 , headers: {
     'Authorization': `Bearer ${adminPassword}`
@@ -692,7 +692,7 @@ curl \
 
 ******** fetch
 #+BEGIN_SRC js
-await fetch(`http://localhost:8080/api/pubsub/${id}/tokens/$token/read`, {
+await fetch(`http://localhost:8080/api/pubsub/${id}/tokens/${token}/read`, {
   method: 'PUT'
 , headers: {
     'Authorization': `Bearer ${adminPassword}`
