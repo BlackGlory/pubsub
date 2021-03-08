@@ -71,6 +71,7 @@
   "dependencies": {
     "@blackglory/better-sqlite3-migrations": "^0.1.5",
     "@blackglory/errors": "^1.1.2",
+    "@blackglory/go": "^0.1.0",
     "@blackglory/structures": "^0.1.13",
     "@blackglory/types": "^0.3.0",
     "ajv": "^7.1.1",

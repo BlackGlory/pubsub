@@ -1,3 +1,4 @@
+import { go } from '@blackglory/go'
 import { FastifyPluginAsync } from 'fastify'
 import { idSchema, tokenSchema } from '@src/schema'
 import { sse } from 'extra-generator'
@@ -45,7 +46,7 @@ export const routes: FastifyPluginAsync<{ Core: ICore }> = async function routes
     }
   // Server-Sent Events
   , handler(req, reply) {
-      ;(async () => {
+      go(async () => {
         const id = req.params.id
         const token = req.query.token
 
@@ -77,7 +78,7 @@ export const routes: FastifyPluginAsync<{ Core: ICore }> = async function routes
           }
         })
         req.raw.on('close', () => unsubscribe())
-      })()
+      })
     }
   // WebSocket
   // @ts-ignore Do not want to waste time to fight the terrible types of fastify.
