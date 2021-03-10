@@ -1,9 +1,7 @@
 import { resetEmitter } from '@dao/data-in-memory/pubsub/emitter-instance'
 import { PubSubDAO } from '@dao/data-in-memory/pubsub'
 
-beforeEach(() => {
-  resetEmitter()
-})
+beforeEach(resetEmitter)
 
 describe('PubSubDAO', () => {
   test('publish, subscribe', async done => {

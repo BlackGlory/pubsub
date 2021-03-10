@@ -4,12 +4,6 @@ type CustomErrorConstructor = import('@blackglory/errors').CustomErrorConstructo
 interface ICore {
   isAdmin(password: string): boolean
 
-  metrics(): {
-    memoryUsage: NodeJS.MemoryUsage
-    cpuUsage: NodeJS.CpuUsage
-    resourceUsage: NodeJS.ResourceUsage
-  }
-
   PubSub: {
     publish(id: string, payload: string): void
     subscribe(id: string, cb: (value: string) => void): () => void

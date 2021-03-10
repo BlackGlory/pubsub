@@ -84,10 +84,12 @@
     "fastify": "^3.13.0",
     "fastify-bearer-auth": "^5.1.0",
     "fastify-cors": "^5.2.0",
+    "fastify-metrics": "^7.1.0",
     "fastify-plugin": "^3.0.0",
     "fastify-websocket": "^3.0.1",
     "fs-extra": "^9.1.0",
     "migrations-file": "^0.1.4",
+    "prom-client": "^13.1.0",
     "return-style": "^0.12.2",
     "rxjs": "^7.0.0-beta.10",
     "value-getter": "^0.1.11"

@@ -1,5 +1,4 @@
-import { buildServer } from '@src/server'
-import { resetDatabases, resetEnvironment } from '@test/utils'
+import { startService, stopService, getServer } from '@test/utils'
 import { matchers } from 'jest-json-schema'
 import { AccessControlDAO } from '@dao'
 import WebSocket = require('ws')
@@ -8,10 +7,8 @@ import { waitForEventTarget } from '@blackglory/wait-for'
 jest.mock('@dao/config-in-sqlite3/database')
 expect.extend(matchers)
 
-beforeEach(async () => {
-  resetEnvironment()
-  await resetDatabases()
-})
+beforeEach(startService)
+afterEach(stopService)
 
 describe('token-based access control', () => {
   describe('enabled', () => {
@@ -21,7 +18,7 @@ describe('token-based access control', () => {
           process.env.PUBSUB_TOKEN_BASED_ACCESS_CONTROL = 'true'
           const id = 'id'
           const token = 'token'
-          const server = await buildServer()
+          const server = getServer()
           const address = await server.listen(0)
           await AccessControlDAO.setReadTokenRequired(id, true)
           await AccessControlDAO.setReadToken({ id, token })
@@ -40,7 +37,7 @@ describe('token-based access control', () => {
           process.env.PUBSUB_TOKEN_BASED_ACCESS_CONTROL = 'true'
           const id = 'id'
           const token = 'token'
-          const server = await buildServer()
+          const server = getServer()
           const address = await server.listen(0)
           await AccessControlDAO.setReadTokenRequired(id, true)
           await AccessControlDAO.setReadToken({ id, token })
@@ -59,7 +56,7 @@ describe('token-based access control', () => {
           process.env.PUBSUB_TOKEN_BASED_ACCESS_CONTROL = 'true'
           const id = 'id'
           const token = 'token'
-          const server = await buildServer()
+          const server = getServer()
           const address = await server.listen(0)
           await AccessControlDAO.setReadTokenRequired(id, true)
           await AccessControlDAO.setReadToken({ id, token })
@@ -80,7 +77,7 @@ describe('token-based access control', () => {
           process.env.PUBSUB_TOKEN_BASED_ACCESS_CONTROL = 'true'
           process.env.PUBSUB_READ_TOKEN_REQUIRED = 'true'
           const id = 'id'
-          const server = await buildServer()
+          const server = getServer()
           const address = await server.listen(0)
 
           try {
@@ -97,7 +94,7 @@ describe('token-based access control', () => {
           process.env.PUBSUB_TOKEN_BASED_ACCESS_CONTROL = 'true'
           process.env.PUBSUB_READ_TOKEN_REQUIRED = 'false'
           const id = 'id'
-          const server = await buildServer()
+          const server = getServer()
           const address = await server.listen(0)
 
           try {
@@ -117,7 +114,7 @@ describe('token-based access control', () => {
         it('open', async () => {
           const id = 'id'
           const token = 'token'
-          const server = await buildServer()
+          const server = getServer()
           const address = await server.listen(0)
           await AccessControlDAO.setReadTokenRequired(id, true)
           await AccessControlDAO.setReadToken({ id, token })
@@ -137,7 +134,7 @@ describe('token-based access control', () => {
         it('open', async () => {
           process.env.PUBSUB_READ_TOKEN_REQUIRED = 'true'
           const id = 'id'
-          const server = await buildServer()
+          const server = getServer()
           const address = await server.listen(0)
 
           try {

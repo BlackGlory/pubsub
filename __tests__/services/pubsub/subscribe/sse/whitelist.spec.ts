@@ -1,5 +1,4 @@
-import { buildServer } from '@src/server'
-import { resetDatabases, resetEnvironment } from '@test/utils'
+import { startService, stopService, getServer } from '@test/utils'
 import { matchers } from 'jest-json-schema'
 import { AccessControlDAO } from '@dao'
 import { EventSource } from 'extra-fetch'
@@ -8,10 +7,8 @@ import { waitForEventTarget } from '@blackglory/wait-for'
 jest.mock('@dao/config-in-sqlite3/database')
 expect.extend(matchers)
 
-beforeEach(async () => {
-  resetEnvironment()
-  await resetDatabases()
-})
+beforeEach(startService)
+afterEach(stopService)
 
 describe('whitelist', () => {
   describe('enabled', () => {
@@ -20,7 +17,7 @@ describe('whitelist', () => {
         process.env.PUBSUB_LIST_BASED_ACCESS_CONTROL = 'whitelist'
         const id = 'id'
         await AccessControlDAO.addWhitelistItem(id)
-        const server = await buildServer()
+        const server = getServer()
         const address = await server.listen(0)
 
         try {
@@ -37,7 +34,7 @@ describe('whitelist', () => {
       it('403', async () => {
         process.env.PUBSUB_LIST_BASED_ACCESS_CONTROL = 'whitelist'
         const id = 'id'
-        const server = await buildServer()
+        const server = getServer()
 
         const res = await server.inject({
           method: 'GET'
@@ -54,7 +51,7 @@ describe('whitelist', () => {
       it('200', async () => {
         const id = 'id'
         await AccessControlDAO.addWhitelistItem(id)
-        const server = await buildServer()
+        const server = getServer()
         const address = await server.listen(0)
 
         try {
