@@ -178,29 +178,6 @@ ws.addEventListener('message', event => {
 })
 #+END_SRC
 
-**** metrics
-=GET /metrics=
-
-输出JSON:
-#+BEGIN_SRC ts
-{
-  memoryUsage: NodeJS.MemoryUsage
-  cpuUsage: NodeJS.CpuUsage
-  resourceUsage: NodeJS.ResourceUsage
-}
-#+END_SRC
-
-***** Example
-****** curl
-#+BEGIN_SRC sh
-curl 'http://localhost:8080/metrics'
-#+END_SRC
-
-****** JavaScript
-#+BEGIN_SRC js
-await fetch('http://localhost:8080/metrics').then(res => res.json())
-#+END_SRC
-
 *** Private
 **** JSON Schema验证
 通过设置环境变量 =PUBSUB_JSON_VALIDATION=true= 可开启publish的JSON Schema验证功能.
