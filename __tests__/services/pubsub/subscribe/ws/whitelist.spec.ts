@@ -1,4 +1,4 @@
-import { startService, stopService, getServer } from '@test/utils'
+import { startService, stopService, getAddress } from '@test/utils'
 import { matchers } from 'jest-json-schema'
 import { AccessControlDAO } from '@dao'
 import WebSocket = require('ws')
@@ -17,15 +17,9 @@ describe('whitelist', () => {
         process.env.PUBSUB_LIST_BASED_ACCESS_CONTROL = 'whitelist'
         const id = 'id'
         await AccessControlDAO.addWhitelistItem(id)
-        const server = getServer()
-        const address = await server.listen(0)
 
-        try {
-          const ws = new WebSocket(`${address}/pubsub/${id}`.replace('http', 'ws'))
-          await waitForEventTarget(ws as unknown as EventTarget, 'open')
-        } finally {
-          await server.close()
-        }
+        const ws = new WebSocket(`${getAddress()}/pubsub/${id}`.replace('http', 'ws'))
+        await waitForEventTarget(ws as unknown as EventTarget, 'open')
       })
     })
 
@@ -33,15 +27,9 @@ describe('whitelist', () => {
       it('error', async () => {
         process.env.PUBSUB_LIST_BASED_ACCESS_CONTROL = 'whitelist'
         const id = 'id'
-        const server = getServer()
-        const address = await server.listen(0)
 
-        try {
-          const ws = new WebSocket(`${address}/pubsub/${id}`.replace('http', 'ws'))
-          await waitForEventTarget(ws as unknown as EventTarget, 'error')
-        } finally {
-          await server.close()
-        }
+        const ws = new WebSocket(`${getAddress()}/pubsub/${id}`.replace('http', 'ws'))
+        await waitForEventTarget(ws as unknown as EventTarget, 'error')
       })
     })
   })
@@ -50,15 +38,9 @@ describe('whitelist', () => {
     describe('id not in whitelist', () => {
       it('open', async () => {
         const id = 'id'
-        const server = getServer()
-        const address = await server.listen(0)
 
-        try {
-          const ws = new WebSocket(`${address}/pubsub/${id}`.replace('http', 'ws'))
-          await waitForEventTarget(ws as unknown as EventTarget, 'open')
-        } finally {
-          await server.close()
-        }
+        const ws = new WebSocket(`${getAddress()}/pubsub/${id}`.replace('http', 'ws'))
+        await waitForEventTarget(ws as unknown as EventTarget, 'open')
       })
     })
   })

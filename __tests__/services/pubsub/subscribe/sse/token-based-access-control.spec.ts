@@ -1,8 +1,11 @@
-import { startService, stopService, getServer } from '@test/utils'
+import { startService, stopService, getAddress } from '@test/utils'
 import { matchers } from 'jest-json-schema'
 import { EventSource } from 'extra-fetch'
 import { waitForEventTarget } from '@blackglory/wait-for'
 import { AccessControlDAO } from '@dao'
+import { fetch } from 'extra-fetch'
+import { get } from 'extra-request'
+import { url, pathname, searchParam } from 'extra-request/lib/es2018/transformers'
 
 jest.mock('@dao/config-in-sqlite3/database')
 expect.extend(matchers)
@@ -18,18 +21,12 @@ describe('token-based access control', () => {
           process.env.PUBSUB_TOKEN_BASED_ACCESS_CONTROL = 'true'
           const id = 'id'
           const token = 'token'
-          const server = getServer()
-          const address = await server.listen(0)
           await AccessControlDAO.setReadTokenRequired(id, true)
           await AccessControlDAO.setReadToken({ id, token })
 
-          try {
-            const es = new EventSource(`${address}/pubsub/${id}?token=${token}`)
-            await waitForEventTarget(es as EventTarget, 'open')
-            es.close()
-          } finally {
-            await server.close()
-          }
+          const es = new EventSource(`${getAddress()}/pubsub/${id}?token=${token}`)
+          await waitForEventTarget(es as EventTarget, 'open')
+          es.close()
         })
       })
 
@@ -38,17 +35,16 @@ describe('token-based access control', () => {
           process.env.PUBSUB_TOKEN_BASED_ACCESS_CONTROL = 'true'
           const id = 'id'
           const token = 'token'
-          const server = getServer()
           await AccessControlDAO.setReadTokenRequired(id, true)
           await AccessControlDAO.setReadToken({ id, token })
 
-          const res = await server.inject({
-            method: 'GET'
-          , url: `/pubsub/${id}`
-          , query: { token: 'bad' }
-          })
+          const res = await fetch(get(
+            url(getAddress())
+          , pathname(`/pubsub/${id}`)
+          , searchParam('token', 'bad')
+          ))
 
-          expect(res.statusCode).toBe(401)
+          expect(res.status).toBe(401)
         })
       })
 
@@ -57,16 +53,15 @@ describe('token-based access control', () => {
           process.env.PUBSUB_TOKEN_BASED_ACCESS_CONTROL = 'true'
           const id = 'id'
           const token = 'token'
-          const server = getServer()
           await AccessControlDAO.setReadTokenRequired(id, true)
           await AccessControlDAO.setReadToken({ id, token })
 
-          const res = await server.inject({
-            method: 'GET'
-          , url: `/pubsub/${id}`
-          })
+          const res = await fetch(get(
+            url(getAddress())
+          , pathname(`/pubsub/${id}`)
+          ))
 
-          expect(res.statusCode).toBe(401)
+          expect(res.status).toBe(401)
         })
       })
     })
@@ -77,14 +72,13 @@ describe('token-based access control', () => {
           process.env.PUBSUB_TOKEN_BASED_ACCESS_CONTROL = 'true'
           process.env.PUBSUB_READ_TOKEN_REQUIRED = 'true'
           const id = 'id'
-          const server = getServer()
 
-          const res = await server.inject({
-            method: 'GET'
-          , url: `/pubsub/${id}`
-          })
+          const res = await fetch(get(
+            url(getAddress())
+          , pathname(`/pubsub/${id}`)
+          ))
 
-          expect(res.statusCode).toBe(401)
+          expect(res.status).toBe(401)
         })
       })
 
@@ -93,16 +87,10 @@ describe('token-based access control', () => {
           process.env.PUBSUB_TOKEN_BASED_ACCESS_CONTROL = 'true'
           process.env.PUBSUB_READ_TOKEN_REQUIRED = 'false'
           const id = 'id'
-          const server = getServer()
-          const address = await server.listen(0)
 
-          try {
-            const es = new EventSource(`${address}/pubsub/${id}`)
-            await waitForEventTarget(es as EventTarget, 'open')
-            es.close()
-          } finally {
-            await server.close()
-          }
+          const es = new EventSource(`${getAddress()}/pubsub/${id}`)
+          await waitForEventTarget(es as EventTarget, 'open')
+          es.close()
         })
       })
     })
@@ -114,18 +102,12 @@ describe('token-based access control', () => {
         it('200', async () => {
           const id = 'id'
           const token = 'token'
-          const server = getServer()
-          const address = await server.listen(0)
           await AccessControlDAO.setReadTokenRequired(id, true)
           await AccessControlDAO.setReadToken({ id, token })
 
-          try {
-            const es = new EventSource(`${address}/pubsub/${id}`)
-            await waitForEventTarget(es as EventTarget, 'open')
-            es.close()
-          } finally {
-            await server.close()
-          }
+          const es = new EventSource(`${getAddress()}/pubsub/${id}`)
+          await waitForEventTarget(es as EventTarget, 'open')
+          es.close()
         })
       })
     })
@@ -135,17 +117,10 @@ describe('token-based access control', () => {
         it('200', async () => {
           process.env.PUBSUB_READ_TOKEN_REQUIRED = 'true'
           const id = 'id'
-          const token = 'token'
-          const server = getServer()
-          const address = await server.listen(0)
 
-          try {
-            const es = new EventSource(`${address}/pubsub/${id}`)
-            await waitForEventTarget(es as EventTarget, 'open')
-            es.close()
-          } finally {
-            await server.close()
-          }
+          const es = new EventSource(`${getAddress()}/pubsub/${id}`)
+          await waitForEventTarget(es as EventTarget, 'open')
+          es.close()
         })
       })
     })
