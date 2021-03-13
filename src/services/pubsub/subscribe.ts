@@ -79,7 +79,7 @@ export const routes: FastifyPluginAsync<{ Core: ICore }> = async function routes
           }
         })
 
-        let heartbeatTimer: NodeJS.Timeout
+        let heartbeatTimer: NodeJS.Timeout | null = null
         if (SSE_HEARTBEAT_INTERVAL() > 0) {
           heartbeatTimer = setInterval(() => {
             reply.raw.write(
