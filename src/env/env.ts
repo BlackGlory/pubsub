@@ -139,6 +139,7 @@ export const SSE_HEARTBEAT_INTERVAL: Getter<number> =
   env('PUBSUB_SSE_HEARTBEAT_INTERVAL')
     .convert(toInteger)
     .default(0)
+    .assert(shouldBePositiveOrZero)
     .memoize(getCache)
     .get()
 
@@ -162,4 +163,8 @@ function toJsonObject(val: string | undefined): object | undefined {
 
 function shouldBePositive(val: number) {
   assert(val > 0)
+}
+
+function shouldBePositiveOrZero(val: number) {
+  assert(val === 0 || val > 0)
 }
