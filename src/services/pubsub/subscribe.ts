@@ -5,6 +5,7 @@ import { sse } from 'extra-generator'
 import { waitForEventEmitter } from '@blackglory/wait-for'
 import websocket from 'fastify-websocket'
 import { SSE_HEARTBEAT_INTERVAL } from '@env'
+import { setDynamicTimeoutLoop } from 'extra-timers'
 
 export const routes: FastifyPluginAsync<{ Core: ICore }> = async function routes(server, { Core }) {
   server.register(websocket, {
@@ -79,19 +80,20 @@ export const routes: FastifyPluginAsync<{ Core: ICore }> = async function routes
           }
         })
 
-        let heartbeatTimer: NodeJS.Timeout | null = null
+        let cancelHeartbeatTimer: (() => void) | null = null
+        const heartbeatInterval = SSE_HEARTBEAT_INTERVAL()
         if (SSE_HEARTBEAT_INTERVAL() > 0) {
-          heartbeatTimer = setInterval(async () => {
+          cancelHeartbeatTimer = setDynamicTimeoutLoop(heartbeatInterval, async () => {
             for (const line of sse({ event: 'heartbeat', data: '' })) {
               if (!reply.raw.write(line)) {
                 await waitForEventEmitter(reply.raw, 'drain')
               }
             }
-          }, SSE_HEARTBEAT_INTERVAL())
+          })
         }
 
         req.raw.on('close', () => {
-          if (heartbeatTimer) clearInterval(heartbeatTimer)
+          if (cancelHeartbeatTimer) cancelHeartbeatTimer()
           unsubscribe()
         })
       })

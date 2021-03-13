@@ -84,6 +84,7 @@
     "dotenv": "^8.2.0",
     "extra-generator": "^0.2.0",
     "extra-promise": "^0.15.4",
+    "extra-timers": "^0.2.0",
     "fastify": "^3.14.0",
     "fastify-bearer-auth": "^5.1.0",
     "fastify-cors": "^5.2.0",
