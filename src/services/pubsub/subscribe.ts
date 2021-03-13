@@ -70,10 +70,10 @@ export const routes: FastifyPluginAsync<{ Core: ICore }> = async function routes
         }
         reply.raw.flushHeaders()
 
-        const unsubscribe = Core.PubSub.subscribe(id, async value => {
-          for (const data of sse(value)) {
+        const unsubscribe = Core.PubSub.subscribe(id, async data => {
+          for (const line of sse({ data })) {
             // `publish` is non-blocking, so it cannot handle back-pressure.
-            if (!reply.raw.write(data)) {
+            if (!reply.raw.write(line)) {
               await waitForEventEmitter(reply.raw, 'drain')
             }
           }
@@ -81,12 +81,12 @@ export const routes: FastifyPluginAsync<{ Core: ICore }> = async function routes
 
         let heartbeatTimer: NodeJS.Timeout | null = null
         if (SSE_HEARTBEAT_INTERVAL() > 0) {
-          heartbeatTimer = setInterval(() => {
-            reply.raw.write(
-              'event: heartbeat' + '\n'
-            + 'data: ' + '\n'
-            + '\n'
-            )
+          heartbeatTimer = setInterval(async () => {
+            for (const line of sse({ event: 'heartbeat', data: '' })) {
+              if (!reply.raw.write(line)) {
+                await waitForEventEmitter(reply.raw, 'drain')
+              }
+            }
           }, SSE_HEARTBEAT_INTERVAL())
         }
 
