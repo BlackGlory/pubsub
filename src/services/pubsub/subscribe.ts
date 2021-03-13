@@ -4,6 +4,7 @@ import { idSchema, tokenSchema } from '@src/schema'
 import { sse } from 'extra-generator'
 import { waitForEventEmitter } from '@blackglory/wait-for'
 import websocket from 'fastify-websocket'
+import { SSE_HEARTBEAT_INTERVAL } from '@env'
 
 export const routes: FastifyPluginAsync<{ Core: ICore }> = async function routes(server, { Core }) {
   server.register(websocket, {
@@ -77,7 +78,22 @@ export const routes: FastifyPluginAsync<{ Core: ICore }> = async function routes
             }
           }
         })
-        req.raw.on('close', () => unsubscribe())
+
+        let heartbeatTimer: NodeJS.Timeout
+        if (SSE_HEARTBEAT_INTERVAL() > 0) {
+          heartbeatTimer = setInterval(() => {
+            reply.raw.write(
+              'event: heartbeat' + '\n'
+            + 'data: ' + '\n'
+            + '\n'
+            )
+          }, SSE_HEARTBEAT_INTERVAL())
+        }
+
+        req.raw.on('close', () => {
+          if (heartbeatTimer) clearInterval(heartbeatTimer)
+          unsubscribe()
+        })
       })
     }
   // WebSocket

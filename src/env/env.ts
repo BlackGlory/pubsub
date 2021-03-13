@@ -135,6 +135,13 @@ export const PUBLISH_PAYLOAD_LIMIT: Getter<number> =
     .memoize(getCache)
     .get()
 
+export const SSE_HEARTBEAT_INTERVAL: Getter<number> =
+  env('PUBSUB_SSE_HEARTBEAT_INTERVAL')
+    .convert(toInteger)
+    .default(0)
+    .memoize(getCache)
+    .get()
+
 function env(name: string): ValueGetter<string | undefined> {
   return new ValueGetter(() => process.env[name])
 }
