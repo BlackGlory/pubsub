@@ -5,7 +5,7 @@ import { FastifyPluginAsync } from 'fastify'
 import { idSchema, tokenSchema } from '@src/schema'
 import { sse } from 'extra-generator'
 import { waitForEventEmitter } from '@blackglory/wait-for'
-import { SSE_HEARTBEAT_INTERVAL } from '@env'
+import { SSE_HEARTBEAT_INTERVAL, WS_HEARTBEAT_INTERVAL } from '@env'
 import { setDynamicTimeoutLoop } from 'extra-timers'
 import WebSocket = require('ws')
 
@@ -15,8 +15,21 @@ export const routes: FastifyPluginAsync<{ Core: ICore }> = async function routes
   // WebSocket handler
   wss.on('connection', (ws: WebSocket, req: http.IncomingMessage, params: { id: string }) => {
     const unsubscribe = Core.PubSub.subscribe(params.id, value => ws.send(value))
-    ws.on('close', () => unsubscribe())
-    ws.on('message', () => ws.close())
+
+    let cancelHeartbeatTimer: (() => void) | null = null
+    if (WS_HEARTBEAT_INTERVAL()) {
+      cancelHeartbeatTimer = setDynamicTimeoutLoop(WS_HEARTBEAT_INTERVAL(), () => {
+        ws.ping()
+      })
+    }
+
+    ws.on('close', () => {
+      if (cancelHeartbeatTimer) cancelHeartbeatTimer()
+      unsubscribe()
+    })
+    ws.on('message', message => {
+      if (message.toString() !== '') ws.close()
+    })
   })
 
   // WebSocket upgrade handler
@@ -110,15 +123,17 @@ export const routes: FastifyPluginAsync<{ Core: ICore }> = async function routes
         })
 
         let cancelHeartbeatTimer: (() => void) | null = null
-        const heartbeatInterval = SSE_HEARTBEAT_INTERVAL()
         if (SSE_HEARTBEAT_INTERVAL() > 0) {
-          cancelHeartbeatTimer = setDynamicTimeoutLoop(heartbeatInterval, async () => {
-            for (const line of sse({ event: 'heartbeat', data: '' })) {
-              if (!reply.raw.write(line)) {
-                await waitForEventEmitter(reply.raw, 'drain')
+          cancelHeartbeatTimer = setDynamicTimeoutLoop(
+            SSE_HEARTBEAT_INTERVAL()
+          , async () => {
+              for (const line of sse({ event: 'heartbeat', data: '' })) {
+                if (!reply.raw.write(line)) {
+                  await waitForEventEmitter(reply.raw, 'drain')
+                }
               }
             }
-          })
+          )
         }
 
         req.raw.on('close', () => {

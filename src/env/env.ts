@@ -143,6 +143,14 @@ export const SSE_HEARTBEAT_INTERVAL: Getter<number> =
     .memoize(getCache)
     .get()
 
+export const WS_HEARTBEAT_INTERVAL: Getter<number> =
+  env('PUBSUB_WS_HEARTBEAT_INTERVAL')
+    .convert(toInteger)
+    .default(0)
+    .assert(shouldBePositiveOrZero)
+    .memoize(getCache)
+    .get()
+
 function env(name: string): ValueGetter<string | undefined> {
   return new ValueGetter(() => process.env[name])
 }
