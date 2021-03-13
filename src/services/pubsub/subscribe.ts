@@ -17,7 +17,7 @@ export const routes: FastifyPluginAsync<{ Core: ICore }> = async function routes
     const unsubscribe = Core.PubSub.subscribe(params.id, value => ws.send(value))
 
     let cancelHeartbeatTimer: (() => void) | null = null
-    if (WS_HEARTBEAT_INTERVAL()) {
+    if (WS_HEARTBEAT_INTERVAL() > 0) {
       cancelHeartbeatTimer = setDynamicTimeoutLoop(WS_HEARTBEAT_INTERVAL(), () => {
         ws.ping()
       })
