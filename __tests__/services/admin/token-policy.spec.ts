@@ -12,14 +12,14 @@ beforeEach(startService)
 afterEach(stopService)
 
 describe('TokenPolicy', () => {
-  describe('GET /api/pubsub-with-token-policies', () => {
+  describe('GET /admin/pubsub-with-token-policies', () => {
     describe('auth', () => {
       it('200', async () => {
         process.env.PUBSUB_ADMIN_PASSWORD = 'password'
 
         const res = await fetch(get(
           url(getAddress())
-        , pathname('/api/pubsub-with-token-policies')
+        , pathname('/admin/pubsub-with-token-policies')
         , headers(createAuthHeaders())
         ))
 
@@ -35,7 +35,7 @@ describe('TokenPolicy', () => {
       it('401', async () => {
         const res = await fetch(get(
           url(getAddress())
-        , pathname('/api/pubsub-with-token-policies')
+        , pathname('/admin/pubsub-with-token-policies')
         ))
 
         expect(res.status).toBe(401)
@@ -48,7 +48,7 @@ describe('TokenPolicy', () => {
 
         const res = await fetch(get(
           url(getAddress())
-        , pathname('/api/pubsub-with-token-policies')
+        , pathname('/admin/pubsub-with-token-policies')
         , headers(createAuthHeaders('bad'))
         ))
 
@@ -57,7 +57,7 @@ describe('TokenPolicy', () => {
     })
   })
 
-  describe('GET /api/pubsub/:id/token-policies', () => {
+  describe('GET /admin/pubsub/:id/token-policies', () => {
     describe('auth', () => {
       it('200', async () => {
         process.env.PUBSUB_ADMIN_PASSWORD = 'password'
@@ -65,7 +65,7 @@ describe('TokenPolicy', () => {
 
         const res = await fetch(get(
           url(getAddress())
-        , pathname(`/api/pubsub/${id}/token-policies`)
+        , pathname(`/admin/pubsub/${id}/token-policies`)
         , headers(createAuthHeaders())
         ))
 
@@ -96,7 +96,7 @@ describe('TokenPolicy', () => {
 
         const res = await fetch(get(
           url(getAddress())
-        , pathname(`/api/pubsub/${id}/token-policies`)
+        , pathname(`/admin/pubsub/${id}/token-policies`)
         ))
 
         expect(res.status).toBe(401)
@@ -110,7 +110,7 @@ describe('TokenPolicy', () => {
 
         const res = await fetch(get(
           url(getAddress())
-        , pathname(`/api/pubsub/${id}/token-policies`)
+        , pathname(`/admin/pubsub/${id}/token-policies`)
         , headers(createAuthHeaders('bad'))
         ))
 
@@ -119,7 +119,7 @@ describe('TokenPolicy', () => {
     })
   })
 
-  describe('PUT /api/pubsub/:id/token-policies/write-token-required', () => {
+  describe('PUT /admin/pubsub/:id/token-policies/write-token-required', () => {
     describe('auth', () => {
       it('204', async () => {
         process.env.PUBSUB_ADMIN_PASSWORD = 'password'
@@ -128,7 +128,7 @@ describe('TokenPolicy', () => {
 
         const res = await fetch(put(
           url(getAddress())
-        , pathname(`/api/pubsub/${id}/token-policies/write-token-required`)
+        , pathname(`/admin/pubsub/${id}/token-policies/write-token-required`)
         , headers(createAuthHeaders())
         , json(val)
         ))
@@ -144,7 +144,7 @@ describe('TokenPolicy', () => {
 
         const res = await fetch(put(
           url(getAddress())
-        , pathname(`/api/pubsub/${id}/token-policies/write-token-required`)
+        , pathname(`/admin/pubsub/${id}/token-policies/write-token-required`)
         , headers(createAuthHeaders())
         , json(val)
         ))
@@ -161,7 +161,7 @@ describe('TokenPolicy', () => {
 
         const res = await fetch(put(
           url(getAddress())
-        , pathname(`/api/pubsub/${id}/token-policies/write-token-required`)
+        , pathname(`/admin/pubsub/${id}/token-policies/write-token-required`)
         , headers(createAuthHeaders('bad'))
         , json(val)
         ))
@@ -171,7 +171,7 @@ describe('TokenPolicy', () => {
     })
   })
 
-  describe('PUT /api/pubsub/:id/token-policies/read-token-required', () => {
+  describe('PUT /admin/pubsub/:id/token-policies/read-token-required', () => {
     describe('auth', () => {
       it('204', async () => {
         process.env.PUBSUB_ADMIN_PASSWORD = 'password'
@@ -180,7 +180,7 @@ describe('TokenPolicy', () => {
 
         const res = await fetch(put(
           url(getAddress())
-        , pathname(`/api/pubsub/${id}/token-policies/read-token-required`)
+        , pathname(`/admin/pubsub/${id}/token-policies/read-token-required`)
         , headers(createAuthHeaders())
         , json(val)
         ))
@@ -196,7 +196,7 @@ describe('TokenPolicy', () => {
 
         const res = await fetch(put(
           url(getAddress())
-        , pathname(`/api/pubsub/${id}/token-policies/read-token-required`)
+        , pathname(`/admin/pubsub/${id}/token-policies/read-token-required`)
         , headers(createAuthHeaders())
         , json(val)
         ))
@@ -213,7 +213,7 @@ describe('TokenPolicy', () => {
 
         const res = await fetch(put(
           url(getAddress())
-        , pathname(`/api/pubsub/${id}/token-policies/read-token-required`)
+        , pathname(`/admin/pubsub/${id}/token-policies/read-token-required`)
         , headers(createAuthHeaders('bad'))
         , json(val)
         ))
@@ -223,7 +223,7 @@ describe('TokenPolicy', () => {
     })
   })
 
-  describe('DELETE /api/pubsub/:id/token-policies/write-token-required', () => {
+  describe('DELETE /admin/pubsub/:id/token-policies/write-token-required', () => {
     describe('auth', () => {
       it('204', async () => {
         process.env.PUBSUB_ADMIN_PASSWORD = 'password'
@@ -231,7 +231,7 @@ describe('TokenPolicy', () => {
 
         const res = await fetch(del(
           url(getAddress())
-        , pathname(`/api/pubsub/${id}/token-policies/write-token-required`)
+        , pathname(`/admin/pubsub/${id}/token-policies/write-token-required`)
         , headers(createAuthHeaders())
         ))
 
@@ -245,7 +245,7 @@ describe('TokenPolicy', () => {
 
         const res = await fetch(del(
           url(getAddress())
-        , pathname(`/api/pubsub/${id}/token-policies/write-token-required`)
+        , pathname(`/admin/pubsub/${id}/token-policies/write-token-required`)
         ))
 
         expect(res.status).toBe(401)
@@ -259,7 +259,7 @@ describe('TokenPolicy', () => {
 
         const res = await fetch(del(
           url(getAddress())
-        , pathname(`/api/pubsub/${id}/token-policies/write-token-required`)
+        , pathname(`/admin/pubsub/${id}/token-policies/write-token-required`)
         , headers(createAuthHeaders('bad'))
         ))
 
@@ -268,7 +268,7 @@ describe('TokenPolicy', () => {
     })
   })
 
-  describe('DELETE /api/pubsub/:id/token-policies/read-token-required', () => {
+  describe('DELETE /admin/pubsub/:id/token-policies/read-token-required', () => {
     describe('auth', () => {
       it('204', async () => {
         process.env.PUBSUB_ADMIN_PASSWORD = 'password'
@@ -276,7 +276,7 @@ describe('TokenPolicy', () => {
 
         const res = await fetch(del(
           url(getAddress())
-        , pathname(`/api/pubsub/${id}/token-policies/read-token-required`)
+        , pathname(`/admin/pubsub/${id}/token-policies/read-token-required`)
         , headers(createAuthHeaders())
         ))
 
@@ -290,7 +290,7 @@ describe('TokenPolicy', () => {
 
         const res = await fetch(del(
           url(getAddress())
-        , pathname(`/api/pubsub/${id}/token-policies/read-token-required`)
+        , pathname(`/admin/pubsub/${id}/token-policies/read-token-required`)
         ))
 
         expect(res.status).toBe(401)
@@ -304,7 +304,7 @@ describe('TokenPolicy', () => {
 
         const res = await fetch(del(
           url(getAddress())
-        , pathname(`/api/pubsub/${id}/token-policies/read-token-required`)
+        , pathname(`/admin/pubsub/${id}/token-policies/read-token-required`)
         , headers(createAuthHeaders('bad'))
         ))
 
