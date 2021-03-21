@@ -19,6 +19,7 @@ RUN yarn build \
  && mkdir /data \
  && ln -s /data data
 
+ENV NODE_ENV=production
 ENV PUBSUB_HOST=0.0.0.0
 ENV PUBSUB_PORT=8080
 EXPOSE 8080
