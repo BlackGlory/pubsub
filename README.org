@@ -99,44 +99,44 @@ volumes:
 #+END_SRC
 
 ** API
-所有API中的id都需要满足此正则表达式: `^[a-zA-Z0-9\.\-_]{0,255}$`
+所有API中的namespace都需要满足此正则表达式: `^[a-zA-Z0-9\.\-_]{0,255}$`
 
 *** Public
 **** publish
-=POST /pubsub/<id>=
+=POST /pubsub/<namespace>=
 
 往特定频道发布消息, 所有订阅此频道的客户端都会收到消息.
-id用于标识频道.
+namespace用于标识频道.
 
 如果开启基于token的访问控制, 则可能需要在Querystring提供具有write权限的token:
-=POST /pubsub/<id>?token=<token>=
+=POST /pubsub/<namespace>?token=<token>=
 
 ***** Example
 ****** curl
 #+BEGIN_SRC sh
 curl \
   --data 'message' \
-  "http://localhost:8080/pubsub/$id"
+  "http://localhost:8080/pubsub/$namespace"
 #+END_SRC
 
 ****** JavaScript
 #+BEGIN_SRC js
-fetch(`http://localhost:8080/pubsub/${id}`, {
+fetch(`http://localhost:8080/pubsub/${namespace}`, {
   method: 'POST'
 , body: 'message'
 })
 #+END_SRC
 
 **** subscribe via Server-Sent Events(SSE)
-=GET /pubsub/<id>=
+=GET /pubsub/<namespace>=
 
 通过SSE订阅特定频道.
-id用于标识频道.
+namespace用于标识频道.
 
 当客户端主要是浏览器时, 强烈建议服务器提供 HTTP/2 协议的反向代理.
 
 如果开启基于token的访问控制, 则可能需要在Querystring提供具有read权限的token:
-=/pubsub/<id>?token=<token>=
+=/pubsub/<namespace>?token=<token>=
 
 ***** heartbeat
 通过环境变量 =PUBSUB_SSE_HEARTBEAT_INTERVAL= 可以设置SSE心跳包的发送间隔, 单位为毫秒.
@@ -150,25 +150,25 @@ id用于标识频道.
 ***** Example
 ****** sse-cat
 #+BEGIN_SRC sh
-sse-cat "http://localhost:8080/pubsub/$id"
+sse-cat "http://localhost:8080/pubsub/$namespace"
 #+END_SRC
 
 ****** JavaScript
 #+BEGIN_SRC js
-const es = new EventSource(`http://localhost:8080/pubsub/${id}`)
+const es = new EventSource(`http://localhost:8080/pubsub/${namespace}`)
 es.addEventListener('message', event => {
   console.log(event.data)
 })
 #+END_SRC
 
 **** subscribe via WebSocket
-=WS /pubsub/<id>=
+=WS /pubsub/<namespace>=
 
 通过WebSocket订阅特定频道.
-id用于标识频道.
+namespace用于标识频道.
 
 如果开启基于token的访问控制, 则可能需要在Querystring提供具有read权限的token:
-=/pubsub/<id>?token=<token>=
+=/pubsub/<namespace>?token=<token>=
 
 ***** heartbeat
 通过环境变量  =PUBSUB_WS_HEARTBEAT_INTERVAL= 可以设置WS心跳包(ping帧)的发送间隔, 单位为毫秒.
@@ -184,12 +184,12 @@ id用于标识频道.
 ***** Example
 ****** websocat
 #+BEGIN_SRC sh
-websocat "ws://localhost:8080/pubsub/$id"
+websocat "ws://localhost:8080/pubsub/$namespace"
 #+END_SRC
 
 ****** JavaScript
 #+BEGIN_SRC js
-const ws = new WebSocket(`ws://localhost:8080/pubsub/${id}`)
+const ws = new WebSocket(`ws://localhost:8080/pubsub/${namespace}`)
 ws.addEventListener('message', event => {
     console.log(event.data);
 })
@@ -209,13 +209,13 @@ JSON验证仅用于验证, 不会重新序列化消息, 因此subscribe得到的
 可以强制enqueue只接受带有 =Content-Type: application/json= 的请求.
 此设置在未开启JSON Schema验证的情况下也有效, 但在这种情况下服务器能够接受不合法的JSON.
 
-***** 单独为id设置JSON Schema
-可单独为id设置JSON Schema, 被设置的id将仅接受`Content-Type: application/json`请求.
+***** 单独为namespace设置JSON Schema
+可单独为namespace设置JSON Schema, 被设置的namespace将仅接受`Content-Type: application/json`请求.
 
-****** 获取所有具有JSON Schema的频道id
+****** 获取所有具有JSON Schema的频道namespace
 =GET /admin/pubsub-with-json-schema=
 
-获取所有具有JSON Schema的频道id, 返回由JSON表示的字符串数组 =string[]=.
+获取所有具有JSON Schema的频道namespace, 返回由JSON表示的字符串数组 =string[]=.
 
 ******* Example
 ******** curl
@@ -235,19 +235,19 @@ await fetch('http://localhost:8080/admin/pubsub-with-json-schema', {
 #+END_SRC
 
 ****** 获取JSON Schema
-=GET /admin/pubsub/<id>/json-schema=
+=GET /admin/pubsub/<namespace>/json-schema=
 
 ******* Example
 ******** curl
 #+BEGIN_SRC sh
 curl \
   --header "Authorization: Bearer $ADMIN_PASSWORD" \
-  "http://localhost:8080/admin/pubsub/$id/json-schema"
+  "http://localhost:8080/admin/pubsub/$namespace/json-schema"
 #+END_SRC
 
 ******** fetch
 #+BEGIN_SRC js
-await fetch(`http://localhost:8080/admin/pubsub/${id}/json-schema`, {
+await fetch(`http://localhost:8080/admin/pubsub/${namespace}/json-schema`, {
   headers: {
     'Authorization': `Bearer ${adminPassword}`
   }
@@ -255,7 +255,7 @@ await fetch(`http://localhost:8080/admin/pubsub/${id}/json-schema`, {
 #+END_SRC
 
 ****** 设置JSON Schema
-=PUT /admin/pubsub/<id>/json-schema=
+=PUT /admin/pubsub/<namespace>/json-schema=
 
 ******* Example
 ******** curl
@@ -265,12 +265,12 @@ curl \
   --header "Authorization: Bearer $ADMIN_PASSWORD" \
   --header "Content-Type: application/json" \
   --data "$JSON_SCHEMA" \
-  "http://localhost:8080/admin/pubsub/$id/jsonschema"
+  "http://localhost:8080/admin/pubsub/$namespace/jsonschema"
 #+END_SRC
 
 ******** fetch
 #+BEGIN_SRC js
-await fetch(`http://localhost:8080/admin/pubsub/${id}/json-schema`, {
+await fetch(`http://localhost:8080/admin/pubsub/${namespace}/json-schema`, {
   method: 'PUT'
 , headers: {
     'Authorization': `Bearer ${adminPassword}`
@@ -281,7 +281,7 @@ await fetch(`http://localhost:8080/admin/pubsub/${id}/json-schema`, {
 #+END_SRC
 
 ****** 移除JSON Schema
-=DELETE /admin/pubsub/<id>/json-schema=
+=DELETE /admin/pubsub/<namespace>/json-schema=
 
 ******* Example
 ******** curl
@@ -289,12 +289,12 @@ await fetch(`http://localhost:8080/admin/pubsub/${id}/json-schema`, {
 curl \
   --request DELETE \
   --header "Authorization: Bearer $ADMIN_PASSWORD" \
-  "http://localhost:8080/admin/pubsub/$id/json-schema"
+  "http://localhost:8080/admin/pubsub/$namespace/json-schema"
 #+END_SRC
 
 ******** fetch
 #+BEGIN_SRC js
-await fetch(`http://localhost:8080/admin/pubsub/${id}/json-schema`, {
+await fetch(`http://localhost:8080/admin/pubsub/${namespace}/json-schema`, {
   method: 'DELETE'
 , headers: {
     'Authorization': `Bearer ${adminPassword}`
@@ -324,7 +324,7 @@ PubSub提供两种访问控制策略, 可以一并使用.
 ******* 获取黑名单
 =GET /admin/blacklist=
 
-获取位于黑名单中的所有频道id, 返回JSON表示的字符串数组 =string[]=.
+获取位于黑名单中的所有频道namespace, 返回JSON表示的字符串数组 =string[]=.
 
 ******** Example
 ********* curl
@@ -344,7 +344,7 @@ await fetch('http://localhost:8080/admin/blacklist', {
 #+END_SRC
 
 ******* 添加黑名单
-=PUT /admin/blacklist/<id>=
+=PUT /admin/blacklist/<namespace>=
 
 将特定频道加入黑名单.
 
@@ -354,12 +354,12 @@ await fetch('http://localhost:8080/admin/blacklist', {
 curl \
   --request PUT \
   --header "Authorization: Bearer $ADMIN_PASSWORD" \
-  "http://localhost:8080/admin/blacklist/$id"
+  "http://localhost:8080/admin/blacklist/$namespace"
 #+END_SRC
 
 ********* fetch
 #+BEGIN_SRC js
-await fetch(`http://localhost:8080/admin/blacklist/${id}`, {
+await fetch(`http://localhost:8080/admin/blacklist/${namespace}`, {
   method: 'PUT'
 , headers: {
     'Authorization': `Bearer ${adminPassword}`
@@ -368,7 +368,7 @@ await fetch(`http://localhost:8080/admin/blacklist/${id}`, {
 #+END_SRC
 
 ******* 移除黑名单
-=DELETE /admin/blacklist/<id>=
+=DELETE /admin/blacklist/<namespace>=
 
 将特定频道从黑名单中移除.
 
@@ -378,12 +378,12 @@ await fetch(`http://localhost:8080/admin/blacklist/${id}`, {
 curl \
   --request DELETE \
   --header "Authorization: Bearer $ADMIN_PASSWORD" \
-  "http://localhost:8080/admin/blacklist/$id"
+  "http://localhost:8080/admin/blacklist/$namespace"
 #+END_SRC
 
 ********* fetch
 #+BEGIN_SRC js
-await fetch(`http://localhost:8080/admin/blacklist/${id}`, {
+await fetch(`http://localhost:8080/admin/blacklist/${namespace}`, {
   method: 'DELETE'
 , headers: {
     'Authorization': `Bearer ${adminPassword}`
@@ -395,7 +395,7 @@ await fetch(`http://localhost:8080/admin/blacklist/${id}`, {
 ******* 获取白名单
 =GET /admin/whitelist=
 
-获取位于黑名单中的所有频道id, 返回JSON表示的字符串数组`string[]`.
+获取位于黑名单中的所有频道namespace, 返回JSON表示的字符串数组`string[]`.
 
 ******* Example
 ******** curl
@@ -415,7 +415,7 @@ await fetch('http://localhost:8080/admin/whitelist', {
 #+END_SRC
 
 ******* 添加白名单
-=PUT /admin/whitelist/<id>=
+=PUT /admin/whitelist/<namespace>=
 
 将特定频道加入白名单.
 
@@ -425,12 +425,12 @@ await fetch('http://localhost:8080/admin/whitelist', {
 curl \
   --request PUT \
   --header "Authorization: Bearer $ADMIN_PASSWORD" \
-  "http://localhost:8080/admin/whitelist/$id"
+  "http://localhost:8080/admin/whitelist/$namespace"
 #+END_SRC
 
 ********* fetch
 #+BEGIN_SRC js
-await fetch(`http://localhost:8080/admin/whitelist/${id}`, {
+await fetch(`http://localhost:8080/admin/whitelist/${namespace}`, {
   method: 'PUT'
 , headers: {
     'Authorization': `Bearer ${adminPassword}`
@@ -439,7 +439,7 @@ await fetch(`http://localhost:8080/admin/whitelist/${id}`, {
 #+END_SRC
 
 ******* 移除白名单
-=DELETE /admin/whitelist/<id>=
+=DELETE /admin/whitelist/<namespace>=
 
 将特定频道从白名单中移除.
 
@@ -449,12 +449,12 @@ await fetch(`http://localhost:8080/admin/whitelist/${id}`, {
 curl \
   --request DELETE \
   --header "Authorization: Bearer $ADMIN_PASSWORD" \
-  "http://localhost:8080/admin/whitelist/$id"
+  "http://localhost:8080/admin/whitelist/$namespace"
 #+END_SRC
 
 ********* fetch
 #+BEGIN_SRC js
-await fetch(`http://localhost:8080/admin/whitelist/${id}`, {
+await fetch(`http://localhost:8080/admin/whitelist/${namespace}`, {
   method: 'DELETE'
 , headers: {
     'Authorization': `Bearer ${adminPassword}`
@@ -478,10 +478,10 @@ await fetch(`http://localhost:8080/admin/whitelist/${id}`, {
 - token难以被猜测
 - token的意外泄露可以被迅速处理
 
-****** 获取所有具有token策略的频道id
+****** 获取所有具有token策略的频道namespace
 =GET /admin/pubsub-with-token-policies=
 
-获取所有具有token策略的频道id, 返回由JSON表示的字符串数组 =string[]=.
+获取所有具有token策略的频道namespace, 返回由JSON表示的字符串数组 =string[]=.
 
 ******* Example
 ******** curl
@@ -497,7 +497,7 @@ await fetch('http://localhost:8080/admin/pubsub-with-token-policies')
 #+END_SRC
 
 ****** 获取特定频道的token策略
-=GET /admin/pubsub/<id>/token-policies=
+=GET /admin/pubsub/<namespace>/token-policies=
 
 返回JSON:
 #+BEGIN_SRC ts
@@ -513,12 +513,12 @@ await fetch('http://localhost:8080/admin/pubsub-with-token-policies')
 #+BEGIN_SRC sh
 curl \
   --header "Authorization: Bearer $ADMIN_PASSWORD" \
-  "http://localhost:8080/admin/pubsub/$id/token-policies"
+  "http://localhost:8080/admin/pubsub/$namespace/token-policies"
 #+END_SRC
 
 ******** fetch
 #+BEGIN_SRC js
-await fethc(`http://localhost:8080/admin/pubsub/${id}/token-policies`, {
+await fethc(`http://localhost:8080/admin/pubsub/${namespace}/token-policies`, {
   headers: {
     'Authorization': `Bearer ${adminPassword}`
   }
@@ -526,25 +526,13 @@ await fethc(`http://localhost:8080/admin/pubsub/${id}/token-policies`, {
 #+END_SRC
 
 ****** 设置token策略
-=PUT /admin/pubsub/<id>/token-policies/write-token-required=
-=PUT /admin/pubsub/<id>/token-policies/read-token-required=
-
-Payload必须是一个布尔值.
-
-******* Example
-******** curl
-#+BEGIN_SRC sh
-curl \
-  --request PUT \
-  --header "Authorization: Bearer $ADMIN_PASSWORD" \
-  --header "Content-Type: application/json" \
-  --data "$WRITE_TOKEN_REQUIRED" \
-  "http://localhost:8080/admin/pubsub/$id/token-policies/write-token-required"
+=PUT /admin/pubsub/<namespace>/token-policies/write-token-required=
+=PUT /admin/pubsub/<namespace>/token-policies/write-token-required"
 #+END_SRC
 
 ******** fetch
 #+BEGIN_SRC js
-await fetch(`http://localhost:8080/admin/pubsub/${id}/token-policies/write-token-required`, {
+await fetch(`http://localhost:8080/admin/pubsub/${namespace}/token-policies/write-token-required`, {
   method: 'PUT'
 , headers: {
     'Authorization': `Bearer ${adminPassword}`
@@ -555,8 +543,8 @@ await fetch(`http://localhost:8080/admin/pubsub/${id}/token-policies/write-token
 #+END_SRC
 
 ****** 移除token策略
-=DELETE /admin/pubsub/<id>/token-policies/write-token-required=
-=DELETE /admin/pubsub/<id>/token-policies/read-token-required=
+=DELETE /admin/pubsub/<namespace>/token-policies/write-token-required=
+=DELETE /admin/pubsub/<namespace>/token-policies/read-token-required=
 
 ******* Example
 ******** curl
@@ -564,12 +552,12 @@ await fetch(`http://localhost:8080/admin/pubsub/${id}/token-policies/write-token
 curl \
   --request DELETE \
   --header "Authorization: Bearer $ADMIN_PASSWORD" \
-  "http://localhost:8080/admin/pubsub/$id/token-policies/write-token-required"
+  "http://localhost:8080/admin/pubsub/$namespace/token-policies/write-token-required"
 #+END_SRC
 
 ******** fetch
 #+BEGIN_SRC js
-await fetch(`http://localhost:8080/admin/pubsub/${id}/token-policies/write-token-required`, {
+await fetch(`http://localhost:8080/admin/pubsub/${namespace}/token-policies/write-token-required`, {
   method: 'DELETE'
 , headers: {
     'Authorization': `Bearer ${adminPassword}`
@@ -577,10 +565,10 @@ await fetch(`http://localhost:8080/admin/pubsub/${id}/token-policies/write-token
 })
 #+END_SRC
 
-****** 获取所有具有token的频道id
+****** 获取所有具有token的频道namespace
 =GET /admin/pubsub-with-tokens=
 
-获取所有具有token的频道id, 返回由JSON表示的字符串数组 =string[]=.
+获取所有具有token的频道namespace, 返回由JSON表示的字符串数组 =string[]=.
 
 ******* Example
 ******** curl
@@ -600,7 +588,7 @@ await fetch(`http://localhost:8080/admin/pubsub-with-tokens`, {
 #+END_SRC
 
 ****** 获取特定频道的所有token信息
-=GET /admin/pubsub/<id>/tokens=
+=GET /admin/pubsub/<namespace>/tokens=
 
 获取特定频道的所有token信息, 返回JSON表示的token信息数组
 =Array<{ token: string, wirte: boolean, read: boolean }>=.
@@ -610,12 +598,12 @@ await fetch(`http://localhost:8080/admin/pubsub-with-tokens`, {
 #+BEGIN_SRC sh
 curl \
   --header "Authorization: Bearer $ADMIN_PASSWORD" \
-  "http://localhost:8080/admin/pubsub/$id/tokens"
+  "http://localhost:8080/admin/pubsub/$namespace/tokens"
 #+END_SRC
 
 ******** fetch
 #+BEGIN_SRC js
-await fetch(`http://localhost:8080/admin/pubsub/${id}/tokens`, {
+await fetch(`http://localhost:8080/admin/pubsub/${namespace}/tokens`, {
   headers: {
     'Authorization': `Bearer ${adminPassword}`
   }
@@ -623,7 +611,7 @@ await fetch(`http://localhost:8080/admin/pubsub/${id}/tokens`, {
 #+END_SRC
 
 ****** 为特定频道的token设置write权限
-=PUT /admin/pubsub/<id>/tokens/<token>/write=
+=PUT /admin/pubsub/<namespace>/tokens/<token>/write=
 
 添加/更新token, 为token设置write权限.
 
@@ -633,12 +621,12 @@ await fetch(`http://localhost:8080/admin/pubsub/${id}/tokens`, {
 curl \
   --request PUT \
   --header "Authorization: Bearer $ADMIN_PASSWORD" \
-  "http://localhost:8080/admin/pubsub/$id/tokens/$token/write"
+  "http://localhost:8080/admin/pubsub/$namespace/tokens/$token/write"
 #+END_SRC
 
 ******** fetch
 #+BEGIN_SRC js
-await fetch(`http://localhost:8080/admin/pubsub/${id}/tokens/${token}/write`, {
+await fetch(`http://localhost:8080/admin/pubsub/${namespace}/tokens/${token}/write`, {
   method: 'PUT'
 , headers: {
     'Authorization': `Bearer ${adminPassword}`
@@ -647,7 +635,7 @@ await fetch(`http://localhost:8080/admin/pubsub/${id}/tokens/${token}/write`, {
 #+END_SRC
 
 ****** 取消特定频道的token的write权限
-=DELETE /admin/pubsub/<id>/tokens/<token>/write=
+=DELETE /admin/pubsub/<namespace>/tokens/<token>/write=
 
 取消token的write权限.
 
@@ -657,12 +645,12 @@ await fetch(`http://localhost:8080/admin/pubsub/${id}/tokens/${token}/write`, {
 curl \
   --request DELETE \
   --header "Authorization: Bearer $ADMIN_PASSWORD" \
-  "http://localhost:8080/admin/pubsub/$id/tokens/$token/write"
+  "http://localhost:8080/admin/pubsub/$namespace/tokens/$token/write"
 #+END_SRC
 
 ******** fetch
 #+BEGIN_SRC js
-await fetch(`http://localhost:8080/admin/pubsub/${id}/tokens/${token}/write`, {
+await fetch(`http://localhost:8080/admin/pubsub/${namespace}/tokens/${token}/write`, {
   method: 'DELETE'
 , headers: {
     'Authorization': `Bearer ${adminPassword}`
@@ -671,7 +659,7 @@ await fetch(`http://localhost:8080/admin/pubsub/${id}/tokens/${token}/write`, {
 #+END_SRC
 
 ****** 为特定频道的token设置read权限
-=PUT /admin/pubsub/<id>/tokens/<token>/read=
+=PUT /admin/pubsub/<namespace>/tokens/<token>/read=
 
 添加/更新token, 为token设置read权限.
 
@@ -681,12 +669,12 @@ await fetch(`http://localhost:8080/admin/pubsub/${id}/tokens/${token}/write`, {
 curl \
   --request PUT \
   --header "Authorization: Bearer $ADMIN_PASSWORD" \
-  "http://localhost:8080/admin/pubsub/$id/tokens/$token/read"
+  "http://localhost:8080/admin/pubsub/$namespace/tokens/$token/read"
 #+END_SRC
 
 ******** fetch
 #+BEGIN_SRC js
-await fetch(`http://localhost:8080/admin/pubsub/${id}/tokens/${token}/read`, {
+await fetch(`http://localhost:8080/admin/pubsub/${namespace}/tokens/${token}/read`, {
   method: 'PUT'
 , headers: {
     'Authorization': `Bearer ${adminPassword}`
@@ -695,7 +683,7 @@ await fetch(`http://localhost:8080/admin/pubsub/${id}/tokens/${token}/read`, {
 #+END_SRC
 
 ****** 取消特定频道的token的read权限
-=DELETE /admin/pubsub/<id>/tokens/<token>/read=
+=DELETE /admin/pubsub/<namespace>/tokens/<token>/read=
 
 取消token的read权限.
 
@@ -705,12 +693,12 @@ await fetch(`http://localhost:8080/admin/pubsub/${id}/tokens/${token}/read`, {
 curl \
   --request DELETE \
   --header "Authorization: Bearer $ADMIN_PASSWORD" \
-  "http://localhost:8080/admin/pubsub/$id/tokens/$token/read"
+  "http://localhost:8080/admin/pubsub/$namespace/tokens/$token/read"
 #+END_SRC
 
 ******** fetch
 #+BEGIN_SRC js
-await fetch(`http://localhost:8080/admin/pubsub/${id}/tokens/${token}/read`, {
+await fetch(`http://localhost:8080/admin/pubsub/${namespace}/tokens/${token}/read`, {
   method: 'DELETE'
 , headers: {
     'Authorization': `Bearer ${adminPassword}`
@@ -734,7 +722,7 @@ PubSub支持HTTP/2, 以多路复用反向代理时的连接, 可通过设置环�
 PubSub的publish端点可用于Webhook,
 但它不会转发请求头, IP地址等信息, 因此无法用于需要这些信息的场景.
 
-在此项目的早期阶段, 曾设计过一个 =/pubsub/<id>/webhook= 端点,
+在此项目的早期阶段, 曾设计过一个 =/pubsub/<namespace>/webhook= 端点,
 该端点会生成包含必要信息的新JSON.
 但随即便发现它无法与基于JSON Schema的JSON验证进行整合, 也无法防止伪造消息.
 解决这些问题需要单独为Webhook创建新的数据库表和API接口,

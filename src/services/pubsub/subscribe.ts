@@ -2,7 +2,7 @@ import * as http from 'http'
 import * as net from 'net'
 import { go } from '@blackglory/go'
 import { FastifyPluginAsync } from 'fastify'
-import { idSchema, tokenSchema } from '@src/schema'
+import { namespaceSchema, tokenSchema } from '@src/schema'
 import { sse } from 'extra-generator'
 import { waitForEventEmitter } from '@blackglory/wait-for'
 import { SSE_HEARTBEAT_INTERVAL, WS_HEARTBEAT_INTERVAL } from '@env'
@@ -13,8 +13,15 @@ export const routes: FastifyPluginAsync<{ Core: ICore }> = async function routes
   const wss = new WebSocket.Server({ noServer: true })
 
   // WebSocket handler
-  wss.on('connection', (ws: WebSocket, req: http.IncomingMessage, params: { id: string }) => {
-    const unsubscribe = Core.PubSub.subscribe(params.id, value => ws.send(value))
+  wss.on('connection', (
+    ws: WebSocket
+  , req: http.IncomingMessage
+  , params: { namespace: string }
+  ) => {
+    const unsubscribe = Core.PubSub.subscribe(
+      params.namespace
+    , value => ws.send(value)
+    )
 
     let cancelHeartbeatTimer: (() => void) | null = null
     if (WS_HEARTBEAT_INTERVAL() > 0) {
@@ -33,22 +40,26 @@ export const routes: FastifyPluginAsync<{ Core: ICore }> = async function routes
   })
 
   // WebSocket upgrade handler
-  server.server.on('upgrade', async (req: http.IncomingMessage, socket: net.Socket, head: Buffer) => {
+  server.server.on('upgrade', async (
+    req: http.IncomingMessage
+  , socket: net.Socket
+  , head: Buffer
+  ) => {
     const url = req.url!
-    const pathnameRegExp = /^\/pubsub\/(?<id>[a-zA-Z0-9\.\-_]{1,256})$/
+    const pathnameRegExp = /^\/pubsub\/(?<namespace>[a-zA-Z0-9\.\-_]{1,256})$/
     const result = getPathname(url).match(pathnameRegExp)
     if (!result) {
       socket.write('HTTP/1.1 404 Not Found\r\n\r\n')
       return socket.destroy()
     }
 
-    const id = result.groups!.id
+    const namespace = result.groups!.namespace
     const token = parseQuerystring<{ token?: string }>(url).token
 
     try {
-      await Core.Blacklist.check(id)
-      await Core.Whitelist.check(id)
-      await Core.TBAC.checkReadPermission(id, token)
+      await Core.Blacklist.check(namespace)
+      await Core.Whitelist.check(namespace)
+      await Core.TBAC.checkReadPermission(namespace, token)
     } catch (e) {
       if (e instanceof Core.Blacklist.Forbidden) {
         socket.write('HTTP/1.1 403 Forbidden\r\n\r\n')
@@ -63,41 +74,41 @@ export const routes: FastifyPluginAsync<{ Core: ICore }> = async function routes
     }
 
     wss.handleUpgrade(req, socket, head, ws => {
-      wss.emit('connection', ws, req, { id })
+      wss.emit('connection', ws, req, { namespace })
 
-      // Why need stream?
+      // QUESITON: why stream?
       const connection = WebSocket.createWebSocketStream(ws, { encoding: 'utf8' })
       ws.on('newListener', event => {
         if (event === 'message') connection.resume()
       })
 
       const GOING_AWAY = 1001
-      // Why need close?
+      // QUESTION: why close?
       ws.close(GOING_AWAY)
     })
   })
 
   server.get<{
-    Params: { id: string }
+    Params: { namespace: string }
     Querystring: { token?: string }
   }>(
-    '/pubsub/:id'
+    '/pubsub/:namespace'
   , {
       schema: {
-        params: { id: idSchema }
+        params: { namespace: namespaceSchema }
       , querystring: { token: tokenSchema }
       }
     }
     // Server-Sent Events handler
   , (req, reply) => {
       go(async () => {
-        const id = req.params.id
+        const namespace = req.params.namespace
         const token = req.query.token
 
         try {
-          await Core.Blacklist.check(id)
-          await Core.Whitelist.check(id)
-          await Core.TBAC.checkReadPermission(id, token)
+          await Core.Blacklist.check(namespace)
+          await Core.Whitelist.check(namespace)
+          await Core.TBAC.checkReadPermission(namespace, token)
         } catch (e) {
           if (e instanceof Core.Blacklist.Forbidden) return reply.status(403).send()
           if (e instanceof Core.Whitelist.Forbidden) return reply.status(403).send()
@@ -113,7 +124,7 @@ export const routes: FastifyPluginAsync<{ Core: ICore }> = async function routes
         }
         reply.raw.flushHeaders()
 
-        const unsubscribe = Core.PubSub.subscribe(id, async data => {
+        const unsubscribe = Core.PubSub.subscribe(namespace, async data => {
           for (const line of sse({ data })) {
             // `publish` is non-blocking, so it cannot handle back-pressure.
             if (!reply.raw.write(line)) {

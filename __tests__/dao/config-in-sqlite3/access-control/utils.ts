@@ -1,125 +1,125 @@
 import { getDatabase } from '@dao/config-in-sqlite3/database'
 
 interface IRawBlacklist {
-  pubsub_id: string
+  namespace: string
 }
 
 interface IRawWhitelist {
-  pubsub_id: string
+  namespace: string
 }
 
 interface IRawTokenPolicy {
-  pubsub_id: string
+  namespace: string
   write_token_required: number | null
   read_token_required: number | null
 }
 
 interface IRawToken {
   token: string
-  pubsub_id: string
+  namespace: string
   write_permission: number
   read_permission: number
 }
 
-export function setRawBlacklist(item: IRawBlacklist): IRawBlacklist {
+export function setRawBlacklist(raw: IRawBlacklist): IRawBlacklist {
   getDatabase().prepare(`
-    INSERT INTO pubsub_blacklist (pubsub_id)
-    VALUES ($pubsub_id);
-  `).run(item)
+    INSERT INTO pubsub_blacklist (namespace)
+    VALUES ($namespace);
+  `).run(raw)
 
-  return item
+  return raw
 }
 
-export function hasRawBlacklist(id: string): boolean {
-  return !!getRawBlacklist(id)
+export function hasRawBlacklist(namespace: string): boolean {
+  return !!getRawBlacklist(namespace)
 }
 
-export function getRawBlacklist(id: string): IRawBlacklist | null {
+export function getRawBlacklist(namespace: string): IRawBlacklist | null {
   return getDatabase().prepare(`
     SELECT *
       FROM pubsub_blacklist
-     WHERE pubsub_id = $id;
-  `).get({ id })
+     WHERE namespace = $namespace;
+  `).get({ namespace })
 }
 
-export function setRawWhitelist(item: IRawWhitelist): IRawWhitelist {
+export function setRawWhitelist(raw: IRawWhitelist): IRawWhitelist {
   getDatabase().prepare(`
-    INSERT INTO pubsub_whitelist (pubsub_id)
-    VALUES ($pubsub_id);
-  `).run(item)
+    INSERT INTO pubsub_whitelist (namespace)
+    VALUES ($namespace);
+  `).run(raw)
 
-  return item
+  return raw
 }
 
-export function hasRawWhitelist(id: string): boolean {
-  return !!getRawWhitelist(id)
+export function hasRawWhitelist(namespace: string): boolean {
+  return !!getRawWhitelist(namespace)
 }
 
-export function getRawWhitelist(id: string): IRawWhitelist | null {
+export function getRawWhitelist(namespace: string): IRawWhitelist | null {
   return getDatabase().prepare(`
     SELECT *
       FROM pubsub_whitelist
-     WHERE pubsub_id = $id;
-  `).get({ id })
+     WHERE namespace = $namespace;
+  `).get({ namespace })
 }
 
-export function setRawTokenPolicy<T extends IRawTokenPolicy>(item: T): T {
+export function setRawTokenPolicy<T extends IRawTokenPolicy>(raw: T): T {
   getDatabase().prepare(`
     INSERT INTO pubsub_token_policy (
-      pubsub_id
+      namespace
     , write_token_required
     , read_token_required
     )
     VALUES (
-      $pubsub_id
+      $namespace
     , $write_token_required
     , $read_token_required
     );
-  `).run(item)
+  `).run(raw)
 
-  return item
+  return raw
 }
 
-export function hasRawTokenPolicy(id: string): boolean {
-  return !!getRawTokenPolicy(id)
+export function hasRawTokenPolicy(namespace: string): boolean {
+  return !!getRawTokenPolicy(namespace)
 }
 
-export function getRawTokenPolicy(id: string): IRawTokenPolicy | null {
+export function getRawTokenPolicy(namespace: string): IRawTokenPolicy | null {
   return getDatabase().prepare(`
     SELECT *
       FROM pubsub_token_policy
-     WHERE pubsub_id = $id;
-  `).get({ id })
+     WHERE namespace = $namespace;
+  `).get({ namespace })
 }
 
-export function setRawToken(item: IRawToken): IRawToken {
+export function setRawToken(raw: IRawToken): IRawToken {
   getDatabase().prepare(`
     INSERT INTO pubsub_token (
       token
-    , pubsub_id
+    , namespace
     , write_permission
     , read_permission
     )
     VALUES (
       $token
-    , $pubsub_id
+    , $namespace
     , $write_permission
     , $read_permission
     );
-  `).run(item)
+  `).run(raw)
 
-  return item
+  return raw
 }
 
-export function hasRawToken(token: string, id: string): boolean {
-  return !!getRawToken(token, id)
+export function hasRawToken(token: string, namespace: string): boolean {
+  return !!getRawToken(token, namespace)
 }
 
-export function getRawToken(token: string, id: string): IRawToken | null {
+export function getRawToken(token: string, namespace: string): IRawToken | null {
   return getDatabase().prepare(`
     SELECT *
       FROM pubsub_token
      WHERE token = $token
-       AND pubsub_id = $id;
-  `).get({ token, id })
+       AND namespace = $namespace;
+  `).get({ token, namespace })
 }

@@ -11,9 +11,9 @@ afterEach(stopService)
 
 describe('no access control', () => {
   it('200', async () => {
-    const id = 'id'
+    const namespace = 'namespace'
 
-    const es = new EventSource(`${getAddress()}/pubsub/${id}`)
+    const es = new EventSource(`${getAddress()}/pubsub/${namespace}`)
     await waitForEventTarget(es as EventTarget, 'open')
     es.close()
   })

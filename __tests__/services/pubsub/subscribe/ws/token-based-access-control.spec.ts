@@ -16,12 +16,12 @@ describe('token-based access control', () => {
       describe('token matched', () => {
         it('open', async () => {
           process.env.PUBSUB_TOKEN_BASED_ACCESS_CONTROL = 'true'
-          const id = 'id'
+          const namespace = 'namespace'
           const token = 'token'
-          await AccessControlDAO.setReadTokenRequired(id, true)
-          await AccessControlDAO.setReadToken({ id, token })
+          await AccessControlDAO.setReadTokenRequired(namespace, true)
+          await AccessControlDAO.setReadToken({ namespace, token })
 
-          const ws = new WebSocket(`${getAddress()}/pubsub/${id}?token=${token}`.replace('http', 'ws'))
+          const ws = new WebSocket(`${getAddress()}/pubsub/${namespace}?token=${token}`.replace('http', 'ws'))
           await waitForEventTarget(ws as unknown as EventTarget, 'open')
         })
       })
@@ -29,12 +29,12 @@ describe('token-based access control', () => {
       describe('token does not matched', () => {
         it('error', async () => {
           process.env.PUBSUB_TOKEN_BASED_ACCESS_CONTROL = 'true'
-          const id = 'id'
+          const namespace = 'namespace'
           const token = 'token'
-          await AccessControlDAO.setReadTokenRequired(id, true)
-          await AccessControlDAO.setReadToken({ id, token })
+          await AccessControlDAO.setReadTokenRequired(namespace, true)
+          await AccessControlDAO.setReadToken({ namespace, token })
 
-          const ws = new WebSocket(`${getAddress()}/pubsub/${id}?token=bad`.replace('http', 'ws'))
+          const ws = new WebSocket(`${getAddress()}/pubsub/${namespace}?token=bad`.replace('http', 'ws'))
           await waitForEventTarget(ws as unknown as EventTarget, 'error')
         })
       })
@@ -42,25 +42,25 @@ describe('token-based access control', () => {
       describe('no token', () => {
         it('error', async () => {
           process.env.PUBSUB_TOKEN_BASED_ACCESS_CONTROL = 'true'
-          const id = 'id'
+          const namespace = 'namespace'
           const token = 'token'
-          await AccessControlDAO.setReadTokenRequired(id, true)
-          await AccessControlDAO.setReadToken({ id, token })
+          await AccessControlDAO.setReadTokenRequired(namespace, true)
+          await AccessControlDAO.setReadToken({ namespace, token })
 
-          const ws = new WebSocket(`${getAddress()}/pubsub/${id}`.replace('http', 'ws'))
+          const ws = new WebSocket(`${getAddress()}/pubsub/${namespace}`.replace('http', 'ws'))
           await waitForEventTarget(ws as unknown as EventTarget, 'error')
         })
       })
     })
 
-    describe('id does not have read tokens', () => {
+    describe('namespace does not have read tokens', () => {
       describe('READ_TOKEN_REQUIRED=true', () => {
         it('error', async () => {
           process.env.PUBSUB_TOKEN_BASED_ACCESS_CONTROL = 'true'
           process.env.PUBSUB_READ_TOKEN_REQUIRED = 'true'
-          const id = 'id'
+          const namespace = 'namespace'
 
-          const ws = new WebSocket(`${getAddress()}/pubsub/${id}`.replace('http', 'ws'))
+          const ws = new WebSocket(`${getAddress()}/pubsub/${namespace}`.replace('http', 'ws'))
           await waitForEventTarget(ws as unknown as EventTarget, 'error')
         })
       })
@@ -69,9 +69,9 @@ describe('token-based access control', () => {
         it('open', async () => {
           process.env.PUBSUB_TOKEN_BASED_ACCESS_CONTROL = 'true'
           process.env.PUBSUB_READ_TOKEN_REQUIRED = 'false'
-          const id = 'id'
+          const namespace = 'namespace'
 
-          const ws = new WebSocket(`${getAddress()}/pubsub/${id}`.replace('http', 'ws'))
+          const ws = new WebSocket(`${getAddress()}/pubsub/${namespace}`.replace('http', 'ws'))
           await waitForEventTarget(ws as unknown as EventTarget, 'open')
         })
       })
@@ -82,24 +82,24 @@ describe('token-based access control', () => {
     describe('id need read tokens', () => {
       describe('no token', () => {
         it('open', async () => {
-          const id = 'id'
+          const namespace = 'namespace'
           const token = 'token'
-          await AccessControlDAO.setReadTokenRequired(id, true)
-          await AccessControlDAO.setReadToken({ id, token })
+          await AccessControlDAO.setReadTokenRequired(namespace, true)
+          await AccessControlDAO.setReadToken({ namespace, token })
 
-          const ws = new WebSocket(`${getAddress()}/pubsub/${id}`.replace('http', 'ws'))
+          const ws = new WebSocket(`${getAddress()}/pubsub/${namespace}`.replace('http', 'ws'))
           await waitForEventTarget(ws as unknown as EventTarget, 'open')
         })
       })
     })
 
-    describe('id does not need read tokens', () => {
+    describe('namespace does not need read tokens', () => {
       describe('READ_TOKEN_REQUIRED=true', () => {
         it('open', async () => {
           process.env.PUBSUB_READ_TOKEN_REQUIRED = 'true'
-          const id = 'id'
+          const namespace = 'namespace'
 
-          const ws = new WebSocket(`${getAddress()}/pubsub/${id}`.replace('http', 'ws'))
+          const ws = new WebSocket(`${getAddress()}/pubsub/${namespace}`.replace('http', 'ws'))
           await waitForEventTarget(ws as unknown as EventTarget, 'open')
         })
       })

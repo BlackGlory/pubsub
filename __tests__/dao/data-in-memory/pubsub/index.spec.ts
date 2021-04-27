@@ -5,32 +5,32 @@ beforeEach(resetEmitter)
 
 describe('PubSubDAO', () => {
   test('publish, subscribe', async done => {
-    const key = 'key'
+    const namespace = 'namespace'
     const value = 'value'
 
-    PubSubDAO.publish(key, value)
-    PubSubDAO.subscribe(key, () => done.fail())
+    PubSubDAO.publish(namespace, value)
+    PubSubDAO.subscribe(namespace, () => done.fail())
     setImmediate(done)
   })
 
   test('subscribe, publish', async done => {
-    const key = 'key'
+    const namespace = 'namespace'
     const value = 'value'
 
-    PubSubDAO.subscribe(key, val => {
+    PubSubDAO.subscribe(namespace, val => {
       expect(val).toBe(value)
       done()
     })
-    PubSubDAO.publish(key, value)
+    PubSubDAO.publish(namespace, value)
   })
 
   test('subscribe, unsubscribe, publish', async done => {
-    const key = 'key'
+    const namespace = 'namespace'
     const value = 'value'
 
-    const unsubscribe = PubSubDAO.subscribe(key, () => done.fail())
+    const unsubscribe = PubSubDAO.subscribe(namespace, () => done.fail())
     unsubscribe()
-    PubSubDAO.publish(key, value)
+    PubSubDAO.publish(namespace, value)
     setImmediate(done)
   })
 })

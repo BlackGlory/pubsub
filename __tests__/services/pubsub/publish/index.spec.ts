@@ -23,12 +23,12 @@ describe('no access control', () => {
               type: 'number'
             })
             await startService()
-            const id = 'id'
+            const namespace = 'namespace'
             const message = 123
 
             const res = await fetch(post(
               url(getAddress())
-            , pathname(`/pubsub/${id}`)
+            , pathname(`/pubsub/${namespace}`)
             , json(message)
             ))
 
@@ -43,12 +43,12 @@ describe('no access control', () => {
               type: 'number'
             })
             await startService()
-            const id = 'id'
+            const namespace = 'namespace'
             const message = ' "message" '
 
             const res = await fetch(post(
               url(getAddress())
-            , pathname(`/pubsub/${id}`)
+            , pathname(`/pubsub/${namespace}`)
             , json(message)
             ))
 
@@ -64,12 +64,12 @@ describe('no access control', () => {
             type: 'number'
           })
           await startService()
-          const id = 'id'
+          const namespace = 'namespace'
           const message = 'message'
 
           const res = await fetch(post(
             url(getAddress())
-          , pathname(`/pubsub/${id}`)
+          , pathname(`/pubsub/${namespace}`)
           , text(message)
           ))
 
@@ -84,17 +84,17 @@ describe('no access control', () => {
           it('204', async () => {
             process.env.PUBSUB_JSON_VALIDATION = 'true'
             await startService()
-            const id = 'id'
+            const namespace = 'namespace'
             const schema = { type: 'string' }
             const message = ' "message" '
             await JsonSchemaDAO.setJsonSchema({
-              id
+              namespace
             , schema: JSON.stringify(schema)
             })
 
             const res = await fetch(post(
               url(getAddress())
-            , pathname(`/pubsub/${id}`)
+            , pathname(`/pubsub/${namespace}`)
             , json(message)
             ))
 
@@ -106,17 +106,17 @@ describe('no access control', () => {
           it('400', async () => {
             process.env.PUBSUB_JSON_VALIDATION = 'true'
             await startService()
-            const id = 'id'
+            const namespace = 'namespace'
             const schema = { type: 'string' }
             const message = 'message'
             await JsonSchemaDAO.setJsonSchema({
-              id
+              namespace
             , schema: JSON.stringify(schema)
             })
 
             const res = await fetch(post(
               url(getAddress())
-            , pathname(`/pubsub/${id}`)
+            , pathname(`/pubsub/${namespace}`)
             , text(message)
             , header('Content-Type', 'application/json')
             ))
@@ -130,17 +130,17 @@ describe('no access control', () => {
         it('415', async () => {
           process.env.PUBSUB_JSON_VALIDATION = 'true'
           await startService()
-          const id = 'id'
+          const namespace = 'namespace'
           const schema = { type: 'string' }
           const message = ' "message" '
           await JsonSchemaDAO.setJsonSchema({
-            id
+            namespace
           , schema: JSON.stringify(schema)
           })
 
           const res = await fetch(post(
             url(getAddress())
-          , pathname(`/pubsub/${id}`)
+          , pathname(`/pubsub/${namespace}`)
           , text(message)
           ))
 
@@ -149,23 +149,23 @@ describe('no access control', () => {
       })
     })
 
-    describe('id does not have JSON Schema', () => {
+    describe('namespace does not have JSON Schema', () => {
       describe('Content-Type: application/json', () => {
         describe('valid JSON', () => {
           it('204', async () => {
             process.env.PUBSUB_JSON_VALIDATION = 'true'
             await startService()
-            const id = 'id'
+            const namespace = 'namespace'
             const schema = { type: 'string' }
             const message = 'message'
             await JsonSchemaDAO.setJsonSchema({
-              id
+              namespace
             , schema: JSON.stringify(schema)
             })
 
             const res = await fetch(post(
               url(getAddress())
-            , pathname(`/pubsub/${id}`)
+            , pathname(`/pubsub/${namespace}`)
             , json(message)
             ))
 
@@ -177,12 +177,12 @@ describe('no access control', () => {
           it('400', async () => {
             process.env.PUBSUB_JSON_VALIDATION = 'true'
             await startService()
-            const id = 'id'
+            const namespace = 'namespace'
             const message = 'message'
 
             const res = await fetch(post(
               url(getAddress())
-            , pathname(`/pubsub/${id}`)
+            , pathname(`/pubsub/${namespace}`)
             , text(message)
             , header('Content-Type', 'application/json')
             ))
@@ -199,12 +199,12 @@ describe('no access control', () => {
       it('accpet any plaintext, return 204', async () => {
         process.env.PUBSUB_JSON_PAYLOAD_ONLY = 'true'
         await startService()
-        const id = 'id'
+        const namespace = 'namespace'
         const message = JSON.stringify('message')
 
         const res = await fetch(post(
           url(getAddress())
-        , pathname(`/pubsub/${id}`)
+        , pathname(`/pubsub/${namespace}`)
         , json(message)
         ))
 
@@ -216,12 +216,12 @@ describe('no access control', () => {
       it('400', async () => {
         process.env.PUBSUB_JSON_PAYLOAD_ONLY = 'true'
         await startService()
-        const id = 'id'
+        const namespace = 'namespace'
         const message = 'message'
 
         const res = await fetch(post(
           url(getAddress())
-        , pathname(`/pubsub/${id}`)
+        , pathname(`/pubsub/${namespace}`)
         , text(message)
         ))
 
@@ -233,12 +233,12 @@ describe('no access control', () => {
   describe('Content-Type', () => {
     it('accpet any content-type', async () => {
       await startService()
-      const id = 'id'
+      const namespace = 'namespace'
       const message = 'message'
 
       const res = await fetch(post(
         url(getAddress())
-      , pathname(`/pubsub/${id}`)
+      , pathname(`/pubsub/${namespace}`)
       , text(message)
       , header('Content-Type', 'apple/banana')
       ))

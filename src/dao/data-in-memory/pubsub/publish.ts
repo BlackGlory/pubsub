@@ -1,6 +1,6 @@
 import { getEmitter } from './emitter-instance'
 
-export function publish(key: string, value: string): void {
+export function publish(namespace: string, value: string): void {
   const emitter = getEmitter()
-  emitter.emit(key, value)
+  emitter.emit(namespace, value)
 }

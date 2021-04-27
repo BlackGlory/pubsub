@@ -1,5 +1,5 @@
 import { FastifyPluginAsync } from 'fastify'
-import { idSchema, tokenSchema } from '@src/schema'
+import { namespaceSchema, tokenSchema } from '@src/schema'
 import { JSON_PAYLOAD_ONLY, PUBLISH_PAYLOAD_LIMIT } from '@env'
 import { CustomError } from '@blackglory/errors'
 
@@ -18,19 +18,20 @@ export const routes: FastifyPluginAsync<{ Core: ICore }> = async function routes
   )
 
   server.post<{
-    Params: { id: string }
+    Params: { namespace: string }
     Querystring: { token?: string }
     Body: string
   }>(
-    '/pubsub/:id'
+    '/pubsub/:namespace'
   , {
       schema: {
-        params: { id: idSchema }
+        params: { namespace: namespaceSchema }
       , querystring: { token: tokenSchema }
       , headers: {
-          'content-type': JSON_PAYLOAD_ONLY()
-                          ? { type: 'string', pattern: '^application/json' }
-                          : { type: 'string' }
+          'content-type':
+            JSON_PAYLOAD_ONLY()
+            ? { type: 'string', pattern: '^application/json' }
+            : { type: 'string' }
         }
       , response: {
           204: { type: 'null' }
@@ -39,19 +40,19 @@ export const routes: FastifyPluginAsync<{ Core: ICore }> = async function routes
     , bodyLimit: PUBLISH_PAYLOAD_LIMIT()
     }
   , async (req, reply) => {
-      const id = req.params.id
+      const namespace = req.params.namespace
       const payload = req.body
       const token = req.query.token
 
       try {
-        await Core.Blacklist.check(id)
-        await Core.Whitelist.check(id)
-        await Core.TBAC.checkWritePermission(id, token)
+        await Core.Blacklist.check(namespace)
+        await Core.Whitelist.check(namespace)
+        await Core.TBAC.checkWritePermission(namespace, token)
         if (Core.JsonSchema.isEnabled()) {
           if (isJSONPayload()) {
-            await Core.JsonSchema.validate(id, payload)
+            await Core.JsonSchema.validate(namespace, payload)
           } else {
-            if (await Core.JsonSchema.get(id)) {
+            if (await Core.JsonSchema.get(namespace)) {
               throw new BadContentType('application/json')
             }
           }
@@ -60,12 +61,14 @@ export const routes: FastifyPluginAsync<{ Core: ICore }> = async function routes
         if (e instanceof Core.Blacklist.Forbidden) return reply.status(403).send()
         if (e instanceof Core.Whitelist.Forbidden) return reply.status(403).send()
         if (e instanceof Core.TBAC.Unauthorized) return reply.status(401).send()
-        if (e instanceof Core.JsonSchema.InvalidPayload) return reply.status(400).send()
+        if (e instanceof Core.JsonSchema.InvalidPayload) {
+          return reply.status(400).send()
+        }
         if (e instanceof BadContentType) return reply.status(415).send()
         throw e
       }
 
-      await Core.PubSub.publish(id, payload)
+      await Core.PubSub.publish(namespace, payload)
       reply.status(204).send()
 
       function isJSONPayload(): boolean {

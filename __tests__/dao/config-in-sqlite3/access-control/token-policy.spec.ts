@@ -11,30 +11,30 @@ afterEach(clearDatabases)
 describe('TokenPolicy', () => {
   describe('getAllIdsWithTokenPolicies(): string[]', () => {
     it('return string[]', () => {
-      const id = 'id'
+      const namespace = 'namespace'
       setRawTokenPolicy({
-        pubsub_id: id
+        namespace
       , write_token_required: 1
       , read_token_required: 1
       })
 
-      const result = DAO.getAllIdsWithTokenPolicies()
+      const result = DAO.getAllNamespacesWithTokenPolicies()
 
-      expect(result).toEqual([id])
+      expect(result).toEqual([namespace])
     })
   })
 
-  describe('getTokenPolicies(id: string): { writeTokenRequired: boolean | null, readTokenRequired: boolean | null', () => {
+  describe('getTokenPolicies(namespace: string): { writeTokenRequired: boolean | null, readTokenRequired: boolean | null', () => {
     describe('policy exists', () => {
       it('return', () => {
-        const id = 'id'
+        const namespace = 'namespace'
         setRawTokenPolicy({
-          pubsub_id: id
+          namespace
         , write_token_required: 1
         , read_token_required: 1
         })
 
-        const result = DAO.getTokenPolicies(id)
+        const result = DAO.getTokenPolicies(namespace)
 
         expect(result).toEqual({
           writeTokenRequired: true
@@ -45,9 +45,9 @@ describe('TokenPolicy', () => {
 
     describe('policy does not exist', () => {
       it('return', () => {
-        const id = 'id'
+        const namespace = 'namespace'
 
-        const result = DAO.getTokenPolicies(id)
+        const result = DAO.getTokenPolicies(namespace)
 
         expect(result).toEqual({
           writeTokenRequired: null
@@ -57,12 +57,12 @@ describe('TokenPolicy', () => {
     })
   })
 
-  describe('setWriteTokenRequired(id: string, val: boolean): void', () => {
+  describe('setWriteTokenRequired(namespace: string, val: boolean): void', () => {
     it('return undefined', () => {
-      const id = 'id'
+      const namespace = 'namespace'
 
-      const result = DAO.setWriteTokenRequired(id, true)
-      const row = getRawTokenPolicy(id)
+      const result = DAO.setWriteTokenRequired(namespace, true)
+      const row = getRawTokenPolicy(namespace)
 
       expect(result).toBeUndefined()
       expect(row).not.toBeNull()
@@ -70,18 +70,18 @@ describe('TokenPolicy', () => {
     })
   })
 
-  describe('unsetWriteTokenRequired(id: string): void', () => {
+  describe('unsetWriteTokenRequired(namespace: string): void', () => {
     describe('policy exists', () => {
       it('return undefined', () => {
-        const id = 'id'
+        const namespace = 'namespace'
         setRawTokenPolicy({
-          pubsub_id: id
+          namespace
         , read_token_required: 1
         , write_token_required: 1
         })
 
-        const result = DAO.unsetWriteTokenRequired(id)
-        const row = getRawTokenPolicy(id)
+        const result = DAO.unsetWriteTokenRequired(namespace)
+        const row = getRawTokenPolicy(namespace)
 
         expect(result).toBeUndefined()
         expect(row).not.toBeNull()
@@ -91,22 +91,22 @@ describe('TokenPolicy', () => {
 
     describe('policy does not exist', () => {
       it('return undefined', () => {
-        const id = 'id'
+        const namespace = 'namespace'
 
-        const result = DAO.unsetWriteTokenRequired(id)
+        const result = DAO.unsetWriteTokenRequired(namespace)
 
         expect(result).toBeUndefined()
-        expect(hasRawTokenPolicy(id)).toBeFalse()
+        expect(hasRawTokenPolicy(namespace)).toBeFalse()
       })
     })
   })
 
-  describe('setReadTokenRequired(id: string, val: boolean): void', () => {
+  describe('setReadTokenRequired(namespace: string, val: boolean): void', () => {
     it('return undefined', () => {
-      const id = 'id'
+      const namespace = 'namespace'
 
-      const result = DAO.setReadTokenRequired(id, true)
-      const row = getRawTokenPolicy(id)
+      const result = DAO.setReadTokenRequired(namespace, true)
+      const row = getRawTokenPolicy(namespace)
 
       expect(result).toBeUndefined()
       expect(row).not.toBeNull()
@@ -114,18 +114,18 @@ describe('TokenPolicy', () => {
     })
   })
 
-  describe('unsetReadTokenRequired(id: string): void', () => {
+  describe('unsetReadTokenRequired(namespace: string): void', () => {
     describe('policy exists', () => {
       it('return undefined', () => {
-        const id = 'id'
+        const namespace = 'namespace'
         setRawTokenPolicy({
-          pubsub_id: id
+          namespace
         , read_token_required: 1
         , write_token_required: 1
         })
 
-        const result = DAO.unsetReadTokenRequired(id)
-        const row = getRawTokenPolicy(id)
+        const result = DAO.unsetReadTokenRequired(namespace)
+        const row = getRawTokenPolicy(namespace)
 
         expect(result).toBeUndefined()
         expect(row).not.toBeNull()
@@ -135,12 +135,12 @@ describe('TokenPolicy', () => {
 
     describe('policy does not exist', () => {
       it('return undefined', () => {
-        const id = 'id'
+        const namespace = 'namespace'
 
-        const result = DAO.unsetReadTokenRequired(id)
+        const result = DAO.unsetReadTokenRequired(namespace)
 
         expect(result).toBeUndefined()
-        expect(hasRawTokenPolicy(id)).toBeFalse()
+        expect(hasRawTokenPolicy(namespace)).toBeFalse()
       })
     })
   })

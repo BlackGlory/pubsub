@@ -12,34 +12,34 @@ afterEach(stopService)
 
 describe('whitelist', () => {
   describe('enabled', () => {
-    describe('id in whitelist', () => {
+    describe('namespace in whitelist', () => {
       it('open', async () => {
         process.env.PUBSUB_LIST_BASED_ACCESS_CONTROL = 'whitelist'
-        const id = 'id'
-        await AccessControlDAO.addWhitelistItem(id)
+        const namespace = 'namespace'
+        await AccessControlDAO.addWhitelistItem(namespace)
 
-        const ws = new WebSocket(`${getAddress()}/pubsub/${id}`.replace('http', 'ws'))
+        const ws = new WebSocket(`${getAddress()}/pubsub/${namespace}`.replace('http', 'ws'))
         await waitForEventTarget(ws as unknown as EventTarget, 'open')
       })
     })
 
-    describe('id not in whitelist', () => {
+    describe('namespace not in whitelist', () => {
       it('error', async () => {
         process.env.PUBSUB_LIST_BASED_ACCESS_CONTROL = 'whitelist'
-        const id = 'id'
+        const namespace = 'namespace'
 
-        const ws = new WebSocket(`${getAddress()}/pubsub/${id}`.replace('http', 'ws'))
+        const ws = new WebSocket(`${getAddress()}/pubsub/${namespace}`.replace('http', 'ws'))
         await waitForEventTarget(ws as unknown as EventTarget, 'error')
       })
     })
   })
 
   describe('disabled', () => {
-    describe('id not in whitelist', () => {
+    describe('namespace not in whitelist', () => {
       it('open', async () => {
-        const id = 'id'
+        const namespace = 'namespace'
 
-        const ws = new WebSocket(`${getAddress()}/pubsub/${id}`.replace('http', 'ws'))
+        const ws = new WebSocket(`${getAddress()}/pubsub/${namespace}`.replace('http', 'ws'))
         await waitForEventTarget(ws as unknown as EventTarget, 'open')
       })
     })

@@ -59,15 +59,15 @@ describe('Token', () => {
     })
   })
 
-  describe('GET /admin/pubsub/:id/tokens', () => {
+  describe('GET /admin/pubsub/:namespace/tokens', () => {
     describe('auth', () => {
       it('200', async () => {
         process.env.PUBSUB_ADMIN_PASSWORD = 'password'
-        const id = 'id'
+        const namespace = 'namespace'
 
         const res = await fetch(get(
           url(getAddress())
-        , pathname(`/admin/pubsub/${id}/tokens`)
+        , pathname(`/admin/pubsub/${namespace}/tokens`)
         , headers(createAuthHeaders())
         ))
 
@@ -88,11 +88,11 @@ describe('Token', () => {
 
     describe('no admin password', () => {
       it('401', async () => {
-        const id = 'id'
+        const namespace = 'namespace'
 
         const res = await fetch(get(
           url(getAddress())
-        , pathname(`/admin/pubsub/${id}/tokens`)
+        , pathname(`/admin/pubsub/${namespace}/tokens`)
         ))
 
         expect(res.status).toBe(401)
@@ -102,11 +102,11 @@ describe('Token', () => {
     describe('bad auth', () => {
       it('401', async () => {
         process.env.PUBSUB_ADMIN_PASSWORD = 'password'
-        const id = 'id'
+        const namespace = 'namespace'
 
         const res = await fetch(get(
           url(getAddress())
-        , pathname(`/admin/pubsub/${id}/tokens`)
+        , pathname(`/admin/pubsub/${namespace}/tokens`)
         , headers(createAuthHeaders('bad'))
         ))
 
@@ -115,16 +115,16 @@ describe('Token', () => {
     })
   })
 
-  describe('PUT /admin/pubsub/:id/tokens/:token/write', () => {
+  describe('PUT /admin/pubsub/:namespace/tokens/:token/write', () => {
     describe('auth', () => {
       it('204', async () => {
         process.env.PUBSUB_ADMIN_PASSWORD = 'password'
-        const id = 'id'
+        const namespace = 'namespace'
         const token = 'token'
 
         const res = await fetch(put(
           url(getAddress())
-        , pathname(`/admin/pubsub/${id}/tokens/${token}/write`)
+        , pathname(`/admin/pubsub/${namespace}/tokens/${token}/write`)
         , headers(createAuthHeaders())
         ))
 
@@ -134,12 +134,12 @@ describe('Token', () => {
 
     describe('no admin password', () => {
       it('401', async () => {
-        const id = 'id'
+        const namespace = 'namespace'
         const token = 'token'
 
         const res = await fetch(put(
           url(getAddress())
-        , pathname(`/admin/pubsub/${id}/tokens/${token}/write`)
+        , pathname(`/admin/pubsub/${namespace}/tokens/${token}/write`)
         ))
 
         expect(res.status).toBe(401)
@@ -149,12 +149,12 @@ describe('Token', () => {
     describe('bad auth', () => {
       it('401', async () => {
         process.env.PUBSUB_ADMIN_PASSWORD = 'password'
-        const id = 'id'
+        const namespace = 'namespace'
         const token = 'token'
 
         const res = await fetch(put(
           url(getAddress())
-        , pathname(`/admin/pubsub/${id}/tokens/${token}/write`)
+        , pathname(`/admin/pubsub/${namespace}/tokens/${token}/write`)
         , headers(createAuthHeaders('bad'))
         ))
 
@@ -163,16 +163,16 @@ describe('Token', () => {
     })
   })
 
-  describe('DELETE /admin/pubsub/:id/tokens/:token/write', () => {
+  describe('DELETE /admin/pubsub/:namespace/tokens/:token/write', () => {
     describe('auth', () => {
       it('204', async () => {
         process.env.PUBSUB_ADMIN_PASSWORD = 'password'
-        const id = 'id'
+        const namespace = 'namespace'
         const token = 'token'
 
         const res = await fetch(del(
           url(getAddress())
-        , pathname(`/admin/pubsub/${id}/tokens/${token}/write`)
+        , pathname(`/admin/pubsub/${namespace}/tokens/${token}/write`)
         , headers(createAuthHeaders())
         ))
 
@@ -182,12 +182,12 @@ describe('Token', () => {
 
     describe('no admin password', () => {
       it('401', async () => {
-        const id = 'id'
+        const namespace = 'namespace'
         const token = 'token'
 
         const res = await fetch(del(
           url(getAddress())
-        , pathname(`/admin/pubsub/${id}/tokens/${token}/write`)
+        , pathname(`/admin/pubsub/${namespace}/tokens/${token}/write`)
         ))
 
         expect(res.status).toBe(401)
@@ -197,12 +197,12 @@ describe('Token', () => {
     describe('bad auth', () => {
       it('401', async () => {
         process.env.PUBSUB_ADMIN_PASSWORD = 'password'
-        const id = 'id'
+        const namespace = 'namespace'
         const token = 'token'
 
         const res = await fetch(del(
           url(getAddress())
-        , pathname(`/admin/pubsub/${id}/tokens/${token}/write`)
+        , pathname(`/admin/pubsub/${namespace}/tokens/${token}/write`)
         , headers(createAuthHeaders('bad'))
         ))
 
@@ -211,16 +211,16 @@ describe('Token', () => {
     })
   })
 
-  describe('PUT /admin/pubsub/:id/tokens/:token/read', () => {
+  describe('PUT /admin/pubsub/:namespace/tokens/:token/read', () => {
     describe('auth', () => {
       it('204', async () => {
         process.env.PUBSUB_ADMIN_PASSWORD = 'password'
-        const id = 'id'
+        const namespace = 'namespace'
         const token = 'token'
 
         const res = await fetch(put(
           url(getAddress())
-        , pathname(`/admin/pubsub/${id}/tokens/${token}/read`)
+        , pathname(`/admin/pubsub/${namespace}/tokens/${token}/read`)
         , headers(createAuthHeaders())
         ))
 
@@ -230,12 +230,12 @@ describe('Token', () => {
 
     describe('no admin password', () => {
       it('401', async () => {
-        const id = 'id'
+        const namespace = 'namespace'
         const token = 'token'
 
         const res = await fetch(put(
           url(getAddress())
-        , pathname(`/admin/pubsub/${id}/tokens/${token}/read`)
+        , pathname(`/admin/pubsub/${namespace}/tokens/${token}/read`)
         ))
 
         expect(res.status).toBe(401)
@@ -245,12 +245,12 @@ describe('Token', () => {
     describe('bad auth', () => {
       it('401', async () => {
         process.env.PUBSUB_ADMIN_PASSWORD = 'password'
-        const id = 'id'
+        const namespace = 'namespace'
         const token = 'token'
 
         const res = await fetch(put(
           url(getAddress())
-        , pathname(`/admin/pubsub/${id}/tokens/${token}/read`)
+        , pathname(`/admin/pubsub/${namespace}/tokens/${token}/read`)
         , headers(createAuthHeaders('bad'))
         ))
 
@@ -259,16 +259,16 @@ describe('Token', () => {
     })
   })
 
-  describe('DELETE /admin/pubsub/:id/tokens/:token/read', () => {
+  describe('DELETE /admin/pubsub/:namespace/tokens/:token/read', () => {
     describe('auth', () => {
       it('204', async () => {
         process.env.PUBSUB_ADMIN_PASSWORD = 'password'
-        const id = 'id'
+        const namespace = 'namespace'
         const token = 'token'
 
         const res = await fetch(del(
           url(getAddress())
-        , pathname(`/admin/pubsub/${id}/tokens/${token}/read`)
+        , pathname(`/admin/pubsub/${namespace}/tokens/${token}/read`)
         , headers(createAuthHeaders())
         ))
 
@@ -278,12 +278,12 @@ describe('Token', () => {
 
     describe('no admin password', () => {
       it('401', async () => {
-        const id = 'id'
+        const namespace = 'namespace'
         const token = 'token'
 
         const res = await fetch(del(
           url(getAddress())
-        , pathname(`/admin/pubsub/${id}/tokens/${token}/read`)
+        , pathname(`/admin/pubsub/${namespace}/tokens/${token}/read`)
         ))
 
         expect(res.status).toBe(401)
@@ -293,12 +293,12 @@ describe('Token', () => {
     describe('bad auth', () => {
       it('401', async () => {
         process.env.PUBSUB_ADMIN_PASSWORD = 'password'
-        const id = 'id'
+        const namespace = 'namespace'
         const token = 'token'
 
         const res = await fetch(del(
           url(getAddress())
-        , pathname(`/admin/pubsub/${id}/tokens/${token}/read`)
+        , pathname(`/admin/pubsub/${namespace}/tokens/${token}/read`)
         , headers(createAuthHeaders('bad'))
         ))
 

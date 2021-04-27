@@ -19,12 +19,12 @@ describe('token-based access control', () => {
       describe('token matched', () => {
         it('200', async () => {
           process.env.PUBSUB_TOKEN_BASED_ACCESS_CONTROL = 'true'
-          const id = 'id'
+          const namespace = 'namespace'
           const token = 'token'
-          await AccessControlDAO.setReadTokenRequired(id, true)
-          await AccessControlDAO.setReadToken({ id, token })
+          await AccessControlDAO.setReadTokenRequired(namespace, true)
+          await AccessControlDAO.setReadToken({ namespace, token })
 
-          const es = new EventSource(`${getAddress()}/pubsub/${id}?token=${token}`)
+          const es = new EventSource(`${getAddress()}/pubsub/${namespace}?token=${token}`)
           await waitForEventTarget(es as EventTarget, 'open')
           es.close()
         })
@@ -33,14 +33,14 @@ describe('token-based access control', () => {
       describe('token does not matched', () => {
         it('401', async () => {
           process.env.PUBSUB_TOKEN_BASED_ACCESS_CONTROL = 'true'
-          const id = 'id'
+          const namespace = 'namespace'
           const token = 'token'
-          await AccessControlDAO.setReadTokenRequired(id, true)
-          await AccessControlDAO.setReadToken({ id, token })
+          await AccessControlDAO.setReadTokenRequired(namespace, true)
+          await AccessControlDAO.setReadToken({ namespace, token })
 
           const res = await fetch(get(
             url(getAddress())
-          , pathname(`/pubsub/${id}`)
+          , pathname(`/pubsub/${namespace}`)
           , searchParam('token', 'bad')
           ))
 
@@ -51,14 +51,14 @@ describe('token-based access control', () => {
       describe('no token', () => {
         it('401', async () => {
           process.env.PUBSUB_TOKEN_BASED_ACCESS_CONTROL = 'true'
-          const id = 'id'
+          const namespace = 'namespace'
           const token = 'token'
-          await AccessControlDAO.setReadTokenRequired(id, true)
-          await AccessControlDAO.setReadToken({ id, token })
+          await AccessControlDAO.setReadTokenRequired(namespace, true)
+          await AccessControlDAO.setReadToken({ namespace, token })
 
           const res = await fetch(get(
             url(getAddress())
-          , pathname(`/pubsub/${id}`)
+          , pathname(`/pubsub/${namespace}`)
           ))
 
           expect(res.status).toBe(401)
@@ -66,16 +66,16 @@ describe('token-based access control', () => {
       })
     })
 
-    describe('id does not need read tokens', () => {
+    describe('namespace does not need read tokens', () => {
       describe('READ_TOKEN_REQUIRED=true', () => {
         it('401', async () => {
           process.env.PUBSUB_TOKEN_BASED_ACCESS_CONTROL = 'true'
           process.env.PUBSUB_READ_TOKEN_REQUIRED = 'true'
-          const id = 'id'
+          const namespace = 'namespace'
 
           const res = await fetch(get(
             url(getAddress())
-          , pathname(`/pubsub/${id}`)
+          , pathname(`/pubsub/${namespace}`)
           ))
 
           expect(res.status).toBe(401)
@@ -86,9 +86,9 @@ describe('token-based access control', () => {
         it('200', async () => {
           process.env.PUBSUB_TOKEN_BASED_ACCESS_CONTROL = 'true'
           process.env.PUBSUB_READ_TOKEN_REQUIRED = 'false'
-          const id = 'id'
+          const namespace = 'namespace'
 
-          const es = new EventSource(`${getAddress()}/pubsub/${id}`)
+          const es = new EventSource(`${getAddress()}/pubsub/${namespace}`)
           await waitForEventTarget(es as EventTarget, 'open')
           es.close()
         })
@@ -100,25 +100,25 @@ describe('token-based access control', () => {
     describe('id need read tokens', () => {
       describe('no token', () => {
         it('200', async () => {
-          const id = 'id'
+          const namespace = 'namespace'
           const token = 'token'
-          await AccessControlDAO.setReadTokenRequired(id, true)
-          await AccessControlDAO.setReadToken({ id, token })
+          await AccessControlDAO.setReadTokenRequired(namespace, true)
+          await AccessControlDAO.setReadToken({ namespace, token })
 
-          const es = new EventSource(`${getAddress()}/pubsub/${id}`)
+          const es = new EventSource(`${getAddress()}/pubsub/${namespace}`)
           await waitForEventTarget(es as EventTarget, 'open')
           es.close()
         })
       })
     })
 
-    describe('id does not need read tokens', () => {
+    describe('namespace does not need read tokens', () => {
       describe('READ_TOKEN_REQUIRED=true', () => {
         it('200', async () => {
           process.env.PUBSUB_READ_TOKEN_REQUIRED = 'true'
-          const id = 'id'
+          const namespace = 'namespace'
 
-          const es = new EventSource(`${getAddress()}/pubsub/${id}`)
+          const es = new EventSource(`${getAddress()}/pubsub/${namespace}`)
           await waitForEventTarget(es as EventTarget, 'open')
           es.close()
         })

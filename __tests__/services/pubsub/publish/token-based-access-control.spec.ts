@@ -17,15 +17,15 @@ describe('token-based access control', () => {
       describe('token matched', () => {
         it('204', async () => {
           process.env.PUBSUB_TOKEN_BASED_ACCESS_CONTROL = 'true'
-          const id = 'id'
+          const namespace = 'namespace'
           const token = 'token'
           const message = 'message'
-          await AccessControlDAO.setWriteTokenRequired(id, true)
-          await AccessControlDAO.setWriteToken({ id, token })
+          await AccessControlDAO.setWriteTokenRequired(namespace, true)
+          await AccessControlDAO.setWriteToken({ namespace, token })
 
           const res = await fetch(post(
             url(getAddress())
-          , pathname(`/pubsub/${id}`)
+          , pathname(`/pubsub/${namespace}`)
           , searchParam('token', token)
           , text(message)
           ))
@@ -37,15 +37,15 @@ describe('token-based access control', () => {
       describe('token does not matched', () => {
         it('401', async () => {
           process.env.PUBSUB_TOKEN_BASED_ACCESS_CONTROL = 'true'
-          const id = 'id'
+          const namespace = 'namespace'
           const token = 'token'
           const message = 'message'
-          await AccessControlDAO.setWriteTokenRequired(id, true)
-          await AccessControlDAO.setWriteToken({ id, token })
+          await AccessControlDAO.setWriteTokenRequired(namespace, true)
+          await AccessControlDAO.setWriteToken({ namespace, token })
 
           const res = await fetch(post(
             url(getAddress())
-          , pathname(`/pubsub/${id}`)
+          , pathname(`/pubsub/${namespace}`)
           , searchParam('token', 'bad')
           , text(message)
           ))
@@ -57,15 +57,15 @@ describe('token-based access control', () => {
       describe('no token', () => {
         it('401', async () => {
           process.env.PUBSUB_TOKEN_BASED_ACCESS_CONTROL = 'true'
-          const id = 'id'
+          const namespace = 'namespace'
           const token = 'token'
           const message = 'message'
-          await AccessControlDAO.setWriteTokenRequired(id, true)
-          await AccessControlDAO.setWriteToken({ id, token })
+          await AccessControlDAO.setWriteTokenRequired(namespace, true)
+          await AccessControlDAO.setWriteToken({ namespace, token })
 
           const res = await fetch(post(
             url(getAddress())
-          , pathname(`/pubsub/${id}`)
+          , pathname(`/pubsub/${namespace}`)
           , text(message)
           ))
 
@@ -74,17 +74,17 @@ describe('token-based access control', () => {
       })
     })
 
-    describe('id does not need write tokens', () => {
+    describe('namespace does not need write tokens', () => {
       describe('WRITE_TOKEN_REQUIRED=true', () => {
         it('401', async () => {
           process.env.PUBSUB_TOKEN_BASED_ACCESS_CONTROL = 'true'
           process.env.PUBSUB_WRITE_TOKEN_REQUIRED = 'true'
-          const id = 'id'
+          const namespace = 'namespace'
           const message = 'message'
 
           const res = await fetch(post(
             url(getAddress())
-          , pathname(`/pubsub/${id}`)
+          , pathname(`/pubsub/${namespace}`)
           , text(message)
           ))
 
@@ -96,12 +96,12 @@ describe('token-based access control', () => {
         it('204', async () => {
           process.env.PUBSUB_TOKEN_BASED_ACCESS_CONTROL = 'true'
           process.env.PUBSUB_WRITE_TOKEN_REQUIRED = 'false'
-          const id = 'id'
+          const namespace = 'namespace'
           const message = 'message'
 
           const res = await fetch(post(
             url(getAddress())
-          , pathname(`/pubsub/${id}`)
+          , pathname(`/pubsub/${namespace}`)
           , text(message)
           ))
 
@@ -115,15 +115,15 @@ describe('token-based access control', () => {
     describe('id need write tokens', () => {
       describe('no token', () => {
         it('204', async () => {
-          const id = 'id'
+          const namespace = 'namespace'
           const token = 'token'
           const message = 'message'
-          await AccessControlDAO.setWriteTokenRequired(id, true)
-          await AccessControlDAO.setWriteToken({ id, token })
+          await AccessControlDAO.setWriteTokenRequired(namespace, true)
+          await AccessControlDAO.setWriteToken({ namespace, token })
 
           const res = await fetch(post(
             url(getAddress())
-          , pathname(`/pubsub/${id}`)
+          , pathname(`/pubsub/${namespace}`)
           , text(message)
           ))
 
@@ -132,19 +132,19 @@ describe('token-based access control', () => {
       })
     })
 
-    describe('id does not need write tokens', () => {
+    describe('namespace does not need write tokens', () => {
       describe('WRITE_TOKEN_REQUIRED=true', () => {
         it('204', async () => {
           process.env.PUBSUB_WRITE_TOKEN_REQUIRED = 'true'
-          const id = 'id'
+          const namespace = 'namespace'
           const token = 'token'
           const message = 'message'
-          await AccessControlDAO.setWriteTokenRequired(id, true)
-          await AccessControlDAO.setWriteToken({ id, token })
+          await AccessControlDAO.setWriteTokenRequired(namespace, true)
+          await AccessControlDAO.setWriteToken({ namespace, token })
 
           const res = await fetch(post(
             url(getAddress())
-          , pathname(`/pubsub/${id}`)
+          , pathname(`/pubsub/${namespace}`)
           , text(message)
           ))
 

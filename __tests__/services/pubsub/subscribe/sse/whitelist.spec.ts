@@ -15,26 +15,26 @@ afterEach(stopService)
 
 describe('whitelist', () => {
   describe('enabled', () => {
-    describe('id in whitelist', () => {
+    describe('namespace in whitelist', () => {
       it('200', async () => {
         process.env.PUBSUB_LIST_BASED_ACCESS_CONTROL = 'whitelist'
-        const id = 'id'
-        await AccessControlDAO.addWhitelistItem(id)
+        const namespace = 'namespace'
+        await AccessControlDAO.addWhitelistItem(namespace)
 
-        const es = new EventSource(`${getAddress()}/pubsub/${id}`)
+        const es = new EventSource(`${getAddress()}/pubsub/${namespace}`)
         await waitForEventTarget(es as EventTarget, 'open')
         es.close()
       })
     })
 
-    describe('id not in whitelist', () => {
+    describe('namespace not in whitelist', () => {
       it('403', async () => {
         process.env.PUBSUB_LIST_BASED_ACCESS_CONTROL = 'whitelist'
-        const id = 'id'
+        const namespace = 'namespace'
 
         const res = await fetch(get(
           url(getAddress())
-        , pathname(`/pubsub/${id}`)
+        , pathname(`/pubsub/${namespace}`)
         ))
 
         expect(res.status).toBe(403)
@@ -43,12 +43,12 @@ describe('whitelist', () => {
   })
 
   describe('disabled', () => {
-    describe('id not in whitelist', () => {
+    describe('namespace not in whitelist', () => {
       it('200', async () => {
-        const id = 'id'
-        await AccessControlDAO.addWhitelistItem(id)
+        const namespace = 'namespace'
+        await AccessControlDAO.addWhitelistItem(namespace)
 
-        const es = new EventSource(`${getAddress()}/pubsub/${id}`)
+        const es = new EventSource(`${getAddress()}/pubsub/${namespace}`)
         await waitForEventTarget(es as EventTarget, 'open')
         es.close()
       })
