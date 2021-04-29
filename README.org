@@ -395,7 +395,7 @@ await fetch(`http://localhost:8080/admin/blacklist/${namespace}`, {
 ******* 获取白名单
 =GET /admin/whitelist=
 
-获取位于黑名单中的所有频道namespace, 返回JSON表示的字符串数组`string[]`.
+获取位于黑名单中的所有频道namespace, 返回JSON表示的字符串数组 =string[]=.
 
 ******* Example
 ******** curl
