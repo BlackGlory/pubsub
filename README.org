@@ -14,7 +14,7 @@
 - websocat: https://github.com/vi/websocat
 
 #+BEGIN_SRC sh
-# 运行
+# 运行-
 docker run --detach --publish 8080:8080 blackglory/pubsub
 
 # 打开第一个终端
@@ -265,7 +265,7 @@ curl \
   --header "Authorization: Bearer $ADMIN_PASSWORD" \
   --header "Content-Type: application/json" \
   --data "$JSON_SCHEMA" \
-  "http://localhost:8080/admin/pubsub/$namespace/jsonschema"
+  "http://localhost:8080/admin/pubsub/$namespace/json-schema"
 #+END_SRC
 
 ******** fetch
