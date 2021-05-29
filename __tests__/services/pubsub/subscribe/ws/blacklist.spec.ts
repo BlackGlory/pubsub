@@ -1,7 +1,7 @@
 import { startService, stopService, getAddress } from '@test/utils'
 import { matchers } from 'jest-json-schema'
 import { AccessControlDAO } from '@dao'
-import WebSocket = require('ws')
+import WebSocket from 'ws'
 import { waitForEventTarget } from '@blackglory/wait-for'
 
 jest.mock('@dao/config-in-sqlite3/database')

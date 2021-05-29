@@ -7,7 +7,7 @@ import { sse } from 'extra-generator'
 import { waitForEventEmitter } from '@blackglory/wait-for'
 import { SSE_HEARTBEAT_INTERVAL, WS_HEARTBEAT_INTERVAL } from '@env'
 import { setDynamicTimeoutLoop } from 'extra-timers'
-import WebSocket = require('ws')
+import WebSocket from 'ws'
 
 export const routes: FastifyPluginAsync<{ Core: ICore }> = async function routes(server, { Core }) {
   const wss = new WebSocket.Server({ noServer: true })
