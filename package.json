@@ -36,7 +36,6 @@
   "devDependencies": {
     "@blackglory/http-status": "^1.0.0",
     "@blackglory/jest-matchers": "^0.1.18",
-    "@blackglory/wait-for": "^0.3.2",
     "@commitlint/cli": "^12.1.4",
     "@commitlint/config-conventional": "^12.1.4",
     "@types/app-root-path": "^1.2.4",
@@ -75,6 +74,7 @@
     "@blackglory/go": "^0.1.0",
     "@blackglory/structures": "^0.2.1",
     "@blackglory/types": "^0.4.3",
+    "@blackglory/wait-for": "^0.3.2",
     "ajv": "^8.6.0",
     "app-root-path": "^3.0.0",
     "better-sqlite3": "^7.4.1",
