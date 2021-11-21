@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.0.0](https://github.com/BlackGlory/pubsub/compare/v0.3.5...v1.0.0) (2021-11-21)
+
+
+### Bug Fixes
+
+* **docker:** healthcheck ([f6fb12a](https://github.com/BlackGlory/pubsub/commit/f6fb12a290b4e912978587eb0520edbfb0fe9376))
+
 ### [0.3.5](https://github.com/BlackGlory/pubsub/compare/v0.3.4...v0.3.5) (2021-10-14)
 
 ### [0.3.4](https://github.com/BlackGlory/pubsub/compare/v0.3.3...v0.3.4) (2021-07-13)
