@@ -61,9 +61,7 @@ export const routes: FastifyPluginAsync<{ Core: ICore }> = async function routes
         if (e instanceof Core.Blacklist.Forbidden) return reply.status(403).send()
         if (e instanceof Core.Whitelist.Forbidden) return reply.status(403).send()
         if (e instanceof Core.TBAC.Unauthorized) return reply.status(401).send()
-        if (e instanceof Core.JsonSchema.InvalidPayload) {
-          return reply.status(400).send()
-        }
+        if (e instanceof Core.JsonSchema.InvalidPayload) return reply.status(400).send()
         if (e instanceof BadContentType) return reply.status(415).send()
         throw e
       }

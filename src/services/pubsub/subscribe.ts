@@ -31,11 +31,15 @@ export const routes: FastifyPluginAsync<{ Core: ICore }> = async function routes
     }
 
     ws.on('close', () => {
-      if (cancelHeartbeatTimer) cancelHeartbeatTimer()
+      if (cancelHeartbeatTimer) {
+        cancelHeartbeatTimer()
+      }
       unsubscribe()
     })
     ws.on('message', message => {
-      if (message.toString() !== '') ws.close()
+      if (message.toString() !== '') {
+        ws.close()
+      }
     })
   })
 
@@ -79,7 +83,9 @@ export const routes: FastifyPluginAsync<{ Core: ICore }> = async function routes
       // QUESITON: why stream?
       const connection = WebSocket.createWebSocketStream(ws, { encoding: 'utf8' })
       ws.on('newListener', event => {
-        if (event === 'message') connection.resume()
+        if (event === 'message') {
+          connection.resume()
+        }
       })
 
       const GOING_AWAY = 1001
@@ -148,7 +154,9 @@ export const routes: FastifyPluginAsync<{ Core: ICore }> = async function routes
         }
 
         req.raw.on('close', () => {
-          if (cancelHeartbeatTimer) cancelHeartbeatTimer()
+          if (cancelHeartbeatTimer) {
+            cancelHeartbeatTimer()
+          }
           unsubscribe()
         })
       })
