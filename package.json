@@ -78,7 +78,7 @@
     "app-root-path": "^3.0.0",
     "better-sqlite3": "^7.4.5",
     "dotenv": "^10.0.0",
-    "extra-filesystem": "^0.4.0",
+    "extra-filesystem": "^0.4.1",
     "extra-generator": "^0.2.15",
     "extra-promise": "^0.20.0",
     "extra-tags": "^0.2.3",
