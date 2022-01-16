@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.1.0](https://github.com/BlackGlory/pubsub/compare/v1.0.0...v1.1.0) (2022-01-16)
+
+
+### Features
+
+* add accept-version support ([26affd5](https://github.com/BlackGlory/pubsub/commit/26affd5df97db8a38a2e385e847629f2c460259b))
+* add cache-control header ([d882070](https://github.com/BlackGlory/pubsub/commit/d882070faefbb716d672c0bb0fd8df2771320ed1))
+
 ## [1.0.0](https://github.com/BlackGlory/pubsub/compare/v0.3.5...v1.0.0) (2021-11-21)
 
 
