@@ -31,18 +31,8 @@ export const routes: FastifyPluginAsync<{ Core: ICore }> = async function routes
           200: {
             type: 'object'
           , properties: {
-              writeTokenRequired: {
-                anyOf: [
-                  { type: 'boolean' }
-                , { type: 'null' }
-                ]
-              }
-            , readTokenRequired: {
-                anyOf: [
-                  { type: 'boolean' }
-                , { type: 'null' }
-                ]
-              }
+              writeTokenRequired: { type: 'boolean', nullable: true }
+            , readTokenRequired: { type: 'boolean', nullable: true }
             }
           }
         }
