@@ -7,9 +7,11 @@ export function subscribe(
 ): IUnsubscribe {
   const emitter = getEmitter()
   const observable = new Observable<string>(observer => {
-    const listener = (value: string) => observer.next(value)
-    emitter.on(namespace, listener)
-    return () => emitter.off(namespace, listener)
+    const removeListener = emitter.once(
+      namespace
+    , (value: string) => observer.next(value)
+    )
+    return () => removeListener()
   })
   const subscription = observable.subscribe(listener)
   return () => subscription.unsubscribe()

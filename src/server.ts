@@ -1,5 +1,5 @@
 import fastify from 'fastify'
-import cors from 'fastify-cors'
+import cors from '@fastify/cors'
 import metricsPlugin from 'fastify-metrics'
 import { Registry } from 'prom-client'
 import { routes as pubsub } from '@services/pubsub'
