@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.1.4](https://github.com/BlackGlory/pubsub/compare/v1.1.3...v1.1.4) (2022-06-08)
+
+
+### Bug Fixes
+
+* subscribe ([edc2489](https://github.com/BlackGlory/pubsub/commit/edc24897ea39016e5bf3c0f0bb9d781d7897f8cb))
+
 ### [1.1.3](https://github.com/BlackGlory/pubsub/compare/v1.1.2...v1.1.3) (2022-06-08)
 
 ### [1.1.2](https://github.com/BlackGlory/pubsub/compare/v1.1.1...v1.1.2) (2022-02-16)
