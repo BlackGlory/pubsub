@@ -2,10 +2,12 @@
   "private": true,
   "name": "pubsub",
   "version": "1.1.4",
-  "main": "lib/index.js",
   "repository": "git@github.com:BlackGlory/pubsub.git",
   "author": "BlackGlory <woshenmedoubuzhidao@blackglory.me>",
   "license": "MIT",
+  "engines": {
+    "node": ">=16"
+  },
   "scripts": {
     "deduplicate": "yarn-deduplicate",
     "lint": "eslint --ext .js,.jsx,.ts,.tsx --quiet src __tests__",
@@ -14,24 +16,23 @@
     "test:coverage": "jest --runInBand --coverage --config jest.config.js",
     "dev": "nodemon",
     "dev:http2": "cross-env PUBSUB_HTTP2=true nodemon",
-    "clean": "rimraf lib",
+    "clean": "rimraf lib idst",
     "build": "run-s build:*",
     "build:compile": "tsc --project tsconfig.build.json",
     "build:patch": "tscpaths --project tsconfig.build.json --src ./src --out ./lib",
-    "start": "node lib/index.js",
-    "start:http2": "cross-env PUBSUB_HTTP2=true node lib/index.js",
+    "bundle": "webpack --stats-error-details",
+    "start": "node dist/index.cjs",
+    "start:http2": "cross-env PUBSUB_HTTP2=true node dist/index.js",
+    "smoke": "cross-env NODE_ENV=test node dist/index.cjs",
     "docker:build": "docker build --tag pubsub .",
     "docker:test": "docker-compose --file docker-compose.test.yml run --rm test",
     "release": "standard-version"
   },
   "husky": {
     "hooks": {
-      "pre-commit": "run-s lint build test",
+      "pre-commit": "run-s clean lint build test bundle smoke",
       "commit-msg": "commitlint --env HUSKY_GIT_PARAMS"
     }
-  },
-  "engines": {
-    "node": ">=16"
   },
   "devDependencies": {
     "@blackglory/http-status": "^1.0.1",
@@ -65,6 +66,8 @@
     "tsconfig-paths": "^4.0.0",
     "tscpaths": "^0.0.9",
     "typescript": "^4.7.4",
+    "webpack": "^5.74.0",
+    "webpack-cli": "^4.10.0",
     "yarn-deduplicate": "^5.0.0"
   },
   "dependencies": {
@@ -79,6 +82,7 @@
     "ajv": "^8.11.0",
     "app-root-path": "^3.0.0",
     "better-sqlite3": "^7.6.2",
+    "bufferutil": "^4.0.6",
     "dotenv": "^16.0.1",
     "extra-filesystem": "^0.4.4",
     "extra-generator": "^0.2.16",
@@ -94,6 +98,7 @@
     "prom-client": "^14.0.1",
     "return-style": "^1.0.0",
     "rxjs": "^7.5.6",
+    "utf-8-validate": "^5.0.9",
     "value-getter": "^0.2.4",
     "ws": "^8.8.1"
   }

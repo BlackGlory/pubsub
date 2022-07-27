@@ -36,6 +36,7 @@ git clone https://github.com/BlackGlory/pubsub
 cd pubsub
 yarn install
 yarn build
+yarn bundle
 yarn --silent start
 #+END_SRC
 

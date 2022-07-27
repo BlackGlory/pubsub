@@ -3,9 +3,8 @@ import type { Database as IDatabase } from 'better-sqlite3'
 import * as path from 'path'
 import { ensureDirSync } from 'extra-filesystem'
 import { assert } from '@blackglory/errors'
-import { NODE_ENV, NodeEnv, DATA } from '@env'
+import { DATA } from '@env'
 import { migrateDatabase } from './utils'
-assert(NODE_ENV() !== NodeEnv.Test, 'Cannot run tests with real database')
 
 let db: IDatabase
 
