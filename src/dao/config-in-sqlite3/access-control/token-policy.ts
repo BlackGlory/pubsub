@@ -1,27 +1,28 @@
 import { getDatabase } from '../database'
+import { withLazyStatic, lazyStatic } from 'extra-lazy'
 
-export function getAllNamespacesWithTokenPolicies(): string[] {
-  const result = getDatabase().prepare(`
+export const getAllNamespacesWithTokenPolicies = withLazyStatic(function (): string[] {
+  const result = lazyStatic(() => getDatabase().prepare(`
     SELECT namespace
       FROM pubsub_token_policy;
-  `).all()
+  `), [getDatabase()]).all()
 
   return result.map(x => x['namespace'])
-}
+})
 
-export function getTokenPolicies(namespace: string): {
+export const getTokenPolicies = withLazyStatic(function (namespace: string): {
   writeTokenRequired: boolean | null
   readTokenRequired: boolean | null
 } {
   const row: {
     'write_token_required': number | null
   , 'read_token_required': number | null
-  } = getDatabase().prepare(`
+  } = lazyStatic(() => getDatabase().prepare(`
     SELECT write_token_required
          , read_token_required
       FROM pubsub_token_policy
      WHERE namespace = $namespace;
-  `).get({ namespace })
+  `), [getDatabase()]).get({ namespace })
   if (row) {
     const writeTokenRequired = row['write_token_required']
     const readTokenRequired = row['read_token_required']
@@ -38,60 +39,64 @@ export function getTokenPolicies(namespace: string): {
   } else {
     return { writeTokenRequired: null, readTokenRequired: null }
   }
-}
+})
 
-export function setWriteTokenRequired(namespace: string, val: boolean): void {
-  getDatabase().prepare(`
+export const setWriteTokenRequired = withLazyStatic(function (
+  namespace: string
+, val: boolean
+): void {
+  lazyStatic(() => getDatabase().prepare(`
     INSERT INTO pubsub_token_policy (namespace, write_token_required)
     VALUES ($namespace, $writeTokenRequired)
         ON CONFLICT(namespace)
         DO UPDATE SET write_token_required = $writeTokenRequired;
-  `).run({ namespace, writeTokenRequired: booleanToNumber(val) })
-}
+  `), [getDatabase()]).run({ namespace, writeTokenRequired: booleanToNumber(val) })
+})
 
-export function unsetWriteTokenRequired(namespace: string): void {
-  const db = getDatabase()
-  db.transaction(() => {
-    db.prepare(`
+export const unsetWriteTokenRequired = withLazyStatic(function (namespace: string): void {
+  lazyStatic(() => getDatabase().transaction((namespace: string) => {
+    lazyStatic(() => getDatabase().prepare(`
       UPDATE pubsub_token_policy
          SET write_token_required = NULL
        WHERE namespace = $namespace;
-    `).run({ namespace })
+    `), [getDatabase()]).run({ namespace })
 
     deleteNoPoliciesRow(namespace)
-  })()
-}
+  }), [getDatabase()])(namespace)
+})
 
-export function setReadTokenRequired(namespace: string, val: boolean): void {
-  getDatabase().prepare(`
+export const setReadTokenRequired = withLazyStatic(function (
+  namespace: string
+, val: boolean
+): void {
+  lazyStatic(() => getDatabase().prepare(`
     INSERT INTO pubsub_token_policy (namespace, read_token_required)
     VALUES ($namespace, $readTokenRequired)
         ON CONFLICT(namespace)
         DO UPDATE SET read_token_required = $readTokenRequired;
-  `).run({ namespace, readTokenRequired: booleanToNumber(val) })
-}
+  `), [getDatabase()]).run({ namespace, readTokenRequired: booleanToNumber(val) })
+})
 
-export function unsetReadTokenRequired(namespace: string): void {
-  const db = getDatabase()
-  db.transaction(() => {
-    db.prepare(`
+export const unsetReadTokenRequired = withLazyStatic(function (namespace: string): void {
+  lazyStatic(() => getDatabase().transaction((namespace: string) => {
+    lazyStatic(() => getDatabase().prepare(`
       UPDATE pubsub_token_policy
          SET read_token_required = NULL
        WHERE namespace = $namespace;
-    `).run({ namespace })
+    `), [getDatabase()]).run({ namespace })
 
-deleteNoPoliciesRow(namespace)
-  })()
-}
+    deleteNoPoliciesRow(namespace)
+  }), [getDatabase()])(namespace)
+})
 
-function deleteNoPoliciesRow(namespace: string): void {
-  getDatabase().prepare(`
+const deleteNoPoliciesRow = withLazyStatic(function (namespace: string): void {
+  lazyStatic(() => getDatabase().prepare(`
     DELETE FROM pubsub_token_policy
      WHERE namespace = $namespace
        AND write_token_required = NULL
        AND read_token_required = NULL
-  `).run({ namespace })
-}
+  `), [getDatabase()]).run({ namespace })
+})
 
 function numberToBoolean(val: number): boolean {
   if (val === 0) {
