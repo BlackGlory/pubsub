@@ -1,12 +1,10 @@
 import { startService, stopService, getAddress } from '@test/utils'
-import { matchers } from 'jest-json-schema'
 import { JsonSchemaDAO } from '@dao'
 import { fetch } from 'extra-fetch'
 import { post } from 'extra-request'
 import { url, pathname, json, text, header } from 'extra-request/lib/es2018/transformers'
 
 jest.mock('@dao/config-in-sqlite3/database')
-expect.extend(matchers)
 
 // 由于服务启动时会读取环境变量 PUBSUB_JSON_PAYLOAD_ONLY
 // 因此环境变量必须在服务启动前设置, 这迫使测试用例手动启动服务
