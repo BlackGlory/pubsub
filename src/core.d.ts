@@ -1,4 +1,4 @@
-type Json = import('@blackglory/types').Json
+type JSONValue = import('justypes').JSONValue
 type CustomErrorConstructor = import('@blackglory/errors').CustomErrorConstructor
 
 interface ICore {
@@ -13,7 +13,7 @@ interface ICore {
     isEnabled(): boolean
     getAllNamespaces(): Promise<string[]>
     get(namespace: string): Promise<string | null>
-    set(namespace: string, schema: Json): Promise<void>
+    set(namespace: string, schema: JSONValue): Promise<void>
     remove(namespace: string): Promise<void>
 
     /**

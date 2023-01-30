@@ -1,5 +1,5 @@
 import { Observable } from 'rxjs'
-import { getEmitter } from './emitter-instance'
+import { getEmitter } from './emitter-instance.js'
 
 export function subscribe(
   namespace: string

@@ -1,5 +1,5 @@
-import { resetEmitter } from '@dao/data-in-memory/pubsub/emitter-instance'
-import { PubSubDAO } from '@dao/data-in-memory/pubsub'
+import { resetEmitter } from '@dao/data-in-memory/pubsub/emitter-instance.js'
+import { PubSubDAO } from '@dao/data-in-memory/pubsub/index.js'
 
 beforeEach(resetEmitter)
 

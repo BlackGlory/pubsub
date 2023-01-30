@@ -1,10 +1,10 @@
 import { ValueGetter } from 'value-getter'
-import { isNumber } from '@blackglory/types'
+import { isNumber } from '@blackglory/prelude'
 import { Getter } from 'justypes'
 import { assert } from '@blackglory/errors'
-import { getCache } from '@env/cache'
-import { path as appRoot } from 'app-root-path'
+import { getCache } from '@env/cache.js'
 import * as path from 'path'
+import { getAppRoot } from '@src/utils.js'
 
 export enum ListBasedAccessControl {
   Disable
@@ -32,7 +32,7 @@ export const NODE_ENV: Getter<NodeEnv | undefined> =
 
 export const DATA: Getter<string> =
   env('PUBSUB_DATA')
-    .default(path.join(appRoot, 'data'))
+    .default(path.join(getAppRoot(), 'data'))
     .memoize(getCache)
     .get()
 
@@ -46,13 +46,6 @@ export const PORT: Getter<number> =
   env('PUBSUB_PORT')
     .convert(toInteger)
     .default(8080)
-    .memoize(getCache)
-    .get()
-
-export const HTTP2: Getter<boolean> =
-  env('PUBSUB_HTTP2')
-    .convert(toBool)
-    .default(false)
     .memoize(getCache)
     .get()
 

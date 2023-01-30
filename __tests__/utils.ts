@@ -1,8 +1,9 @@
-import * as ConfigInSqlite3 from '@dao/config-in-sqlite3/database'
-import { resetCache } from '@env/cache'
-import { buildServer } from '@src/server'
+import * as ConfigInSqlite3 from '@dao/config-in-sqlite3/database.js'
+import { resetCache } from '@env/cache.js'
+import { buildServer } from '@src/server.js'
 import Ajv from 'ajv'
 
+// @ts-ignore
 const ajv = new Ajv()
 let server: ReturnType<typeof buildServer>
 let address: string
@@ -14,11 +15,10 @@ export function getAddress() {
 export async function startService() {
   await initializeDatabases()
   server = buildServer()
-  address = await server.listen(0)
+  address = await server.listen()
 }
 
 export async function stopService() {
-  server.metrics.clearRegister()
   await server.close()
   clearDatabases()
   resetEnvironment()

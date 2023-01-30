@@ -1,12 +1,10 @@
-import { startService, stopService, getAddress } from '@test/utils'
+import { startService, stopService, getAddress } from '@test/utils.js'
 import { EventSource } from 'extra-fetch'
 import { waitForEventTarget } from '@blackglory/wait-for'
-import { AccessControlDAO } from '@dao'
+import { AccessControlDAO } from '@dao/index.js'
 import { fetch } from 'extra-fetch'
 import { get } from 'extra-request'
-import { url, pathname, searchParam } from 'extra-request/lib/es2018/transformers'
-
-jest.mock('@dao/config-in-sqlite3/database')
+import { url, pathname, searchParam } from 'extra-request/transformers'
 
 beforeEach(startService)
 afterEach(stopService)

@@ -1,16 +1,16 @@
 import * as http from 'http'
 import * as net from 'net'
-import { go } from '@blackglory/go'
+import { go } from '@blackglory/prelude'
 import { FastifyPluginAsync } from 'fastify'
-import { namespaceSchema, tokenSchema } from '@src/schema'
+import { namespaceSchema, tokenSchema } from '@src/schema.js'
 import { sse } from 'extra-generator'
 import { waitForEventEmitter } from '@blackglory/wait-for'
-import { SSE_HEARTBEAT_INTERVAL, WS_HEARTBEAT_INTERVAL } from '@env'
+import { SSE_HEARTBEAT_INTERVAL, WS_HEARTBEAT_INTERVAL } from '@env/index.js'
 import { setDynamicTimeoutLoop } from 'extra-timers'
-import WebSocket from 'ws'
+import { WebSocket, WebSocketServer, createWebSocketStream } from 'ws'
 
 export const routes: FastifyPluginAsync<{ Core: ICore }> = async function routes(server, { Core }) {
-  const wss = new WebSocket.Server({ noServer: true })
+  const wss = new WebSocketServer({ noServer: true })
 
   // WebSocket handler
   wss.on('connection', (
@@ -80,8 +80,7 @@ export const routes: FastifyPluginAsync<{ Core: ICore }> = async function routes
     wss.handleUpgrade(req, socket, head, ws => {
       wss.emit('connection', ws, req, { namespace })
 
-      // QUESITON: why stream?
-      const connection = WebSocket.createWebSocketStream(ws, { encoding: 'utf8' })
+      const connection = createWebSocketStream(ws, { encoding: 'utf8' })
       ws.on('newListener', event => {
         if (event === 'message') {
           connection.resume()
@@ -89,7 +88,6 @@ export const routes: FastifyPluginAsync<{ Core: ICore }> = async function routes
       })
 
       const GOING_AWAY = 1001
-      // QUESTION: why close?
       ws.close(GOING_AWAY)
     })
   })

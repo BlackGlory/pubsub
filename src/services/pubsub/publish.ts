@@ -1,6 +1,6 @@
 import { FastifyPluginAsync } from 'fastify'
-import { namespaceSchema, tokenSchema } from '@src/schema'
-import { JSON_PAYLOAD_ONLY, PUBLISH_PAYLOAD_LIMIT } from '@env'
+import { namespaceSchema, tokenSchema } from '@src/schema.js'
+import { JSON_PAYLOAD_ONLY, PUBLISH_PAYLOAD_LIMIT } from '@env/index.js'
 import { CustomError } from '@blackglory/errors'
 
 export const routes: FastifyPluginAsync<{ Core: ICore }> = async function routes(server, { Core }) {
@@ -66,8 +66,10 @@ export const routes: FastifyPluginAsync<{ Core: ICore }> = async function routes
         throw e
       }
 
-      await Core.PubSub.publish(namespace, payload)
-      reply.status(204).send()
+      Core.PubSub.publish(namespace, payload)
+      return reply
+        .status(204)
+        .send()
 
       function isJSONPayload(): boolean {
         const contentType = req.headers['content-type']

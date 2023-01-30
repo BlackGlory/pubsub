@@ -1,8 +1,6 @@
-import { startService, stopService, getAddress } from '@test/utils'
+import { startService, stopService, getAddress } from '@test/utils.js'
 import WebSocket from 'ws'
 import { waitForEventTarget } from '@blackglory/wait-for'
-
-jest.mock('@dao/config-in-sqlite3/database')
 
 beforeEach(startService)
 afterEach(stopService)
