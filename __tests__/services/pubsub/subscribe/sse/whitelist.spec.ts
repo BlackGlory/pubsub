@@ -15,7 +15,7 @@ describe('whitelist', () => {
       it('200', async () => {
         process.env.PUBSUB_LIST_BASED_ACCESS_CONTROL = 'whitelist'
         const namespace = 'namespace'
-        await AccessControlDAO.addWhitelistItem(namespace)
+        AccessControlDAO.Whitelist.addWhitelistItem(namespace)
 
         const es = new EventSource(`${getAddress()}/pubsub/${namespace}`)
         await waitForEventTarget(es as EventTarget, 'open')
@@ -42,7 +42,7 @@ describe('whitelist', () => {
     describe('namespace not in whitelist', () => {
       it('200', async () => {
         const namespace = 'namespace'
-        await AccessControlDAO.addWhitelistItem(namespace)
+        AccessControlDAO.Whitelist.addWhitelistItem(namespace)
 
         const es = new EventSource(`${getAddress()}/pubsub/${namespace}`)
         await waitForEventTarget(es as EventTarget, 'open')

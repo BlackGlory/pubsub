@@ -12,7 +12,7 @@ describe('whitelist', () => {
       it('open', async () => {
         process.env.PUBSUB_LIST_BASED_ACCESS_CONTROL = 'whitelist'
         const namespace = 'namespace'
-        await AccessControlDAO.addWhitelistItem(namespace)
+        AccessControlDAO.Whitelist.addWhitelistItem(namespace)
 
         const ws = new WebSocket(`${getAddress()}/pubsub/${namespace}`.replace('http', 'ws'))
         await waitForEventTarget(ws as unknown as EventTarget, 'open')

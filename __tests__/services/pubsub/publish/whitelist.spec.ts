@@ -14,7 +14,7 @@ describe('whitelist', () => {
         process.env.PUBSUB_LIST_BASED_ACCESS_CONTROL = 'whitelist'
         const namespace = 'namespace'
         const message = 'message'
-        await AccessControlDAO.addWhitelistItem(namespace)
+        AccessControlDAO.Whitelist.addWhitelistItem(namespace)
 
         const res = await fetch(post(
           url(getAddress())

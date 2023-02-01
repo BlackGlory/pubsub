@@ -14,8 +14,8 @@ describe('token-based access control', () => {
           process.env.PUBSUB_TOKEN_BASED_ACCESS_CONTROL = 'true'
           const namespace = 'namespace'
           const token = 'token'
-          await AccessControlDAO.setReadTokenRequired(namespace, true)
-          await AccessControlDAO.setReadToken({ namespace, token })
+          AccessControlDAO.TokenPolicy.setReadTokenRequired(namespace, true)
+          AccessControlDAO.Token.setReadToken({ namespace, token })
 
           const ws = new WebSocket(`${getAddress()}/pubsub/${namespace}?token=${token}`.replace('http', 'ws'))
           await waitForEventTarget(ws as unknown as EventTarget, 'open')
@@ -27,8 +27,8 @@ describe('token-based access control', () => {
           process.env.PUBSUB_TOKEN_BASED_ACCESS_CONTROL = 'true'
           const namespace = 'namespace'
           const token = 'token'
-          await AccessControlDAO.setReadTokenRequired(namespace, true)
-          await AccessControlDAO.setReadToken({ namespace, token })
+          AccessControlDAO.TokenPolicy.setReadTokenRequired(namespace, true)
+          AccessControlDAO.Token.setReadToken({ namespace, token })
 
           const ws = new WebSocket(`${getAddress()}/pubsub/${namespace}?token=bad`.replace('http', 'ws'))
           await waitForEventTarget(ws as unknown as EventTarget, 'error')
@@ -40,8 +40,8 @@ describe('token-based access control', () => {
           process.env.PUBSUB_TOKEN_BASED_ACCESS_CONTROL = 'true'
           const namespace = 'namespace'
           const token = 'token'
-          await AccessControlDAO.setReadTokenRequired(namespace, true)
-          await AccessControlDAO.setReadToken({ namespace, token })
+          AccessControlDAO.TokenPolicy.setReadTokenRequired(namespace, true)
+          AccessControlDAO.Token.setReadToken({ namespace, token })
 
           const ws = new WebSocket(`${getAddress()}/pubsub/${namespace}`.replace('http', 'ws'))
           await waitForEventTarget(ws as unknown as EventTarget, 'error')
@@ -80,8 +80,8 @@ describe('token-based access control', () => {
         it('open', async () => {
           const namespace = 'namespace'
           const token = 'token'
-          await AccessControlDAO.setReadTokenRequired(namespace, true)
-          await AccessControlDAO.setReadToken({ namespace, token })
+          AccessControlDAO.TokenPolicy.setReadTokenRequired(namespace, true)
+          AccessControlDAO.Token.setReadToken({ namespace, token })
 
           const ws = new WebSocket(`${getAddress()}/pubsub/${namespace}`.replace('http', 'ws'))
           await waitForEventTarget(ws as unknown as EventTarget, 'open')

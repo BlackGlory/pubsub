@@ -2,8 +2,9 @@ import { FastifyPluginAsync } from 'fastify'
 import { namespaceSchema, tokenSchema } from '@src/schema.js'
 import { JSON_PAYLOAD_ONLY, PUBLISH_PAYLOAD_LIMIT } from '@env/index.js'
 import { CustomError } from '@blackglory/errors'
+import { IAPI } from '@api/contract.js'
 
-export const routes: FastifyPluginAsync<{ Core: ICore }> = async function routes(server, { Core }) {
+export const routes: FastifyPluginAsync<{ api: IAPI }> = async (server, { api }) => {
   // overwrite application/json parser
   server.addContentTypeParser(
     'application/json'
@@ -45,28 +46,28 @@ export const routes: FastifyPluginAsync<{ Core: ICore }> = async function routes
       const token = req.query.token
 
       try {
-        await Core.Blacklist.check(namespace)
-        await Core.Whitelist.check(namespace)
-        await Core.TBAC.checkWritePermission(namespace, token)
-        if (Core.JsonSchema.isEnabled()) {
+        api.Blacklist.check(namespace)
+        api.Whitelist.check(namespace)
+        api.TBAC.checkWritePermission(namespace, token)
+        if (api.JSONSchema.isEnabled()) {
           if (isJSONPayload()) {
-            await Core.JsonSchema.validate(namespace, payload)
+            api.JSONSchema.validate(namespace, payload)
           } else {
-            if (await Core.JsonSchema.get(namespace)) {
+            if (api.JSONSchema.get(namespace)) {
               throw new BadContentType('application/json')
             }
           }
         }
       } catch (e) {
-        if (e instanceof Core.Blacklist.Forbidden) return reply.status(403).send()
-        if (e instanceof Core.Whitelist.Forbidden) return reply.status(403).send()
-        if (e instanceof Core.TBAC.Unauthorized) return reply.status(401).send()
-        if (e instanceof Core.JsonSchema.InvalidPayload) return reply.status(400).send()
+        if (e instanceof api.Blacklist.Forbidden) return reply.status(403).send()
+        if (e instanceof api.Whitelist.Forbidden) return reply.status(403).send()
+        if (e instanceof api.TBAC.Unauthorized) return reply.status(401).send()
+        if (e instanceof api.JSONSchema.InvalidPayload) return reply.status(400).send()
         if (e instanceof BadContentType) return reply.status(415).send()
         throw e
       }
 
-      Core.PubSub.publish(namespace, payload)
+      api.PubSub.publish(namespace, payload)
       return reply
         .status(204)
         .send()

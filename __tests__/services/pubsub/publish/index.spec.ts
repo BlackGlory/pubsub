@@ -1,5 +1,5 @@
 import { startService, stopService, getAddress } from '@test/utils.js'
-import { JsonSchemaDAO } from '@dao/index.js'
+import { JSONSchemaDAO } from '@dao/index.js'
 import { fetch } from 'extra-fetch'
 import { post } from 'extra-request'
 import { url, pathname, json, text, header } from 'extra-request/transformers'
@@ -83,7 +83,7 @@ describe('no access control', () => {
             const namespace = 'namespace'
             const schema = { type: 'string' }
             const message = ' "message" '
-            await JsonSchemaDAO.setJsonSchema({
+            await JSONSchemaDAO.setJSONSchema({
               namespace
             , schema: JSON.stringify(schema)
             })
@@ -105,7 +105,7 @@ describe('no access control', () => {
             const namespace = 'namespace'
             const schema = { type: 'string' }
             const message = 'message'
-            await JsonSchemaDAO.setJsonSchema({
+            await JSONSchemaDAO.setJSONSchema({
               namespace
             , schema: JSON.stringify(schema)
             })
@@ -129,7 +129,7 @@ describe('no access control', () => {
           const namespace = 'namespace'
           const schema = { type: 'string' }
           const message = ' "message" '
-          await JsonSchemaDAO.setJsonSchema({
+          await JSONSchemaDAO.setJSONSchema({
             namespace
           , schema: JSON.stringify(schema)
           })
@@ -154,7 +154,7 @@ describe('no access control', () => {
             const namespace = 'namespace'
             const schema = { type: 'string' }
             const message = 'message'
-            await JsonSchemaDAO.setJsonSchema({
+            await JSONSchemaDAO.setJSONSchema({
               namespace
             , schema: JSON.stringify(schema)
             })

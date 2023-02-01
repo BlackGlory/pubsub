@@ -5,8 +5,9 @@ import { routes as blacklistRoutes } from './blacklist.js'
 import { routes as whitelistRoutes } from './whitelist.js'
 import { routes as tokenPolicyRoutes } from './token-policy.js'
 import { routes as tokenRoutes } from './token.js'
+import { IAPI } from '@api/contract.js'
 
-export const routes: FastifyPluginAsync<{ Core: ICore }> = async function routes(server, { Core }) {
+export const routes: FastifyPluginAsync<{ api: IAPI }> = async (server, { api }) => {
   server.addContentTypeParser(
     'application/x-www-form-urlencoded'
   , { parseAs: 'string' }
@@ -15,13 +16,13 @@ export const routes: FastifyPluginAsync<{ Core: ICore }> = async function routes
   server.register(bearerAuthPlugin, {
     keys: new Set<string>() // because auth is a function, keys will be ignored.
   , auth(key, req) {
-      return Core.isAdmin(key)
+      return api.isAdmin(key)
     }
   })
 
-  server.register(jsonSchemaRoutes, { prefix: '/admin', Core })
-  server.register(blacklistRoutes, { prefix: '/admin', Core })
-  server.register(whitelistRoutes, { prefix: '/admin', Core })
-  server.register(tokenPolicyRoutes, { prefix: '/admin', Core })
-  server.register(tokenRoutes, { prefix: '/admin', Core })
+  server.register(jsonSchemaRoutes, { prefix: '/admin', api })
+  server.register(blacklistRoutes, { prefix: '/admin', api })
+  server.register(whitelistRoutes, { prefix: '/admin', api })
+  server.register(tokenPolicyRoutes, { prefix: '/admin', api })
+  server.register(tokenRoutes, { prefix: '/admin', api })
 }

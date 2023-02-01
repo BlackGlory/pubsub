@@ -12,7 +12,7 @@ describe('blackllist', () => {
       it('error', async () => {
         process.env.PUBSUB_LIST_BASED_ACCESS_CONTROL = 'blacklist'
         const namespace = 'namespace'
-        await AccessControlDAO.addBlacklistItem(namespace)
+        AccessControlDAO.Blacklist.addBlacklistItem(namespace)
 
         const ws = new WebSocket(`${getAddress()}/pubsub/${namespace}`.replace('http', 'ws'))
         await waitForEventTarget(ws as unknown as EventTarget, 'error')
@@ -34,7 +34,7 @@ describe('blackllist', () => {
     describe('namespace in blacklist', () => {
       it('open', async () => {
         const namespace = 'namespace'
-        await AccessControlDAO.addBlacklistItem(namespace)
+        AccessControlDAO.Blacklist.addBlacklistItem(namespace)
 
         const ws = new WebSocket(`${getAddress()}/pubsub/${namespace}`.replace('http', 'ws'))
         await waitForEventTarget(ws as unknown as EventTarget, 'open')

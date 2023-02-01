@@ -14,7 +14,7 @@ describe('blacklist', () => {
         process.env.PUBSUB_LIST_BASED_ACCESS_CONTROL = 'blacklist'
         const namespace = 'namespace'
         const message = 'message'
-        await AccessControlDAO.addBlacklistItem(namespace)
+        AccessControlDAO.Blacklist.addBlacklistItem(namespace)
 
         const res = await fetch(post(
           url(getAddress())
@@ -48,7 +48,7 @@ describe('blacklist', () => {
       it('204', async () => {
         const namespace = 'namespace'
         const message = 'message'
-        await AccessControlDAO.addBlacklistItem(namespace)
+        AccessControlDAO.Blacklist.addBlacklistItem(namespace)
 
         const res = await fetch(post(
           url(getAddress())

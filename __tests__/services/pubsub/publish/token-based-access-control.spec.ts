@@ -16,8 +16,8 @@ describe('token-based access control', () => {
           const namespace = 'namespace'
           const token = 'token'
           const message = 'message'
-          await AccessControlDAO.setWriteTokenRequired(namespace, true)
-          await AccessControlDAO.setWriteToken({ namespace, token })
+          AccessControlDAO.TokenPolicy.setWriteTokenRequired(namespace, true)
+          AccessControlDAO.Token.setWriteToken({ namespace, token })
 
           const res = await fetch(post(
             url(getAddress())
@@ -36,8 +36,8 @@ describe('token-based access control', () => {
           const namespace = 'namespace'
           const token = 'token'
           const message = 'message'
-          await AccessControlDAO.setWriteTokenRequired(namespace, true)
-          await AccessControlDAO.setWriteToken({ namespace, token })
+          AccessControlDAO.TokenPolicy.setWriteTokenRequired(namespace, true)
+          AccessControlDAO.Token.setWriteToken({ namespace, token })
 
           const res = await fetch(post(
             url(getAddress())
@@ -56,8 +56,8 @@ describe('token-based access control', () => {
           const namespace = 'namespace'
           const token = 'token'
           const message = 'message'
-          await AccessControlDAO.setWriteTokenRequired(namespace, true)
-          await AccessControlDAO.setWriteToken({ namespace, token })
+          AccessControlDAO.TokenPolicy.setWriteTokenRequired(namespace, true)
+          AccessControlDAO.Token.setWriteToken({ namespace, token })
 
           const res = await fetch(post(
             url(getAddress())
@@ -114,8 +114,8 @@ describe('token-based access control', () => {
           const namespace = 'namespace'
           const token = 'token'
           const message = 'message'
-          await AccessControlDAO.setWriteTokenRequired(namespace, true)
-          await AccessControlDAO.setWriteToken({ namespace, token })
+          AccessControlDAO.TokenPolicy.setWriteTokenRequired(namespace, true)
+          AccessControlDAO.Token.setWriteToken({ namespace, token })
 
           const res = await fetch(post(
             url(getAddress())
@@ -135,8 +135,8 @@ describe('token-based access control', () => {
           const namespace = 'namespace'
           const token = 'token'
           const message = 'message'
-          await AccessControlDAO.setWriteTokenRequired(namespace, true)
-          await AccessControlDAO.setWriteToken({ namespace, token })
+          AccessControlDAO.TokenPolicy.setWriteTokenRequired(namespace, true)
+          AccessControlDAO.Token.setWriteToken({ namespace, token })
 
           const res = await fetch(post(
             url(getAddress())

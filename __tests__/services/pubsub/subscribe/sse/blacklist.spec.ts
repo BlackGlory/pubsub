@@ -15,7 +15,7 @@ describe('blackllist', () => {
       it('403', async () => {
         process.env.PUBSUB_LIST_BASED_ACCESS_CONTROL = 'blacklist'
         const namespace = 'namespace'
-        await AccessControlDAO.addBlacklistItem(namespace)
+        AccessControlDAO.Blacklist.addBlacklistItem(namespace)
 
         const res = await fetch(get(
           url(getAddress())
@@ -42,7 +42,7 @@ describe('blackllist', () => {
     describe('namespace in blacklist', () => {
       it('200', async () => {
         const namespace = 'namespace'
-        await AccessControlDAO.addBlacklistItem(namespace)
+        AccessControlDAO.Blacklist.addBlacklistItem(namespace)
 
         const es = new EventSource(`${getAddress()}/pubsub/${namespace}`)
         await waitForEventTarget(es as EventTarget, 'open')

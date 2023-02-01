@@ -8,8 +8,9 @@ import { waitForEventEmitter } from '@blackglory/wait-for'
 import { SSE_HEARTBEAT_INTERVAL, WS_HEARTBEAT_INTERVAL } from '@env/index.js'
 import { setDynamicTimeoutLoop } from 'extra-timers'
 import { WebSocket, WebSocketServer, createWebSocketStream } from 'ws'
+import { IAPI } from '@api/contract.js'
 
-export const routes: FastifyPluginAsync<{ Core: ICore }> = async function routes(server, { Core }) {
+export const routes: FastifyPluginAsync<{ api: IAPI }> = async (server, { api }) => {
   const wss = new WebSocketServer({ noServer: true })
 
   // WebSocket handler
@@ -18,7 +19,7 @@ export const routes: FastifyPluginAsync<{ Core: ICore }> = async function routes
   , req: http.IncomingMessage
   , params: { namespace: string }
   ) => {
-    const unsubscribe = Core.PubSub.subscribe(
+    const unsubscribe = api.PubSub.subscribe(
       params.namespace
     , value => ws.send(value)
     )
@@ -61,17 +62,17 @@ export const routes: FastifyPluginAsync<{ Core: ICore }> = async function routes
     const token = parseQuerystring<{ token?: string }>(url).token
 
     try {
-      await Core.Blacklist.check(namespace)
-      await Core.Whitelist.check(namespace)
-      await Core.TBAC.checkReadPermission(namespace, token)
+      await api.Blacklist.check(namespace)
+      await api.Whitelist.check(namespace)
+      await api.TBAC.checkReadPermission(namespace, token)
     } catch (e) {
-      if (e instanceof Core.Blacklist.Forbidden) {
+      if (e instanceof api.Blacklist.Forbidden) {
         socket.write('HTTP/1.1 403 Forbidden\r\n\r\n')
       }
-      if (e instanceof Core.Whitelist.Forbidden) {
+      if (e instanceof api.Whitelist.Forbidden) {
         socket.write('HTTP/1.1 403 Forbidden\r\n\r\n')
       }
-      if (e instanceof Core.TBAC.Unauthorized) {
+      if (e instanceof api.TBAC.Unauthorized) {
         socket.write('HTTP/1.1 401 Unauthorized\r\n\r\n')
       }
       return socket.destroy()
@@ -110,13 +111,13 @@ export const routes: FastifyPluginAsync<{ Core: ICore }> = async function routes
         const token = req.query.token
 
         try {
-          await Core.Blacklist.check(namespace)
-          await Core.Whitelist.check(namespace)
-          await Core.TBAC.checkReadPermission(namespace, token)
+          api.Blacklist.check(namespace)
+          api.Whitelist.check(namespace)
+          api.TBAC.checkReadPermission(namespace, token)
         } catch (e) {
-          if (e instanceof Core.Blacklist.Forbidden) return reply.status(403).send()
-          if (e instanceof Core.Whitelist.Forbidden) return reply.status(403).send()
-          if (e instanceof Core.TBAC.Unauthorized) return reply.status(401).send()
+          if (e instanceof api.Blacklist.Forbidden) return reply.status(403).send()
+          if (e instanceof api.Whitelist.Forbidden) return reply.status(403).send()
+          if (e instanceof api.TBAC.Unauthorized) return reply.status(401).send()
           throw e
         }
 
@@ -128,7 +129,7 @@ export const routes: FastifyPluginAsync<{ Core: ICore }> = async function routes
         }
         reply.raw.flushHeaders()
 
-        const unsubscribe = Core.PubSub.subscribe(namespace, async data => {
+        const unsubscribe = api.PubSub.subscribe(namespace, async data => {
           for (const line of sse({ data })) {
             // `publish` is non-blocking, so it cannot handle back-pressure.
             if (!reply.raw.write(line)) {
