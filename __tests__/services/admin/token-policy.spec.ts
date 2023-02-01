@@ -3,6 +3,7 @@ import { fetch } from 'extra-fetch'
 import { get, put, del } from 'extra-request'
 import { url, pathname, headers, json } from 'extra-request/transformers'
 import { toJSON } from 'extra-response'
+import { createAuthHeaders } from './utils.js'
 
 beforeEach(startService)
 afterEach(stopService)
@@ -141,7 +142,6 @@ describe('TokenPolicy', () => {
         const res = await fetch(put(
           url(getAddress())
         , pathname(`/admin/pubsub/${namespace}/token-policies/write-token-required`)
-        , headers(createAuthHeaders())
         , json(val)
         ))
 
@@ -193,7 +193,6 @@ describe('TokenPolicy', () => {
         const res = await fetch(put(
           url(getAddress())
         , pathname(`/admin/pubsub/${namespace}/token-policies/read-token-required`)
-        , headers(createAuthHeaders())
         , json(val)
         ))
 
@@ -309,9 +308,3 @@ describe('TokenPolicy', () => {
     })
   })
 })
-
-function createAuthHeaders(adminPassword?: string) {
-  return {
-    'Authorization': `Bearer ${ adminPassword ?? process.env.PUBSUB_ADMIN_PASSWORD }`
-  }
-}

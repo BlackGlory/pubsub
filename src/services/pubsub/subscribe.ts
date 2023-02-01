@@ -45,7 +45,7 @@ export const routes: FastifyPluginAsync<{ api: IAPI }> = async (server, { api })
   })
 
   // WebSocket upgrade handler
-  server.server.on('upgrade', async (
+  server.server.on('upgrade', (
     req: http.IncomingMessage
   , socket: net.Socket
   , head: Buffer
@@ -62,9 +62,9 @@ export const routes: FastifyPluginAsync<{ api: IAPI }> = async (server, { api })
     const token = parseQuerystring<{ token?: string }>(url).token
 
     try {
-      await api.Blacklist.check(namespace)
-      await api.Whitelist.check(namespace)
-      await api.TBAC.checkReadPermission(namespace, token)
+      api.Blacklist.check(namespace)
+      api.Whitelist.check(namespace)
+      api.TBAC.checkReadPermission(namespace, token)
     } catch (e) {
       if (e instanceof api.Blacklist.Forbidden) {
         socket.write('HTTP/1.1 403 Forbidden\r\n\r\n')
@@ -106,30 +106,31 @@ export const routes: FastifyPluginAsync<{ api: IAPI }> = async (server, { api })
     }
     // Server-Sent Events handler
   , (req, reply) => {
-      go(async () => {
-        const namespace = req.params.namespace
-        const token = req.query.token
+      const namespace = req.params.namespace
+      const token = req.query.token
 
-        try {
-          api.Blacklist.check(namespace)
-          api.Whitelist.check(namespace)
-          api.TBAC.checkReadPermission(namespace, token)
-        } catch (e) {
-          if (e instanceof api.Blacklist.Forbidden) return reply.status(403).send()
-          if (e instanceof api.Whitelist.Forbidden) return reply.status(403).send()
-          if (e instanceof api.TBAC.Unauthorized) return reply.status(401).send()
-          throw e
-        }
+      try {
+        api.Blacklist.check(namespace)
+        api.Whitelist.check(namespace)
+        api.TBAC.checkReadPermission(namespace, token)
+      } catch (e) {
+        if (e instanceof api.Blacklist.Forbidden) return reply.status(403).send()
+        if (e instanceof api.Whitelist.Forbidden) return reply.status(403).send()
+        if (e instanceof api.TBAC.Unauthorized) return reply.status(401).send()
+        throw e
+      }
 
-        reply.raw.setHeader('Content-Type', 'text/event-stream')
-        reply.raw.setHeader('Connection', 'keep-alive')
-        reply.raw.setHeader('Cache-Control', 'no-store')
-        if (req.headers.origin) {
-          reply.raw.setHeader('Access-Control-Allow-Origin', req.headers.origin)
-        }
-        reply.raw.flushHeaders()
+      reply.raw.setHeader('Content-Type', 'text/event-stream')
+      reply.raw.setHeader('Connection', 'keep-alive')
+      reply.raw.setHeader('Cache-Control', 'no-store')
+      if (req.headers.origin) {
+        reply.raw.setHeader('Access-Control-Allow-Origin', req.headers.origin)
+      }
+      reply.raw.flushHeaders()
 
-        const unsubscribe = api.PubSub.subscribe(namespace, async data => {
+      const unsubscribe = api.PubSub.subscribe(namespace, data => {
+        // eslint-disable-next-line
+        go(async () => {
           for (const line of sse({ data })) {
             // `publish` is non-blocking, so it cannot handle back-pressure.
             if (!reply.raw.write(line)) {
@@ -137,27 +138,27 @@ export const routes: FastifyPluginAsync<{ api: IAPI }> = async (server, { api })
             }
           }
         })
+      })
 
-        let cancelHeartbeatTimer: (() => void) | null = null
-        if (SSE_HEARTBEAT_INTERVAL() > 0) {
-          cancelHeartbeatTimer = setDynamicTimeoutLoop(
-            SSE_HEARTBEAT_INTERVAL()
-          , async () => {
-              for (const line of sse({ event: 'heartbeat', data: '' })) {
-                if (!reply.raw.write(line)) {
-                  await waitForEventEmitter(reply.raw, 'drain')
-                }
+      let cancelHeartbeatTimer: (() => void) | null = null
+      if (SSE_HEARTBEAT_INTERVAL() > 0) {
+        cancelHeartbeatTimer = setDynamicTimeoutLoop(
+          SSE_HEARTBEAT_INTERVAL()
+        , async () => {
+            for (const line of sse({ event: 'heartbeat', data: '' })) {
+              if (!reply.raw.write(line)) {
+                await waitForEventEmitter(reply.raw, 'drain')
               }
             }
-          )
-        }
-
-        req.raw.on('close', () => {
-          if (cancelHeartbeatTimer) {
-            cancelHeartbeatTimer()
           }
-          unsubscribe()
-        })
+        )
+      }
+
+      req.raw.on('close', () => {
+        if (cancelHeartbeatTimer) {
+          cancelHeartbeatTimer()
+        }
+        unsubscribe()
       })
     }
   )

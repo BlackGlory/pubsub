@@ -34,12 +34,12 @@ export function hasRawBlacklist(namespace: string): boolean {
   return !!getRawBlacklist(namespace)
 }
 
-export function getRawBlacklist(namespace: string): IRawBlacklist | null {
+export function getRawBlacklist(namespace: string): IRawBlacklist | undefined {
   return getDatabase().prepare(`
     SELECT *
       FROM pubsub_blacklist
      WHERE namespace = $namespace;
-  `).get({ namespace })
+  `).get({ namespace }) as IRawBlacklist | undefined
 }
 
 export function setRawWhitelist(raw: IRawWhitelist): IRawWhitelist {
@@ -55,12 +55,12 @@ export function hasRawWhitelist(namespace: string): boolean {
   return !!getRawWhitelist(namespace)
 }
 
-export function getRawWhitelist(namespace: string): IRawWhitelist | null {
+export function getRawWhitelist(namespace: string): IRawWhitelist | undefined {
   return getDatabase().prepare(`
     SELECT *
       FROM pubsub_whitelist
      WHERE namespace = $namespace;
-  `).get({ namespace })
+  `).get({ namespace }) as IRawWhitelist | undefined
 }
 
 export function setRawTokenPolicy<T extends IRawTokenPolicy>(raw: T): T {
@@ -84,12 +84,12 @@ export function hasRawTokenPolicy(namespace: string): boolean {
   return !!getRawTokenPolicy(namespace)
 }
 
-export function getRawTokenPolicy(namespace: string): IRawTokenPolicy | null {
+export function getRawTokenPolicy(namespace: string): IRawTokenPolicy | undefined {
   return getDatabase().prepare(`
     SELECT *
       FROM pubsub_token_policy
      WHERE namespace = $namespace;
-  `).get({ namespace })
+  `).get({ namespace }) as IRawTokenPolicy | undefined
 }
 
 export function setRawToken(raw: IRawToken): IRawToken {
@@ -115,11 +115,11 @@ export function hasRawToken(token: string, namespace: string): boolean {
   return !!getRawToken(token, namespace)
 }
 
-export function getRawToken(token: string, namespace: string): IRawToken | null {
+export function getRawToken(token: string, namespace: string): IRawToken | undefined {
   return getDatabase().prepare(`
     SELECT *
       FROM pubsub_token
      WHERE token = $token
        AND namespace = $namespace;
-  `).get({ token, namespace })
+  `).get({ token, namespace }) as IRawToken | undefined
 }

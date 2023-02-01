@@ -4,6 +4,6 @@ import { routes as subscribeRoutes } from './subscribe.js'
 import { IAPI } from '@api/contract.js'
 
 export const routes: FastifyPluginAsync<{ api : IAPI }> = async (server, { api }) => {
-  server.register(publishRoutes, { api })
-  server.register(subscribeRoutes, { api })
+  await server.register(publishRoutes, { api })
+  await server.register(subscribeRoutes, { api })
 }

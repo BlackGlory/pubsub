@@ -83,7 +83,7 @@ describe('no access control', () => {
             const namespace = 'namespace'
             const schema = { type: 'string' }
             const message = ' "message" '
-            await JSONSchemaDAO.setJSONSchema({
+            JSONSchemaDAO.setJSONSchema({
               namespace
             , schema: JSON.stringify(schema)
             })
@@ -105,7 +105,7 @@ describe('no access control', () => {
             const namespace = 'namespace'
             const schema = { type: 'string' }
             const message = 'message'
-            await JSONSchemaDAO.setJSONSchema({
+            JSONSchemaDAO.setJSONSchema({
               namespace
             , schema: JSON.stringify(schema)
             })
@@ -129,7 +129,7 @@ describe('no access control', () => {
           const namespace = 'namespace'
           const schema = { type: 'string' }
           const message = ' "message" '
-          await JSONSchemaDAO.setJSONSchema({
+          JSONSchemaDAO.setJSONSchema({
             namespace
           , schema: JSON.stringify(schema)
           })
@@ -154,7 +154,7 @@ describe('no access control', () => {
             const namespace = 'namespace'
             const schema = { type: 'string' }
             const message = 'message'
-            await JSONSchemaDAO.setJSONSchema({
+            JSONSchemaDAO.setJSONSchema({
               namespace
             , schema: JSON.stringify(schema)
             })

@@ -4,6 +4,7 @@ import { fetch } from 'extra-fetch'
 import { get, put, del } from 'extra-request'
 import { url, pathname, headers } from 'extra-request/transformers'
 import { toJSON } from 'extra-response'
+import { createAuthHeaders } from './utils.js'
 
 beforeEach(startService)
 afterEach(stopService)
@@ -303,9 +304,3 @@ describe('Token', () => {
     })
   })
 })
-
-function createAuthHeaders(adminPassword?: string) {
-  return {
-    'Authorization': `Bearer ${ adminPassword ?? process.env.PUBSUB_ADMIN_PASSWORD }`
-  }
-}
