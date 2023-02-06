@@ -7,12 +7,13 @@ beforeEach(startService)
 afterEach(stopService)
 
 test('publish', async () => {
+  const namespace = 'namespace'
   const channel = 'channel'
   const message = 'message'
 
   const res = await fetch(post(
     url(getAddress())
-  , pathname(`/channels/${channel}`)
+  , pathname(`/namespaces/${namespace}/channels/${channel}`)
   , text(message)
   ))
 

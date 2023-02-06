@@ -1,6 +1,8 @@
 import { emitter } from './emitter.js'
 
-export function publish(channel: string, value: string): void {
+export function publish(namespace: string, channel: string, value: string): void {
+  const eventName = `${namespace}-${channel}`
+
   emitter.get()
-    .emit(channel, value)
+    .emit(eventName, value)
 }

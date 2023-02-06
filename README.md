@@ -18,13 +18,13 @@ docker run \
   blackglory/pubsub
 
 # 第一个终端(接收)
-sse-cat http://localhost:8080/channel/hello-world
+sse-cat http://localhost:8080/namespaces/_/channels/hello-world
 
 # 第二个终端(接收)
-websocat ws://localhost:8080/channel/hello-world
+websocat ws://localhost:8080/namespaces/_/channels/hello-world
 
 # 第三个终端(发送)
-curl http://localhost:8080/channel/hello-world \
+curl http://localhost:8080/namespaces/_/channels/hello-world \
   --data 'hello'
 ```
 
@@ -62,7 +62,7 @@ services:
 
 ## API
 ### publish
-`POST /channels/<channel>`
+`POST /namespaces/<namespace>/channels/<channel>`
 
 往特定频道发布消息, 所有订阅此频道的客户端都会收到消息.
 
@@ -71,19 +71,19 @@ services:
 ```sh
 curl \
   --data 'message' \
-  "http://localhost:8080/channel/$channel"
+  "http://localhost:8080/namespaces/$namespace/channels/$channel"
 ```
 
 ##### JavaScript
 ```js
-fetch(`http://localhost:8080/channel/${channel}`, {
+fetch(`http://localhost:8080/namespaces/${namespace}/channels/${channel}`, {
   method: 'POST'
 , body: 'message'
 })
 ```
 
 ### subscribe via Server-Sent Events(SSE)
-`GET /channels/<channel>`
+`GET /namespaces/<namespace>/channels/<channel>`
 
 通过SSE订阅特定频道.
 
@@ -99,19 +99,21 @@ fetch(`http://localhost:8080/channel/${channel}`, {
 #### Example
 ##### sse-cat
 ```sh
-sse-cat "http://localhost:8080/channel/$channel"
+sse-cat "http://localhost:8080/namespaces/$namespace/channels/$channel"
 ```
 
 ##### JavaScript
 ```js
-const es = new EventSource(`http://localhost:8080/channel/${channel}`)
+const es = new EventSource(
+  `http://localhost:8080/namespaces/${namespace}/channels/${channel}`
+)
 es.addEventListener('message', event => {
   console.log(event.data)
 })
 ```
 
 ### subscribe via WebSocket
-`WS /channels/<channel>`
+`WS /namespaces/<namespace>/channels/<channel>`
 
 通过WebSocket订阅特定频道.
 
@@ -129,12 +131,12 @@ es.addEventListener('message', event => {
 #### Example
 ##### websocat
 ```sh
-websocat "ws://localhost:8080/channel/$channel"
+websocat "ws://localhost:8080/namespaces/$namespace/channels/$channel"
 ```
 
 ##### JavaScript
 ```js
-const ws = new WebSocket(`ws://localhost:8080/channel/${channel}`)
+const ws = new WebSocket(`ws://localhost:8080/namespaces/${namespace}/channels/${channel}`)
 ws.addEventListener('message', event => {
   console.log(event.data)
 })

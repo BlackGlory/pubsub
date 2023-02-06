@@ -16,10 +16,17 @@ export const routes: FastifyPluginAsync<{ API: IAPI }> = async (server, { API })
   wss.on('connection', (
     ws: WebSocket
   , req: http.IncomingMessage
-  , params: { channel: string }
+  , params: {
+      namespace: string
+      channel: string
+    }
   ) => {
+    const namespace = params.namespace
+    const channel = params.channel
+
     const unsubscribe = API.subscribe(
-      params.channel
+      namespace
+    , channel
     , value => ws.send(value)
     )
 
@@ -50,13 +57,14 @@ export const routes: FastifyPluginAsync<{ API: IAPI }> = async (server, { API })
   , head: Buffer
   ) => {
     const url = req.url!
-    const pathnameRegExp = /^\/channels\/(?<channel>[^\/&]+)$/
+    const pathnameRegExp = /^\/namespaces\/(?<namespace>[^\/]+)\/channels\/(?<channel>[^\/&]+)/
     const result = getPathname(url).match(pathnameRegExp)
     if (!result) {
       socket.write('HTTP/1.1 404 Not Found\r\n\r\n')
       return socket.destroy()
     }
 
+    const namespace = result.groups!.namespace
     const channel = result.groups!.channel
 
     wss.handleUpgrade(req, socket, head, ws => {
@@ -75,18 +83,23 @@ export const routes: FastifyPluginAsync<{ API: IAPI }> = async (server, { API })
   })
 
   server.get<{
-    Params: { channel: string }
+    Params: {
+      namespace: string
+      channel: string
+    }
   }>(
-    '/channels/:channel'
+    '/namespaces/:namespace/channels/:channel'
   , {
       schema: {
         params: {
-          channel: { type: 'string' }
+          namespace: { type: 'string' }
+        , channel: { type: 'string' }
         }
       }
     }
     // Server-Sent Events handler
   , (req, reply) => {
+      const namespace = req.params.namespace
       const channel = req.params.channel
 
       reply.raw.setHeader('Content-Type', 'text/event-stream')
@@ -97,7 +110,7 @@ export const routes: FastifyPluginAsync<{ API: IAPI }> = async (server, { API })
       }
       reply.raw.flushHeaders()
 
-      const unsubscribe = API.subscribe(channel, data => {
+      const unsubscribe = API.subscribe(namespace, channel, data => {
         // eslint-disable-next-line
         go(async () => {
           for (const line of sse({ data })) {
