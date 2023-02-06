@@ -19,7 +19,7 @@ export const routes: FastifyPluginAsync<{ API: IAPI }> = async (server, { API })
     Params: { channel: string }
     Body: string
   }>(
-    '/pubsub/:channel'
+    '/channels/:channel'
   , {
       schema: {
         params: {

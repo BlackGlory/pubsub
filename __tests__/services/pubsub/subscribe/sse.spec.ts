@@ -8,7 +8,7 @@ afterEach(stopService)
 test('subscribe', async () => {
   const channel = 'channel'
 
-  const es = new EventSource(`${getAddress()}/pubsub/${channel}`)
+  const es = new EventSource(`${getAddress()}/channels/${channel}`)
   await waitForEventTarget(es as EventTarget, 'open')
   es.close()
 })

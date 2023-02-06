@@ -12,7 +12,7 @@ test('publish', async () => {
 
   const res = await fetch(post(
     url(getAddress())
-  , pathname(`/pubsub/${channel}`)
+  , pathname(`/channels/${channel}`)
   , text(message)
   ))
 

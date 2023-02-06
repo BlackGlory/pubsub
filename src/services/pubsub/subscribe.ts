@@ -50,7 +50,7 @@ export const routes: FastifyPluginAsync<{ API: IAPI }> = async (server, { API })
   , head: Buffer
   ) => {
     const url = req.url!
-    const pathnameRegExp = /^\/pubsub\/(?<channel>[^\/&]+)$/
+    const pathnameRegExp = /^\/channels\/(?<channel>[^\/&]+)$/
     const result = getPathname(url).match(pathnameRegExp)
     if (!result) {
       socket.write('HTTP/1.1 404 Not Found\r\n\r\n')
@@ -77,7 +77,7 @@ export const routes: FastifyPluginAsync<{ API: IAPI }> = async (server, { API })
   server.get<{
     Params: { channel: string }
   }>(
-    '/pubsub/:channel'
+    '/channels/:channel'
   , {
       schema: {
         params: {
