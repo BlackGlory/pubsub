@@ -9,12 +9,10 @@
   , "baseUrl": "."
   , "paths": {
       "@src/*": ["src/*"]
-    , "@dao": ["src/dao/index"]
     , "@dao/*": ["src/dao/*"]
-    , "@api": ["src/api/index"]
     , "@api/*": ["src/api/*"]
-    , "@env": ["src/env/index"]
     , "@env/*": ["src/env/*"]
+    , "@utils/*": ["src/utils/*"]
     , "@test/*": ["__tests__/*"]
     , "@services/*": ["src/services/*"]
     }

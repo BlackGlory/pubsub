@@ -1,11 +1,10 @@
 import { Observable } from 'rxjs'
 import { getEmitter } from './emitter-instance.js'
-import { IUnsubscribe } from './contract.js'
 
 export function subscribe(
   namespace: string
 , listener: (value: string) => void
-): IUnsubscribe {
+): () => void {
   const emitter = getEmitter()
   const observable = new Observable<string>(observer => {
     const removeListener = emitter.on(

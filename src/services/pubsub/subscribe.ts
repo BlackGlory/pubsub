@@ -2,15 +2,15 @@ import * as http from 'http'
 import * as net from 'net'
 import { go } from '@blackglory/prelude'
 import { FastifyPluginAsync } from 'fastify'
-import { namespaceSchema, tokenSchema } from '@src/schema.js'
+import { namespaceSchema } from '@src/schema.js'
 import { sse } from 'extra-generator'
 import { waitForEventEmitter } from '@blackglory/wait-for'
 import { SSE_HEARTBEAT_INTERVAL, WS_HEARTBEAT_INTERVAL } from '@env/index.js'
 import { setDynamicTimeoutLoop } from 'extra-timers'
 import { WebSocket, WebSocketServer, createWebSocketStream } from 'ws'
-import { IAPI } from '@api/contract.js'
+import { IAPI } from '@src/contract.js'
 
-export const routes: FastifyPluginAsync<{ api: IAPI }> = async (server, { api }) => {
+export const routes: FastifyPluginAsync<{ API: IAPI }> = async (server, { API }) => {
   const wss = new WebSocketServer({ noServer: true })
 
   // WebSocket handler
@@ -19,7 +19,7 @@ export const routes: FastifyPluginAsync<{ api: IAPI }> = async (server, { api })
   , req: http.IncomingMessage
   , params: { namespace: string }
   ) => {
-    const unsubscribe = api.PubSub.subscribe(
+    const unsubscribe = API.subscribe(
       params.namespace
     , value => ws.send(value)
     )
@@ -59,24 +59,6 @@ export const routes: FastifyPluginAsync<{ api: IAPI }> = async (server, { api })
     }
 
     const namespace = result.groups!.namespace
-    const token = parseQuerystring<{ token?: string }>(url).token
-
-    try {
-      api.Blacklist.check(namespace)
-      api.Whitelist.check(namespace)
-      api.TBAC.checkReadPermission(namespace, token)
-    } catch (e) {
-      if (e instanceof api.Blacklist.Forbidden) {
-        socket.write('HTTP/1.1 403 Forbidden\r\n\r\n')
-      }
-      if (e instanceof api.Whitelist.Forbidden) {
-        socket.write('HTTP/1.1 403 Forbidden\r\n\r\n')
-      }
-      if (e instanceof api.TBAC.Unauthorized) {
-        socket.write('HTTP/1.1 401 Unauthorized\r\n\r\n')
-      }
-      return socket.destroy()
-    }
 
     wss.handleUpgrade(req, socket, head, ws => {
       wss.emit('connection', ws, req, { namespace })
@@ -95,30 +77,16 @@ export const routes: FastifyPluginAsync<{ api: IAPI }> = async (server, { api })
 
   server.get<{
     Params: { namespace: string }
-    Querystring: { token?: string }
   }>(
     '/pubsub/:namespace'
   , {
       schema: {
         params: { namespace: namespaceSchema }
-      , querystring: { token: tokenSchema }
       }
     }
     // Server-Sent Events handler
   , (req, reply) => {
       const namespace = req.params.namespace
-      const token = req.query.token
-
-      try {
-        api.Blacklist.check(namespace)
-        api.Whitelist.check(namespace)
-        api.TBAC.checkReadPermission(namespace, token)
-      } catch (e) {
-        if (e instanceof api.Blacklist.Forbidden) return reply.status(403).send()
-        if (e instanceof api.Whitelist.Forbidden) return reply.status(403).send()
-        if (e instanceof api.TBAC.Unauthorized) return reply.status(401).send()
-        throw e
-      }
 
       reply.raw.setHeader('Content-Type', 'text/event-stream')
       reply.raw.setHeader('Connection', 'keep-alive')
@@ -128,7 +96,7 @@ export const routes: FastifyPluginAsync<{ api: IAPI }> = async (server, { api })
       }
       reply.raw.flushHeaders()
 
-      const unsubscribe = api.PubSub.subscribe(namespace, data => {
+      const unsubscribe = API.subscribe(namespace, data => {
         // eslint-disable-next-line
         go(async () => {
           for (const line of sse({ data })) {
@@ -167,10 +135,4 @@ export const routes: FastifyPluginAsync<{ api: IAPI }> = async (server, { api })
 function getPathname(url: string): string {
   const urlObject = new URL(url, 'http://localhost/')
   return urlObject.pathname
-}
-
-function parseQuerystring<T extends NodeJS.Dict<string | string[]>>(url: string): T {
-  const urlObject = new URL(url, 'http://localhost/')
-  const result = Object.fromEntries(urlObject.searchParams.entries()) as T
-  return result
 }

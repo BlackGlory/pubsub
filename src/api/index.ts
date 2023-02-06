@@ -1,16 +1,8 @@
-import { isAdmin } from './admin.js'
-import * as PubSub from './pubsub.js'
-import * as Blacklist from './blacklist.js'
-import * as Whitelist from './whitelist.js'
-import * as JSONSchema from './json-schema.js'
-import { TBAC } from './token-based-access-control/index.js'
-import { IAPI } from './contract.js'
+import { IAPI } from '@src/contract.js'
+import { publish } from './publish.js'
+import { subscribe } from './subscribe.js'
 
-export const api: IAPI = {
-  isAdmin
-, PubSub
-, Blacklist
-, Whitelist
-, JSONSchema
-, TBAC
+export const API: IAPI = {
+  publish
+, subscribe
 }
