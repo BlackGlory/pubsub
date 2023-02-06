@@ -1,4 +1,4 @@
 export interface IAPI {
-  publish(namespace: string, payload: string): void
-  subscribe(namespace: string, cb: (value: string) => void): () => void
+  publish(channel: string, payload: string): void
+  subscribe(channel: string, cb: (value: string) => void): () => void
 }

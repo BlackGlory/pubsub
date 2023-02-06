@@ -6,9 +6,9 @@ beforeEach(startService)
 afterEach(stopService)
 
 test('subscribe', async () => {
-  const namespace = 'namespace'
+  const channel = 'channel'
 
-  const es = new EventSource(`${getAddress()}/pubsub/${namespace}`)
+  const es = new EventSource(`${getAddress()}/pubsub/${channel}`)
   await waitForEventTarget(es as EventTarget, 'open')
   es.close()
 })

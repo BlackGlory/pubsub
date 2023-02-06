@@ -5,35 +5,35 @@ import { subscribe } from '@dao/subscribe.js'
 afterEach(resetEmitter)
 
 test('publish, subscribe', done => {
-  const namespace = 'namespace'
+  const channel = 'channel'
   const value = 'value'
 
-  publish(namespace, value)
-  subscribe(namespace, () => {
+  publish(channel, value)
+  subscribe(channel, () => {
     done.fail()
   })
   setImmediate(done)
 })
 
 test('subscribe, publish', done => {
-  const namespace = 'namespace'
+  const channel = 'channel'
   const value = 'value'
 
-  subscribe(namespace, val => {
+  subscribe(channel, val => {
     expect(val).toBe(value)
     done()
   })
-  publish(namespace, value)
+  publish(channel, value)
 })
 
 test('subscribe, unsubscribe, publish', done => {
-  const namespace = 'namespace'
+  const channel = 'channel'
   const value = 'value'
 
-  const unsubscribe = subscribe(namespace, () => {
+  const unsubscribe = subscribe(channel, () => {
     done.fail()
   })
   unsubscribe()
-  publish(namespace, value)
+  publish(channel, value)
   setImmediate(done)
 })

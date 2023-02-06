@@ -6,8 +6,8 @@ beforeEach(startService)
 afterEach(stopService)
 
 test('subscribe', async () => {
-  const namespace = 'namespace'
+  const channel = 'channel'
 
-  const ws = new WebSocket(`${getAddress()}/pubsub/${namespace}`.replace('http', 'ws'))
+  const ws = new WebSocket(`${getAddress()}/pubsub/${channel}`.replace('http', 'ws'))
   await waitForEventTarget(ws as unknown as EventTarget, 'open')
 })

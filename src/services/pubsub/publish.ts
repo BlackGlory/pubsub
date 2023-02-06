@@ -1,5 +1,4 @@
 import { FastifyPluginAsync } from 'fastify'
-import { namespaceSchema } from '@src/schema.js'
 import { IAPI } from '@src/contract.js'
 
 export const routes: FastifyPluginAsync<{ API: IAPI }> = async (server, { API }) => {
@@ -17,23 +16,25 @@ export const routes: FastifyPluginAsync<{ API: IAPI }> = async (server, { API })
   )
 
   server.post<{
-    Params: { namespace: string }
+    Params: { channel: string }
     Body: string
   }>(
-    '/pubsub/:namespace'
+    '/pubsub/:channel'
   , {
       schema: {
-        params: { namespace: namespaceSchema }
+        params: {
+          channel: { type: 'string' }
+        }
       , response: {
           204: { type: 'null' }
         }
       }
     }
   , async (req, reply) => {
-      const namespace = req.params.namespace
+      const channel = req.params.channel
       const payload = req.body
 
-      API.publish(namespace, payload)
+      API.publish(channel, payload)
       return reply
         .status(204)
         .send()

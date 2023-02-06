@@ -1,6 +1,6 @@
 import { emitter } from './emitter.js'
 
-export function publish(namespace: string, value: string): void {
+export function publish(channel: string, value: string): void {
   emitter.get()
-    .emit(namespace, value)
+    .emit(channel, value)
 }

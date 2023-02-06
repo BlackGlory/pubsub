@@ -2,7 +2,6 @@ import * as http from 'http'
 import * as net from 'net'
 import { go } from '@blackglory/prelude'
 import { FastifyPluginAsync } from 'fastify'
-import { namespaceSchema } from '@src/schema.js'
 import { sse } from 'extra-generator'
 import { waitForEventEmitter } from '@blackglory/wait-for'
 import { SSE_HEARTBEAT_INTERVAL, WS_HEARTBEAT_INTERVAL } from '@env/index.js'
@@ -17,10 +16,10 @@ export const routes: FastifyPluginAsync<{ API: IAPI }> = async (server, { API })
   wss.on('connection', (
     ws: WebSocket
   , req: http.IncomingMessage
-  , params: { namespace: string }
+  , params: { channel: string }
   ) => {
     const unsubscribe = API.subscribe(
-      params.namespace
+      params.channel
     , value => ws.send(value)
     )
 
@@ -51,17 +50,17 @@ export const routes: FastifyPluginAsync<{ API: IAPI }> = async (server, { API })
   , head: Buffer
   ) => {
     const url = req.url!
-    const pathnameRegExp = /^\/pubsub\/(?<namespace>[a-zA-Z0-9\.\-_]{1,256})$/
+    const pathnameRegExp = /^\/pubsub\/(?<channel>[^\/&]+)$/
     const result = getPathname(url).match(pathnameRegExp)
     if (!result) {
       socket.write('HTTP/1.1 404 Not Found\r\n\r\n')
       return socket.destroy()
     }
 
-    const namespace = result.groups!.namespace
+    const channel = result.groups!.channel
 
     wss.handleUpgrade(req, socket, head, ws => {
-      wss.emit('connection', ws, req, { namespace })
+      wss.emit('connection', ws, req, { channel })
 
       const connection = createWebSocketStream(ws, { encoding: 'utf8' })
       ws.on('newListener', event => {
@@ -76,17 +75,19 @@ export const routes: FastifyPluginAsync<{ API: IAPI }> = async (server, { API })
   })
 
   server.get<{
-    Params: { namespace: string }
+    Params: { channel: string }
   }>(
-    '/pubsub/:namespace'
+    '/pubsub/:channel'
   , {
       schema: {
-        params: { namespace: namespaceSchema }
+        params: {
+          channel: { type: 'string' }
+        }
       }
     }
     // Server-Sent Events handler
   , (req, reply) => {
-      const namespace = req.params.namespace
+      const channel = req.params.channel
 
       reply.raw.setHeader('Content-Type', 'text/event-stream')
       reply.raw.setHeader('Connection', 'keep-alive')
@@ -96,7 +97,7 @@ export const routes: FastifyPluginAsync<{ API: IAPI }> = async (server, { API })
       }
       reply.raw.flushHeaders()
 
-      const unsubscribe = API.subscribe(namespace, data => {
+      const unsubscribe = API.subscribe(channel, data => {
         // eslint-disable-next-line
         go(async () => {
           for (const line of sse({ data })) {

@@ -2,12 +2,12 @@ import { Observable } from 'rxjs'
 import { emitter } from './emitter.js'
 
 export function subscribe(
-  namespace: string
+  channel: string
 , listener: (value: string) => void
 ): () => void {
   const observable = new Observable<string>(observer => {
     const removeListener = emitter.get()
-      .on(namespace, (value: string) => observer.next(value))
+      .on(channel, (value: string) => observer.next(value))
 
     return () => removeListener()
   })
