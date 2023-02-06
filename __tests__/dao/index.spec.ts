@@ -1,8 +1,8 @@
-import { resetEmitter } from '@dao/emitter-instance.js'
+import { resetEmitter } from '@dao/emitter.js'
 import { publish } from '@dao/publish.js'
 import { subscribe } from '@dao/subscribe.js'
 
-beforeEach(resetEmitter)
+afterEach(resetEmitter)
 
 test('publish, subscribe', done => {
   const namespace = 'namespace'

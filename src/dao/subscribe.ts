@@ -1,16 +1,14 @@
 import { Observable } from 'rxjs'
-import { getEmitter } from './emitter-instance.js'
+import { emitter } from './emitter.js'
 
 export function subscribe(
   namespace: string
 , listener: (value: string) => void
 ): () => void {
-  const emitter = getEmitter()
   const observable = new Observable<string>(observer => {
-    const removeListener = emitter.on(
-      namespace
-    , (value: string) => observer.next(value)
-    )
+    const removeListener = emitter.get()
+      .on(namespace, (value: string) => observer.next(value))
+
     return () => removeListener()
   })
   const subscription = observable.subscribe(listener)
