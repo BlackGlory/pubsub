@@ -2,6 +2,24 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.0.0](https://github.com/BlackGlory/pubsub/compare/v2.0.2...v3.0.0) (2023-02-06)
+
+
+### ⚠ BREAKING CHANGES
+
+* `/pubsub` => `/channels`
+* - Removed JSON schema validation.
+- Removed access control.
+- Removed payload limit related environment variables
+
+### Features
+
+* add namespace support ([73cc83c](https://github.com/BlackGlory/pubsub/commit/73cc83ca68a1c768ee695861e49472e88a5ed525))
+
+
+* `/pubsub` => `/channels` ([6aeb1be](https://github.com/BlackGlory/pubsub/commit/6aeb1be6803340328fa733fe63e0af3b7804bc52))
+* simplify ([8c3a33a](https://github.com/BlackGlory/pubsub/commit/8c3a33a569ed0494f3864591f5f80d90eeb17726))
+
 ### [2.0.2](https://github.com/BlackGlory/pubsub/compare/v2.0.1...v2.0.2) (2023-02-02)
 
 ### [2.0.1](https://github.com/BlackGlory/pubsub/compare/v2.0.0...v2.0.1) (2023-02-01)
