@@ -7,9 +7,6 @@
 [hookbot]: https://github.com/sensiblecodeio/hookbot
 
 ## Quickstart
-- sse-cat: https://github.com/BlackGlory/sse-cat
-- websocat: https://github.com/vi/websocat
-
 ```sh
 # 启动服务
 docker run \
@@ -20,10 +17,7 @@ docker run \
 # 第一个终端(接收)
 sse-cat http://localhost:8080/namespaces/_/channels/hello-world
 
-# 第二个终端(接收)
-websocat ws://localhost:8080/namespaces/_/channels/hello-world
-
-# 第三个终端(发送)
+# 第二个终端(发送)
 curl http://localhost:8080/namespaces/_/channels/hello-world \
   --data 'hello'
 ```
@@ -82,10 +76,10 @@ fetch(`http://localhost:8080/namespaces/${namespace}/channels/${channel}`, {
 })
 ```
 
-### subscribe via Server-Sent Events(SSE)
+### subscribe
 `GET /namespaces/<namespace>/channels/<channel>`
 
-通过SSE订阅特定频道.
+通过Server-Sent Events(SSE)订阅特定频道.
 
 #### Example
 ##### sse-cat
@@ -103,25 +97,6 @@ es.addEventListener('message', event => {
 })
 ```
 
-### subscribe via WebSocket
-`WS /namespaces/<namespace>/channels/<channel>`
-
-通过WebSocket订阅特定频道.
-
-#### Example
-##### websocat
-```sh
-websocat "ws://localhost:8080/namespaces/$namespace/channels/$channel"
-```
-
-##### JavaScript
-```js
-const ws = new WebSocket(`ws://localhost:8080/namespaces/${namespace}/channels/${channel}`)
-ws.addEventListener('message', event => {
-  console.log(event.data)
-})
-```
-
 ## 环境变量
 ### `PUBSUB_HOST`, `PUBSUB_PORT`
 通过环境变量`PUBSUB_HOST`和`PUBSUB_PORT`决定服务器监听的地址和端口,
@@ -131,22 +106,11 @@ ws.addEventListener('message', event => {
 #### `PUBSUB_SSE_HEARTBEAT_INTERVAL`
 通过环境变量`PUBSUB_SSE_HEARTBEAT_INTERVAL`可以设置SSE心跳包的发送间隔, 单位为毫秒.
 在默认情况下, 服务不会发送SSE心跳包,
-半开连接的检测依赖于服务端和客户端的运行平台的TCP Keepalive配置.
+此时半开连接的检测依赖于服务端和客户端的运行平台的TCP Keepalive配置.
 
 当`PUBSUB_SSE_HEARTBEAT_INTERVAL`大于零时,
-服务会通过SSE的heartbeat事件按指定间隔发送空白数据.
+服务会通过SSE的heartbeat事件按指定间隔时间发送空白数据.
 客户端若要实现半开连接检测, 则需要自行根据heartbeat事件设定计时器, 以判断连接是否正常.
-
-#### `PUBSUB_WS_HEARTBEAT_INTERVAL`
-通过环境变量`PUBSUB_WS_HEARTBEAT_INTERVAL`可以设置WS心跳包(ping帧)的发送间隔, 单位为毫秒.
-在默认情况下, 服务不会发送心跳包,
-半开连接的检测依赖于服务端和客户端的运行平台的TCP Keepalive配置.
-
-当`PUBSUB_WS_HEARTBEAT_INTERVAL`大于零时,
-服务会通过WS的ping帧按间隔发送心跳包.
-
-客户端若要实现半开连接检测, 可以定期发送空白字符串到服务端, 以判断连接是否正常.
-为防止带宽滥用, 如果客户端发送的不是空白字符串, 则服务端会主动关闭连接.
 
 ## 客户端
 - JavaScript/TypeScript(Node.js, Browser): <https://github.com/BlackGlory/pubsub-js>

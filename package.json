@@ -45,7 +45,6 @@
     "@types/better-sqlite3": "^7.6.3",
     "@types/jest": "29.4.0",
     "@types/node": "16",
-    "@types/ws": "^8.5.4",
     "@typescript-eslint/eslint-plugin": "^5.54.1",
     "@typescript-eslint/parser": "^5.54.1",
     "cross-env": "^7.0.3",
@@ -82,7 +81,6 @@
     "@fastify/cors": "^8.2.0",
     "ajv": "^8.12.0",
     "better-sqlite3": "^8.2.0",
-    "bufferutil": "^4.0.7",
     "dotenv": "^16.0.3",
     "extra-filesystem": "^0.4.10",
     "extra-generator": "^0.3.3",
@@ -96,9 +94,7 @@
     "prom-client": "^14.2.0",
     "return-style": "^2.0.3",
     "rxjs": "^7.8.0",
-    "utf-8-validate": "^6.0.3",
     "value-getter": "^0.3.0",
-    "ws": "^8.13.0",
     "you-died": "^0.4.3"
   }
 }
