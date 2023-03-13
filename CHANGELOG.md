@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [4.0.0](https://github.com/BlackGlory/pubsub/compare/v3.0.0...v4.0.0) (2023-03-13)
+
+
+### ⚠ BREAKING CHANGES
+
+* Removed WebSockets support
+
+* remove WebSockets support ([5ec8803](https://github.com/BlackGlory/pubsub/commit/5ec8803c1a70a281bc91ae7a487d439a672f0f6d))
+
 ## [3.0.0](https://github.com/BlackGlory/pubsub/compare/v2.0.2...v3.0.0) (2023-02-06)
 
 
