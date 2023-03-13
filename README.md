@@ -1,5 +1,5 @@
 # PubSub
-提供基于HTTP, SSE和WebSocket的PubSub服务,
+提供基于HTTP的PubSub服务,
 受到[patchbay], [smee.io]和[hookbot]启发.
 
 [patchbay]: https://patchbay.pub/
