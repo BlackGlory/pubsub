@@ -1,6 +1,6 @@
 import { resetEmitter } from '@dao/emitter.js'
 import { publish } from '@dao/publish.js'
-import { subscribe } from '@dao/subscribe.js'
+import { observe } from '@dao/subscribe.js'
 
 afterEach(resetEmitter)
 
@@ -11,7 +11,7 @@ describe('same namespace', () => {
     const value = 'value'
 
     publish(namespace, channel, value)
-    subscribe(namespace, channel, () => {
+    observe(namespace, channel).subscribe(() => {
       done.fail()
     })
     setImmediate(done)
@@ -22,7 +22,7 @@ describe('same namespace', () => {
     const channel = 'channel'
     const value = 'value'
 
-    subscribe(namespace, channel, val => {
+    observe(namespace, channel).subscribe(val => {
       expect(val).toBe(value)
       done()
     })
@@ -34,10 +34,10 @@ describe('same namespace', () => {
     const channel = 'channel'
     const value = 'value'
 
-    const unsubscribe = subscribe(namespace, channel, () => {
+    const subscription = observe(namespace, channel).subscribe(() => {
       done.fail()
     })
-    unsubscribe()
+    subscription.unsubscribe()
     publish(namespace, channel, value)
     setImmediate(done)
   })
@@ -50,10 +50,10 @@ describe('diff namespace', () => {
     const channel = 'channel'
     const value = 'value'
 
-    subscribe(namespace1, channel, val => {
+    observe(namespace1, channel).subscribe(val => {
       done.fail()
     })
-    subscribe(namespace2, channel, val => {
+    observe(namespace2, channel).subscribe(val => {
       done()
     })
     publish(namespace2, channel, value)

@@ -82,6 +82,8 @@
     "ajv": "^8.12.0",
     "better-sqlite3": "^8.2.0",
     "dotenv": "^16.0.3",
+    "extra-abort": "^0.3.2",
+    "extra-defer": "^0.2.7",
     "extra-filesystem": "^0.4.10",
     "extra-generator": "^0.3.3",
     "extra-lazy": "^2.0.0",

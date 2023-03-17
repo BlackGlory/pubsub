@@ -1,19 +1,17 @@
 import { Observable } from 'rxjs'
 import { emitter } from './emitter.js'
 
-export function subscribe(
+export function observe(
   namespace: string
 , channel: string
-, listener: (value: string) => void
-): () => void {
+): Observable<string> {
   const eventName = `${namespace}-${channel}`
 
-  const observable = new Observable<string>(observer => {
-    const removeListener = emitter.get()
-      .on(eventName, (value: string) => observer.next(value))
+  return new Observable<string>(observer => {
+    const removeListener = emitter.get().on(eventName, (value: string) => {
+      observer.next(value)
+    })
 
-    return () => removeListener()
+    return removeListener
   })
-  const subscription = observable.subscribe(listener)
-  return () => subscription.unsubscribe()
 }

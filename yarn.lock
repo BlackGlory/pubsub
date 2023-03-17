@@ -2736,6 +2736,15 @@ extra-abort@^0.3.0:
     iterable-operator "^4.0.1"
     justypes "^4.1.0"
 
+extra-abort@^0.3.2:
+  version "0.3.2"
+  resolved "https://registry.yarnpkg.com/extra-abort/-/extra-abort-0.3.2.tgz#ec438ef736781291e80b752c82a21e2a79a296b6"
+  integrity sha512-AouRGnySBcGa/h1mAr3YhqoiYBWsOSHA9A/TgBy0CO1QSf0Rp53drNbiuCFodm5jQmNu8WWE4t3u4o0CC5O5XQ==
+  dependencies:
+    "@blackglory/errors" "^3.0.0"
+    iterable-operator "^4.0.3"
+    justypes "^4.1.0"
+
 extra-compatible@^0.1.8:
   version "0.1.8"
   resolved "https://registry.yarnpkg.com/extra-compatible/-/extra-compatible-0.1.8.tgz#8568d222a4090a6da1a9c106cc4613d7fe141eae"
