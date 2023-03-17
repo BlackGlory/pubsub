@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [5.0.0](https://github.com/BlackGlory/pubsub/compare/v4.0.1...v5.0.0) (2023-03-17)
+
+
+### ⚠ BREAKING CHANGES
+
+* Content types other than JSON are no longer supported
+
+* content types other than JSON are no longer supported ([45d606b](https://github.com/BlackGlory/pubsub/commit/45d606b4cc51a6ee9b4017a6467d6fbdf367d46b))
+
 ### [4.0.1](https://github.com/BlackGlory/pubsub/compare/v4.0.0...v4.0.1) (2023-03-17)
 
 ## [4.0.0](https://github.com/BlackGlory/pubsub/compare/v3.0.0...v4.0.0) (2023-03-13)
