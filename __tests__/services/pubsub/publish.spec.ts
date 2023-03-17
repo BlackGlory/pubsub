@@ -1,7 +1,9 @@
 import { startService, stopService, getAddress } from '@test/utils.js'
 import { fetch } from 'extra-fetch'
 import { post } from 'extra-request'
-import { url, pathname, text } from 'extra-request/transformers'
+import { url, pathname, json } from 'extra-request/transformers'
+import { observe } from '@apis/observe.js'
+import { firstValueFrom } from 'rxjs'
 
 beforeEach(startService)
 afterEach(stopService)
@@ -9,13 +11,15 @@ afterEach(stopService)
 test('publish', async () => {
   const namespace = 'namespace'
   const channel = 'channel'
-  const message = 'message'
+  const content = 'content'
 
+  const promise = firstValueFrom(observe(namespace, channel))
   const res = await fetch(post(
     url(getAddress())
   , pathname(`/namespaces/${namespace}/channels/${channel}`)
-  , text(message)
+  , json(content)
   ))
 
   expect(res.status).toBe(204)
+  expect(await promise).toStrictEqual(content)
 })

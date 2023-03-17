@@ -67,8 +67,9 @@ export const routes: FastifyPluginAsync<{ API: IAPI }> = async (server, { API })
 
       const subscription = API
         .observe(namespace, channel)
-        .subscribe(data => {
-          go(async () => {
+        .subscribe({
+          async next(content) {
+            const data = JSON.stringify(content)
             for (const line of sse({ data })) {
               if (signal.aborted) break
 
@@ -77,7 +78,7 @@ export const routes: FastifyPluginAsync<{ API: IAPI }> = async (server, { API })
                 await waitForEventEmitter(reply.raw, 'drain', signal)
               }
             }
-          }).catch(pass)
+          }
         })
       destructor.defer(() => subscription.unsubscribe())
     }

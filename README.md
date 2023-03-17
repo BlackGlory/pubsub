@@ -60,11 +60,17 @@ services:
 
 往特定频道发布消息, 所有订阅此频道的客户端都会收到消息.
 
+发送JSON:
+```
+JSONValue
+```
+
 #### Example
 ##### curl
 ```sh
 curl \
-  --data 'message' \
+  --header "Content-Type: application/json" \
+  --data "$payload" \
   "http://localhost:8080/namespaces/$namespace/channels/$channel"
 ```
 
@@ -72,7 +78,10 @@ curl \
 ```js
 fetch(`http://localhost:8080/namespaces/${namespace}/channels/${channel}`, {
   method: 'POST'
-, body: 'message'
+, headers: {
+    'Content-Type': 'application/json'
+  }
+, body: JSON.stringify(content)
 })
 ```
 
@@ -80,6 +89,11 @@ fetch(`http://localhost:8080/namespaces/${namespace}/channels/${channel}`, {
 `GET /namespaces/<namespace>/channels/<channel>`
 
 通过Server-Sent Events(SSE)订阅特定频道.
+
+收到的每条JSON:
+```
+JSONValue
+```
 
 #### Example
 ##### sse-cat
@@ -93,7 +107,9 @@ const es = new EventSource(
   `http://localhost:8080/namespaces/${namespace}/channels/${channel}`
 )
 es.addEventListener('message', event => {
-  console.log(event.data)
+  const payload = event.data
+  const content = JSON.parse(payload)
+  console.log(content)
 })
 ```
 

@@ -1,26 +1,14 @@
 import { FastifyPluginAsync } from 'fastify'
 import { IAPI } from '@src/contract.js'
+import { JSONValue } from '@blackglory/prelude'
 
 export const routes: FastifyPluginAsync<{ API: IAPI }> = async (server, { API }) => {
-  // overwrite application/json parser
-  server.addContentTypeParser(
-    'application/json'
-  , { parseAs: 'string' }
-  , (req, body, done) => done(null, body)
-  )
-
-  server.addContentTypeParser(
-    '*'
-  , { parseAs: 'string' }
-  , (req, body, done) => done(null, body)
-  )
-
   server.post<{
     Params: {
       namespace: string
       channel: string
     }
-    Body: string
+    Body: JSONValue
   }>(
     '/namespaces/:namespace/channels/:channel'
   , {
@@ -37,9 +25,10 @@ export const routes: FastifyPluginAsync<{ API: IAPI }> = async (server, { API })
   , async (req, reply) => {
       const namespace = req.params.namespace
       const channel = req.params.channel
-      const payload = req.body
+      const content = req.body
 
-      API.publish(namespace, channel, payload)
+      API.publish(namespace, channel, content)
+
       return reply
         .status(204)
         .send()
