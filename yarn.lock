@@ -681,13 +681,6 @@
     ajv-formats "^2.1.1"
     fast-uri "^2.0.0"
 
-"@fastify/bearer-auth@^9.0.0":
-  version "9.0.0"
-  resolved "https://registry.yarnpkg.com/@fastify/bearer-auth/-/bearer-auth-9.0.0.tgz#9a75abcb1d54751dc04e97b37db5363e325c0f90"
-  integrity sha512-I1egwg1LRdIvhjL/P+3UEfyK7A3YTnN3goTyf8MJ+v7vVkwyyd8ieccFKI0SzEuxMmfQh/p4yNyLZWcMVwpInA==
-  dependencies:
-    fastify-plugin "^4.0.0"
-
 "@fastify/cors@^8.2.1":
   version "8.2.1"
   resolved "https://registry.yarnpkg.com/@fastify/cors/-/cors-8.2.1.tgz#dd348162bcbfb87dff4b492e2bef32d41244006a"
@@ -1551,7 +1544,7 @@ ajv@^6.10.0, ajv@^6.12.4, ajv@^6.12.5:
     json-schema-traverse "^0.4.1"
     uri-js "^4.2.2"
 
-ajv@^8.0.0, ajv@^8.10.0, ajv@^8.11.0, ajv@^8.12.0:
+ajv@^8.0.0, ajv@^8.10.0, ajv@^8.11.0:
   version "8.12.0"
   resolved "https://registry.yarnpkg.com/ajv/-/ajv-8.12.0.tgz#d1a0527323e22f53562c567c00991577dfbe19d1"
   integrity sha512-sRu1kpcO9yLtYxBKvqfTeh9KzZEwO3STyX1HT+4CaDzC6HpTGYhIhPIzj9XuKU7KYDwnaeh5hcOwjy1QuJzBPA==
