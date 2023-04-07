@@ -6,22 +6,6 @@
 [smee.io]: https://smee.io/
 [hookbot]: https://github.com/sensiblecodeio/hookbot
 
-## Quickstart
-```sh
-# 启动服务
-docker run \
-  --detach \
-  --publish 8080:8080 \
-  blackglory/pubsub
-
-# 第一个终端(接收)
-sse-cat http://localhost:8080/namespaces/_/channels/hello-world
-
-# 第二个终端(发送)
-curl http://localhost:8080/namespaces/_/channels/hello-world \
-  --data 'hello'
-```
-
 ## Install
 ### 从源代码运行
 ```sh
