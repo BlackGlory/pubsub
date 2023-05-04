@@ -40,6 +40,7 @@ export const routes: FastifyPluginAsync<{ API: IAPI }> = async (server, { API })
       reply.raw.setHeader('Content-Type', 'text/event-stream')
       reply.raw.setHeader('Connection', 'keep-alive')
       reply.raw.setHeader('Cache-Control', 'no-store')
+      reply.raw.setHeader('X-Accel-Buffering', 'no')
       if (req.headers.origin) {
         reply.raw.setHeader('Access-Control-Allow-Origin', req.headers.origin)
       }
