@@ -1,12 +1,12 @@
-import { go, pass } from '@blackglory/prelude'
+import { go } from '@blackglory/prelude'
 import { FastifyPluginAsync } from 'fastify'
-import { sse } from 'extra-generator'
 import { waitForEventEmitter } from '@blackglory/wait-for'
 import { SSE_HEARTBEAT_INTERVAL } from '@env/index.js'
 import { setDynamicTimeoutLoop } from 'extra-timers'
 import { IAPI } from '@src/contract.js'
 import { SyncDestructor } from 'extra-defer'
 import { AbortController } from 'extra-abort'
+import { stringifyEvent } from 'extra-sse'
 
 export const routes: FastifyPluginAsync<{ API: IAPI }> = async (server, { API }) => {
   server.get<{
@@ -50,7 +50,7 @@ export const routes: FastifyPluginAsync<{ API: IAPI }> = async (server, { API })
         const heartbeatInterval = SSE_HEARTBEAT_INTERVAL()
         if (heartbeatInterval > 0) {
           return setDynamicTimeoutLoop(heartbeatInterval, async () => {
-            for (const line of sse({ event: 'heartbeat', data: '' })) {
+            for (const line of stringifyEvent({ event: 'heartbeat', data: '' })) {
               if (signal.aborted) break
 
               if (!reply.raw.write(line)) {
@@ -71,7 +71,7 @@ export const routes: FastifyPluginAsync<{ API: IAPI }> = async (server, { API })
         .subscribe({
           async next(content) {
             const data = JSON.stringify(content)
-            for (const line of sse({ data })) {
+            for (const line of stringifyEvent({ data })) {
               if (signal.aborted) break
 
               // `publish` is non-blocking, so it cannot handle back-pressure.
