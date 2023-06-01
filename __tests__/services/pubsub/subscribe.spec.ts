@@ -1,6 +1,6 @@
 import { startService, stopService, getAddress } from '@test/utils.js'
-import { EventSource } from 'extra-fetch'
-import { waitForEventTarget } from '@blackglory/wait-for'
+import { fetchEvents } from 'extra-sse'
+import { firstAsync } from 'iterable-operator'
 import { publish } from '@apis/publish.js'
 
 beforeEach(startService)
@@ -10,15 +10,15 @@ test('subscribe', async () => {
   const namespace = 'namespace'
   const channel = 'channel'
 
-  const es = new EventSource(`${getAddress()}/namespaces/${namespace}/channels/${channel}`)
-  try {
-    await waitForEventTarget(es, 'open')
-    queueMicrotask(() => {
-      publish(namespace, channel, 'content')
-    })
-    const event = await waitForEventTarget(es, 'message') as MessageEvent
-    expect(event.data).toBe(JSON.stringify('content'))
-  } finally {
-    es.close()
-  }
+  const iter = fetchEvents(`${getAddress()}/namespaces/${namespace}/channels/${channel}`)
+  setTimeout(() => publish(namespace, channel, 'content'), 500)
+  const result = await firstAsync(iter)
+
+  expect(result).toStrictEqual({
+    comment: undefined
+  , event: undefined
+  , data: JSON.stringify('content')
+  , id: undefined
+  , retry: undefined
+  })
 })
