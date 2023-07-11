@@ -11,7 +11,9 @@ test('subscribe', async () => {
   const namespace = 'namespace'
   const channel = 'channel'
 
-  const iter = fetchEvents(`${getAddress()}/namespaces/${namespace}/channels/${channel}`)
+  const iter = fetchEvents(`${getAddress()}/namespaces/${namespace}/channels/${channel}`, {
+    autoReconnect: false
+  })
   const promise = firstAsync(iter)
   await delay(500)
   publish(namespace, channel, 'content')
