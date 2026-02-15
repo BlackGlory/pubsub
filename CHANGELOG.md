@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [5.1.0](https://github.com/BlackGlory/pubsub/compare/v5.0.3...v5.1.0) (2026-02-15)
+
+
+### Features
+
+* **create-event-name:** improve robustness ([920e10b](https://github.com/BlackGlory/pubsub/commit/920e10b476222b6fd1a2b1f0d6c38f904c43cd8e))
+
 ### [5.0.3](https://github.com/BlackGlory/pubsub/compare/v5.0.2...v5.0.3) (2023-07-11)
 
 ### [5.0.2](https://github.com/BlackGlory/pubsub/compare/v5.0.1...v5.0.2) (2023-05-04)
