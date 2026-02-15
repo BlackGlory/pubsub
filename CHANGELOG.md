@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [5.1.1](https://github.com/BlackGlory/pubsub/compare/v5.1.0...v5.1.1) (2026-02-15)
+
+
+### Bug Fixes
+
+* reject text/plain request body ([456dda7](https://github.com/BlackGlory/pubsub/commit/456dda7fbe6a35b2770a9ad132311b0bef86909b))
+
 ## [5.1.0](https://github.com/BlackGlory/pubsub/compare/v5.0.3...v5.1.0) (2026-02-15)
 
 
