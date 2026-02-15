@@ -28,7 +28,7 @@ class PubSub {
   }
 
   private createEventName(namespace: string, channel: string): string {
-    return `${namespace}-${channel}`
+    return JSON.stringify([namespace, channel])
   }
 
   private createEmitter(): Emitter<Record<string, [content: JSONValue]>> {
