@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [6.1.0](https://github.com/BlackGlory/pubsub/compare/v6.0.0...v6.1.0) (2026-02-16)
+
+
+### Features
+
+* **server:** improve robustness ([4398284](https://github.com/BlackGlory/pubsub/commit/4398284ac53ec8b7c5cfebfb4f6e6498d0375301))
+
 ## [6.0.0](https://github.com/BlackGlory/pubsub/compare/v5.1.2...v6.0.0) (2026-02-16)
 
 
