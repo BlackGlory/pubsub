@@ -51,5 +51,5 @@ function toInteger(val: string | undefined): number | undefined {
 }
 
 function shouldBePositiveOrZero(val: number): void {
-  assert(val === 0 || val > 0, 'should be positive or zero')
+  assert(val >= 0, 'should be positive or zero')
 }
