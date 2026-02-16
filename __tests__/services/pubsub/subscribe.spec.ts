@@ -1,3 +1,4 @@
+import { test, beforeEach, afterEach, expect } from 'vitest'
 import { startService, stopService, getAddress } from '@test/utils.js'
 import { fetchEvents } from 'extra-sse'
 import { firstAsync } from 'iterable-operator'

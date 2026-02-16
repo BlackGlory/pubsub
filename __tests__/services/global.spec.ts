@@ -1,3 +1,4 @@
+import { describe, test, it, expect, beforeEach, afterEach } from 'vitest'
 import { startService, stopService, getAddress } from '@test/utils.js'
 import { fetch } from 'extra-fetch'
 import { url, header, pathname } from 'extra-request/transformers'
