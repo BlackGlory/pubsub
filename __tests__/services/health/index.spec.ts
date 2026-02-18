@@ -7,8 +7,8 @@ import { url, pathname } from 'extra-request/transformers'
 beforeEach(startService)
 afterEach(stopService)
 
-describe('robots', () => {
-  describe('GET /robots.txt', () => {
+describe('health', () => {
+  describe('GET /health', () => {
     it('200', async () => {
       const res = await fetch(get(
         url(getAddress())
