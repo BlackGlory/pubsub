@@ -7,6 +7,7 @@ import { IAPI } from '@src/contract.js'
 import { SyncDestructor } from 'extra-defer'
 import { AbortController } from 'extra-abort'
 import { stringifyEvent } from 'extra-sse'
+import { namespaceSchema, channelSchema } from '@src/schema.js'
 
 export const routes: FastifyPluginAsync<{ API: IAPI }> = async (server, { API }) => {
   server.get<{
@@ -19,8 +20,8 @@ export const routes: FastifyPluginAsync<{ API: IAPI }> = async (server, { API })
   , {
       schema: {
         params: {
-          namespace: { type: 'string' }
-        , channel: { type: 'string' }
+          namespace: namespaceSchema
+        , channel: channelSchema
         }
       }
     }

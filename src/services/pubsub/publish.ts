@@ -1,6 +1,7 @@
 import { FastifyPluginAsync } from 'fastify'
 import { IAPI } from '@src/contract.js'
 import { JSONValue } from '@blackglory/prelude'
+import { namespaceSchema, channelSchema } from '@src/schema.js'
 
 export const routes: FastifyPluginAsync<{ API: IAPI }> = async (server, { API }) => {
   server.post<{
@@ -14,8 +15,8 @@ export const routes: FastifyPluginAsync<{ API: IAPI }> = async (server, { API })
   , {
       schema: {
         params: {
-          namespace: { type: 'string' }
-        , channel: { type: 'string' }
+          namespace: namespaceSchema
+        , channel: channelSchema
         }
       , response: {
           204: { type: 'null' }
