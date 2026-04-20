@@ -39,6 +39,8 @@ services:
 ```
 
 ## API
+所有API中的namespace和channel都需要满足此正则表达式: `^.{0,255}$`.
+
 ### publish
 `POST /namespaces/<namespace>/channels/<channel>`
 
