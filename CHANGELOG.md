@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [6.2.0](https://github.com/BlackGlory/pubsub/compare/v6.1.0...v6.2.0) (2026-04-20)
+
+
+### Features
+
+* add regex schemas for namespaces and channels ([3754714](https://github.com/BlackGlory/pubsub/commit/3754714aa47c15a3805702cd3716fda548e0792e))
+
+
+### Bug Fixes
+
+* test names ([70fa18f](https://github.com/BlackGlory/pubsub/commit/70fa18f34e71a8f2d44a62553860be4f6e9cdf95))
+
 ## [6.1.0](https://github.com/BlackGlory/pubsub/compare/v6.0.0...v6.1.0) (2026-02-16)
 
 
